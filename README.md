@@ -1,4 +1,4 @@
-# This project is aimed to operate Music school website. The school that has teachers and students. The project itself is implemented in Nest.js using TypeORM, Postgres on backend and Streamlit (Python's library) on frontend.#
+# This project is aimed to operate Music school website. The school that has teachers and students. The project itself is implemented in Nest.js using TypeORM, Postgres on backend and Streamlit (Python's library) on frontend.
 
 # ! To run a project use _docker-compose up_
 
@@ -12,14 +12,14 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 
 2. Navigate to your backend directory: _cd backend_
 
-   - npm install -g @nestjs/cli
-   - npm install @nestjs/typeorm typeorm pg @nestjs/config
+   * npm install -g @nestjs/cli
+   * npm install @nestjs/typeorm typeorm pg @nestjs/config
 
 3. Navigate to your frontend directory: _cd frontend_
 
-   - python -m venv venv
-   - .\venv\Scripts\activate
-   - pip install streamlit
+   * python -m venv venv
+   * .\venv\Scripts\activate
+   * pip install streamlit
 
 4. terminate venv and navigate back to music-school. Run:
    docker-compose up --build  
