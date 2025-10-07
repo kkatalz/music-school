@@ -1,4 +1,6 @@
-/music-school-nest/node_modules
-/music-school-frontend/venv
-/music-school-frontend/__pycache__
+/backend/dist
+/backend/node_modules
+
+/frontend/venv
+
 .env
