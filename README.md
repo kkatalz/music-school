@@ -13,9 +13,9 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 
 3. Navigate to your frontend directory: _cd frontend_
 
-   - python -m venv venv
-   - .\venv\Scripts\activate
-   - pip install streamlit
+   * python -m venv venv
+   * .\venv\Scripts\activate
+   * pip install streamlit
 
 4. terminate venv and navigate back to music-school. Run:
    docker-compose up --build  
