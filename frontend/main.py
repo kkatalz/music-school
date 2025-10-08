@@ -1,62 +1,50 @@
+# /frontend/main.py
+
 import streamlit as st
-import os
 import requests
-import json
+import os
 
-# Retrieve the API host from the environment variable set in docker-compose.yml
-API_HOST = os.getenv('API_HOST', 'http://localhost:3000')
+# Get API_HOST from environment variables (set in docker-compose.yml)
+API_HOST = os.environ.get("API_HOST", "http://api:3000/api")
 
-st.set_page_config(
-    page_title="Music School Frontend",
-    layout="centered",
-    initial_sidebar_state="expanded"
-)
-
-st.title('🎶 Music School Frontend')
-st.markdown('### Streamlit and NestJS API Integration Test')
-st.info(f"NestJS API Target: **{API_HOST}** (Internal Docker Network)")
-
-
-def fetch_api_status():
-    """Attempts to fetch data from the backend API."""
-    endpoint = f"{API_HOST}/"
-    st.markdown("---")
-    st.subheader("API Connection Status:")
-    st.code(f"Attempting GET request to: {endpoint}", language='text')
-
+def fetch_api_data(endpoint):
+    """Attempts to fetch data from the NestJS API."""
     try:
-        # The Streamlit container uses the 'api' hostname to reach the NestJS container
-        response = requests.get(endpoint, timeout=5)
-
+        # Use a specific path or the base path with the global prefix
+        url = f"{endpoint}/"
+        st.write(f"Attempting GET request to: **{url}**")
+        
+        # Use a short timeout for connection test
+        response = requests.get(url, timeout=5)
+        
+        # Check if the response was successful
         if response.status_code == 200:
-            st.success("✅ API Connection Successful!")
-            st.json({
-                "Status Code": response.status_code,
-                "Response Text": response.text,
-            })
-            # Check if the content is JSON or simple text
-            try:
-                data = response.json()
-                st.write("Parsed JSON Response:")
-                st.write(data)
-            except json.JSONDecodeError:
-                st.write("Raw Text Response:")
-                st.code(response.text, language='text')
-
-        else:
-            st.warning(f"⚠️ API responded with status code: {response.status_code}")
+            st.success("✅ API Connection Status: **SUCCESS** (Status 200)")
+            st.write("---")
+            st.subheader("Data Received from Backend:")
             st.code(response.text)
-
+        else:
+            st.warning(f"⚠️ API Connection Status: **FAILURE** (Status {response.status_code})")
+            st.text(f"Response: {response.text[:100]}...") # Show a snippet of the response
+            
+    except requests.exceptions.Timeout:
+        st.error("❌ API Connection Status: **TIMEOUT**")
+        st.caption("The request took too long. Check if the backend is slow or port mapping is wrong.")
     except requests.exceptions.ConnectionError:
-        st.error("❌ Connection Error: The API service is unreachable or not ready.")
-        st.write("Ensure the `api` service is running and accessible inside the Docker network.")
+        st.error("❌ API Connection Status: **CONNECTION REFUSED**")
+        st.caption("Check if the backend service 'api' is running.")
     except Exception as e:
         st.exception(e)
 
-if st.button('Test API Connection'):
-    fetch_api_status()
 
-# Run the initial test immediately on load
-if 'initial_test_done' not in st.session_state:
-    fetch_api_status()
-    st.session_state['initial_test_done'] = True
+# --- Streamlit App ---
+st.title("🎶 Music School Frontend")
+st.subheader("Streamlit and NestJS API Integration Test")
+
+st.info(f"NestJS API Target: **{API_HOST}** (Internal Docker Network)")
+
+st.write("## API Connection Status:")
+fetch_api_data(API_HOST)
+
+st.write("---")
+st.caption("If successful, the backend is accessible to the frontend via the Docker network.")
