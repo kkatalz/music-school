@@ -4,6 +4,11 @@ services:
     image: postgres:14-alpine
     container_name: music_school_db
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -30,7 +35,8 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       PORT: 3000
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   # 3. Streamlit Frontend Service
   web:
@@ -46,7 +52,7 @@ services:
       - "${WEB_PORT}:8501"
     environment:
       # Optionally pass the API host to Streamlit
-      API_HOST: http://api:3000
+      API_HOST: ${API_HOST}
     depends_on:
       - api
 

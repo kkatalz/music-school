@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import ormconfig from 'src/ormconfig';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TeacherModule } from 'src/teacher/teacher.module';
 
 @Module({
   imports: [
@@ -14,10 +15,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         type: 'postgres',
         url: configService.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),
+    TeacherModule,
   ],
   controllers: [AppController],
   providers: [AppService],
