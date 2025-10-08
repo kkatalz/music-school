@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'teachers' })
 export class TeacherEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'first_name' })
@@ -12,7 +12,7 @@ export class TeacherEntity {
   lastName: string;
 
   @Column()
-  phone: number;
+  phone: string;
 
   @Column()
   education?: string;
