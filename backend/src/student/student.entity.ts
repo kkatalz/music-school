@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { SubjectEntity } from '../subject/subject.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'students' })
 export class StudentEntity {
@@ -32,4 +39,8 @@ export class StudentEntity {
 
   @Column()
   password: string;
+
+  @ManyToMany(() => SubjectEntity)
+  @JoinTable()
+  subjects: SubjectEntity[];
 }
