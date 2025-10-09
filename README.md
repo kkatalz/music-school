@@ -13,9 +13,9 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 
 3. Navigate to your frontend directory: _cd frontend_
 
-   * python -m venv venv
-   * .\venv\Scripts\activate
-   * pip install streamlit
+   - python -m venv venv
+   - .\venv\Scripts\activate
+   - pip install streamlit
 
 4. terminate venv and navigate back to music-school. Run:
    docker-compose up --build  
@@ -25,6 +25,10 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 # ! To run a project use _docker-compose up -d_ -> docker-compose exec api npm run migration:run
 
 ! In order to make any changes in terminal (generate migration, drop db) you should run your project using the command above first (docker-compose up -d) because it starts the db with backend. And when it's running, just open another window in terminal and do your commands there.
+
+# ! Use the Docker Container's Log: To see the actual application logs, use: _docker-compose logs -f api_
+
+# ! When you change something (e.g., in services), you need to motify docker about them: _docker-compose restart api_ -> _docker-compose logs -f api_
 
 # Notes:
 
@@ -40,6 +44,7 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 
 - To generate a migration - stay in root folder (music-school) and run:
   docker-compose exec api npx typeorm-ts-node-commonjs migration:generate -d src/ormconfig.ts src/migrations/CreateTeacherEntity
+  (\*after generating new migration, always run it! (command below))
 
 - To run (apply generated migrations use):
   docker-compose exec api npm run migration:run
