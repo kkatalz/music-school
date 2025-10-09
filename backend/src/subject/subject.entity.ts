@@ -1,6 +1,12 @@
 import { StudentEntity } from '../student/student.entity';
 import { TeacherEntity } from '../teacher/teacher.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'subjects' })
 export class SubjectEntity {
@@ -10,9 +16,11 @@ export class SubjectEntity {
   @Column()
   name: string;
 
-  @ManyToMany(() => TeacherEntity)
-  teachers: TeacherEntity[];
+  @ManyToMany(() => TeacherEntity, (teacher) => teacher.subjects)
+  @JoinTable()
+  teachers?: TeacherEntity[];
 
-  @ManyToMany(() => StudentEntity)
-  students: StudentEntity[];
+  @ManyToMany(() => StudentEntity, (student) => student.subjects)
+  @JoinTable()
+  students?: StudentEntity[];
 }
