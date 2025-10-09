@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
+import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { Repository } from 'typeorm';
@@ -12,6 +13,11 @@ export class TeacherService {
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
   ) {}
+
+  async getAllTeachers() {
+    const teachers = await this.teacherRepository.find();
+    return this.generateTeachersResponse(teachers);
+  }
 
   // if is head Teacher
   async createTeacher(
@@ -78,5 +84,14 @@ export class TeacherService {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+  }
+
+  generateTeachersResponse(teachers: TeacherEntity[]): TeacherResponseDto[] {
+    return teachers.map((teacher) => ({
+      id: teacher.id,
+      lastName: teacher.lastName,
+      phone: teacher.phone,
+      email: teacher.email,
+    }));
   }
 }

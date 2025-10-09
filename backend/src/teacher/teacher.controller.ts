@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Put,
@@ -13,9 +14,14 @@ import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { TeacherService } from 'src/teacher/teacher.service';
 import { DeleteResult } from 'typeorm';
 
-@Controller('teacher')
+@Controller('teachers')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
+
+  @Get()
+  async getAllTeachers() {
+    return await this.teacherService.getAllTeachers();
+  }
 
   @Post()
   async createTeacher(
