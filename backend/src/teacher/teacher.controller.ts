@@ -1,8 +1,17 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { TeacherService } from 'src/teacher/teacher.service';
+import { DeleteResult } from 'typeorm';
 
 @Controller('teacher')
 export class TeacherController {
@@ -21,5 +30,10 @@ export class TeacherController {
     @Body() updateTeacherDto: UpdateTeacherDto,
   ): Promise<TeacherEntity> {
     return await this.teacherService.updateTeacher(teacherId, updateTeacherDto);
+  }
+
+  @Delete(':id')
+  async deleteTeacher(@Param('id') teacherId: number): Promise<DeleteResult> {
+    return await this.teacherService.deleteTeacher(teacherId);
   }
 }
