@@ -40,7 +40,6 @@ export class StudentEntity {
   @Column()
   password: string;
 
-  @ManyToMany(() => SubjectEntity)
-  @JoinTable()
-  subjects: SubjectEntity[];
+  @ManyToMany(() => SubjectEntity, (subject) => subject.students)
+  subjects?: SubjectEntity[];
 }

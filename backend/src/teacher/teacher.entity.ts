@@ -40,7 +40,6 @@ export class TeacherEntity {
   @Column({ name: 'is_head_teacher', default: false })
   isHeadTeacher: boolean;
 
-  @ManyToMany(() => SubjectEntity)
-  @JoinTable()
-  subjects: SubjectEntity[];
+  @ManyToMany(() => SubjectEntity, (subject) => subject.teachers)
+  subjects?: SubjectEntity[];
 }

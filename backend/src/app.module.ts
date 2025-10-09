@@ -5,6 +5,8 @@ import ormconfig from 'src/ormconfig';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeacherModule } from 'src/teacher/teacher.module';
+import { SubjectModule } from 'src/subject/subject.module';
+import { StudentModule } from 'src/student/student.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { TeacherModule } from 'src/teacher/teacher.module';
       inject: [ConfigService],
     }),
     TeacherModule,
+    StudentModule,
+    SubjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
