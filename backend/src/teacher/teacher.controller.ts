@@ -1,5 +1,6 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
+import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { TeacherService } from 'src/teacher/teacher.service';
 
@@ -12,5 +13,13 @@ export class TeacherController {
     @Body() createTeacherDto: CreateTeacherDto,
   ): Promise<TeacherEntity> {
     return await this.teacherService.createTeacher(createTeacherDto);
+  }
+
+  @Put(':id')
+  async updateTeacher(
+    @Param('id') teacherId: number,
+    @Body() updateTeacherDto: UpdateTeacherDto,
+  ): Promise<TeacherEntity> {
+    return await this.teacherService.updateTeacher(teacherId, updateTeacherDto);
   }
 }
