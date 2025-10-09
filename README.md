@@ -28,7 +28,7 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 
 # ! Use the Docker Container's Log: To see the actual application logs, use: _docker-compose logs -f api_
 
-# ! When you change something (e.g., in services), you need to motify docker about them: _docker-compose restart api_ -> _docker-compose logs -f api_
+# ! When you change something (e.g., in services), you need to notify docker about them: _docker-compose restart api_ -> _docker-compose logs -f api_
 
 # Notes:
 

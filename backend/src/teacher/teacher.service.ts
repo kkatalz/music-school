@@ -34,9 +34,6 @@ export class TeacherService {
     return savedTeacher;
   }
 
-  // update_teacher(head_teacher_id:String, data:dict) : void
-  //   + delete_teacher(head_teacher_id:String, teacher_id:String) : void // if is_head_teacher
-
   async updateTeacher(
     teacherId: number,
     updateTeacherDto: UpdateTeacherDto,
@@ -55,6 +52,13 @@ export class TeacherService {
     await this.findTeacherById(teacherId);
 
     return await this.teacherRepository.delete(teacherId);
+  }
+
+  async calculateExperience(teacherId: number): Promise<Number> {
+    const teacher = await this.findTeacherById(teacherId);
+    const diffMs = Date.now() - teacher.startWorkDate.getTime();
+    const diffMonths = diffMs / (1000 * 60 * 60 * 24 * 30.44);
+    return Math.floor(diffMonths);
   }
 
   // Helpers

@@ -23,6 +23,17 @@ export class TeacherController {
     return await this.teacherService.getAllTeachers();
   }
 
+  @Get('/experience/:id')
+  async calculateExperience(@Param('id') teacherId: number) {
+    return await this.teacherService.calculateExperience(teacherId);
+  }
+
+  @Get(':id')
+  async getTeacher(@Param('id') teacherId: number) {
+    return await this.teacherService.findTeacherById(teacherId);
+  }
+
+  // only for headTeacher. TODO: Auth, TeacherGuard
   @Post()
   async createTeacher(
     @Body() createTeacherDto: CreateTeacherDto,
