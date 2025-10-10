@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { StudentEntity } from 'src/student/student.entity';
 import { SubjectEntity } from 'src/subject/subject.entity';
+import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { StudentService } from 'src/student/student.service';
 import { SubjectService } from 'src/subject/subject.service';
 import { CreateStudentDto } from './dto/createStudent.dto';
@@ -61,6 +62,26 @@ export class StudentContoller {
 
     return await this.studentService.getStudentSubjects(
       studentId,
+      yearNum,
+      semesterNum,
+    );
+  }
+
+  @Get(':id/teachers')
+  async getTeachers(
+    @Param('id') studentId: string,
+    @Query('year') year: string,
+    @Query('semester') semester: string,
+  ): Promise<TeacherEntity[]> {
+    const yearNum = parseInt(year, 10);
+    const semesterNum = parseInt(semester, 10);
+
+    if (isNaN(yearNum) || isNaN(semesterNum)) {
+      throw new BadRequestException('Year and semester must be valid numbers');
+    }
+
+    return await this.studentService.getTeachers(
+      parseInt(studentId, 10),
       yearNum,
       semesterNum,
     );

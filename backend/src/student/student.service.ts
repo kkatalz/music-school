@@ -5,6 +5,7 @@ import { CreateStudentDto } from './dto/createStudent.dto';
 import { UpdateStudentDto } from './dto/updateStudent.dto';
 import { StudentResponseDto } from './dto/studentResponse.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
+import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { DeleteResult } from 'typeorm/browser';
 import { Repository } from 'typeorm';
 
@@ -15,6 +16,8 @@ export class StudentService {
     private readonly studentRepository: Repository<StudentEntity>,
     @InjectRepository(SubjectEntity)
     private readonly subjectRepository: Repository<SubjectEntity>,
+    @InjectRepository(TeacherEntity)
+    private readonly teacherRepository: Repository<TeacherEntity>,
   ) {}
 
   async createStudent(createStudentDto: CreateStudentDto): Promise<StudentEntity> {
@@ -81,6 +84,32 @@ export class StudentService {
       .andWhere('subject.studyYear = :year', { year })
       .andWhere('subject.semester = :semester', { semester })
       .getMany();
+  }
+
+  async getTeachers(
+    studentId: number,
+    year: number,
+    semester: number,
+  ): Promise<TeacherEntity[]> {
+    const student = await this.studentRepository.findOne({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    const teachers = await this.teacherRepository
+      .createQueryBuilder('teacher')
+      .innerJoin('teacher.subjects', 'subject')
+      .innerJoin('subject.students', 'student')
+      .where('student.id = :studentId', { studentId })
+      .andWhere('subject.studyYear = :year', { year })
+      .andWhere('subject.semester = :semester', { semester })
+      .distinct(true)
+      .getMany();
+
+    return teachers;
   }
 
   // Helpers
