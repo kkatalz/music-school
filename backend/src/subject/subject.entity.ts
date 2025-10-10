@@ -16,6 +16,12 @@ export class SubjectEntity {
   @Column()
   name: string;
 
+  @Column({ name: 'study_year' })
+  studyYear: number;
+
+  @Column()
+  semester: number;
+
   @ManyToMany(() => TeacherEntity, (teacher) => teacher.subjects)
   @JoinTable()
   teachers?: TeacherEntity[];

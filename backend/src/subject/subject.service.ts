@@ -28,6 +28,7 @@ export class SubjectService {
     return savedSubject;
   }
 
+  // multiple teachers can teachone subject
   async addTeacherToSubject(
     teacherId: number,
     subjectId: number,
