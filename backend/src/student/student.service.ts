@@ -6,7 +6,7 @@ import { UpdateStudentDto } from './dto/updateStudent.dto';
 import { StudentResponseDto } from './dto/studentResponse.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { Repository } from 'typeorm';
-import { Between } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, IsNull } from 'typeorm';
 
 @Injectable()
 export class StudentService {
@@ -53,11 +53,10 @@ export class StudentService {
   }
 
   async getTotalStudents(startDate: Date, endDate: Date): Promise<number> {
-    return await this.studentRepository.count({
-      where: {
-        startStudyDate: Between(startDate, endDate),
-      },
-    });
+    return await this.studentRepository
+      .createQueryBuilder('student')
+      .where('student.startStudyDate BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .getCount();
   }
 
   async getStudyYears(studentId: number): Promise<number> {
