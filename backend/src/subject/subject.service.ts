@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
+import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
@@ -16,6 +17,18 @@ export class SubjectService {
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
   ) {}
+
+  async getSubjectsNames() {
+    const subjects = await this.subjectRepository.find();
+    return this.generateSubjectsNamesResponse(subjects);
+  }
+
+  async getSubjectsInfo() {
+    return await this.subjectRepository
+      .createQueryBuilder('subject')
+      .loadAllRelationIds({ relations: ['teachers', 'students'] })
+      .getMany();
+  }
 
   // if isHeadTeacher
   async createSubject(
@@ -66,5 +79,14 @@ export class SubjectService {
     });
 
     return updatedSubject;
+  }
+
+  generateSubjectsNamesResponse(
+    subjects: SubjectEntity[],
+  ): SubjectsNamesResponseDto[] {
+    return subjects.map((subject) => ({
+      id: subject.id,
+      name: subject.name,
+    }));
   }
 }
