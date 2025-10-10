@@ -4,15 +4,17 @@ import { StudentEntity } from 'src/student/student.entity';
 import { CreateStudentDto } from './dto/createStudent.dto';
 import { UpdateStudentDto } from './dto/updateStudent.dto';
 import { StudentResponseDto } from './dto/studentResponse.dto';
+import { SubjectEntity } from 'src/subject/subject.entity';
 import { DeleteResult } from 'typeorm/browser';
 import { Repository } from 'typeorm';
-import { LessThanOrEqual, MoreThanOrEqual, IsNull } from 'typeorm';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(StudentEntity)
     private readonly studentRepository: Repository<StudentEntity>,
+    @InjectRepository(SubjectEntity)
+    private readonly subjectRepository: Repository<SubjectEntity>,
   ) {}
 
   async createStudent(createStudentDto: CreateStudentDto): Promise<StudentEntity> {
@@ -65,6 +67,20 @@ export class StudentService {
     const now = Date.now();
     const years = (now - start) / (1000 * 60 * 60 * 24 * 365.25);
     return Math.floor(years);
+  }
+
+  async getStudentSubjects(
+    studentId: number,
+    year: number,
+    semester: number,
+  ): Promise<SubjectEntity[]> {
+    return await this.subjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.students', 'student')
+      .where('student.id = :studentId', { studentId })
+      .andWhere('subject.studyYear = :year', { year })
+      .andWhere('subject.semester = :semester', { semester })
+      .getMany();
   }
 
   // Helpers

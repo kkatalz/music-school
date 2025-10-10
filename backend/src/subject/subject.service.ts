@@ -7,6 +7,7 @@ import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
+import { StudentEntity } from 'src/student/student.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class SubjectService {
     private readonly subjectRepository: Repository<SubjectEntity>,
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
+    @InjectRepository(TeacherEntity)
+    private readonly studentRepository: Repository<StudentEntity>,
   ) {}
 
   async getSubjectsNames() {
@@ -76,6 +79,45 @@ export class SubjectService {
         id: subjectId,
       },
       relations: ['teachers'],
+    });
+
+    return updatedSubject;
+  }
+
+  async addStudentToSubject(
+    studentId: number,
+    subjectId: number,
+  ): Promise<SubjectEntity> {
+    const subject = await this.subjectRepository.findOne({
+      where: {
+        id: subjectId,
+      },
+    });
+
+    if (!subject) {
+      throw new HttpException('Subject not found', HttpStatus.NOT_FOUND);
+    }
+
+    const student = await this.studentRepository.findOne({
+      where: { id: studentId },
+      relations: ['subjects'],
+    });
+
+    if (!student) {
+      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.subjectRepository
+      .createQueryBuilder()
+      .relation(SubjectEntity, 'students')
+      .of(subjectId)
+      .add(studentId);
+
+    const updatedSubject = await this.subjectRepository.findOneOrFail({
+      where: {
+        id: subjectId,
+      },
+      relations: ['students'],
     });
 
     return updatedSubject;

@@ -31,4 +31,12 @@ export class SubjectController {
   ): Promise<SubjectEntity> {
     return await this.subjectService.addTeacherToSubject(teacherId, subjectId);
   }
+
+  @Post(':id/students')
+  async addStudentToSubject(
+    @Body('studentId') studentId: number,
+    @Param('id') subjectId: number,
+  ): Promise<SubjectEntity> {
+    return await this.subjectService.addStudentToSubject(studentId, subjectId);
+  }
 }
