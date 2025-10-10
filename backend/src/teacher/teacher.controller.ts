@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
@@ -31,6 +32,24 @@ export class TeacherController {
   @Get(':id')
   async getTeacher(@Param('id') teacherId: number) {
     return await this.teacherService.findTeacherById(teacherId);
+  }
+
+  @Get(':teacherId/students')
+  async getMyStudents(
+    @Param('teacherId') teacherId: number,
+    @Query('year') year?: number,
+    @Query('semester') semester?: number,
+  ) {
+    return await this.teacherService.getMyStudents(teacherId, year, semester);
+  }
+
+  @Get(':teacherId/subjects')
+  async getMySubjects(
+    @Param('teacherId') teacherId: number,
+    @Query('year') year?: number,
+    @Query('semester') semester?: number,
+  ) {
+    return await this.teacherService.getMySubjects(teacherId, year, semester);
   }
 
   // only for headTeacher. TODO: Auth, TeacherGuard

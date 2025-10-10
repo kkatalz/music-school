@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { StudentEntity } from 'src/student/student.entity';
+import { SubjectEntity } from 'src/subject/subject.entity';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
@@ -12,11 +14,69 @@ export class TeacherService {
   constructor(
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
+    @InjectRepository(StudentEntity)
+    private readonly studentRepository: Repository<StudentEntity>,
+    @InjectRepository(SubjectEntity)
+    private readonly subjectRepository: Repository<SubjectEntity>,
   ) {}
 
   async getAllTeachers() {
     const teachers = await this.teacherRepository.find();
     return this.generateTeachersResponse(teachers);
+  }
+
+  async getMyStudents(
+    teacherId: number,
+    year?: number,
+    semester?: number,
+  ): Promise<StudentEntity[]> {
+    const qb = this.studentRepository
+      .createQueryBuilder('student')
+      .innerJoin('student.subjects', 'subject')
+      .innerJoin('subject.teachers', 'teacher', 'teacher.id = :teacherId', {
+        teacherId,
+      });
+
+    if (year !== undefined) {
+      qb.andWhere('subject.studyYear = :year', { year });
+    }
+    if (semester !== undefined) {
+      qb.andWhere('subject.semester = :semester', { semester });
+    }
+
+    qb.distinct(true);
+
+    // subject names/ids if the student repeats:
+    qb.addSelect([
+      'subject.id',
+      'subject.name',
+      'subject.studyYear',
+      'subject.semester',
+    ]);
+
+    return qb.getMany();
+  }
+  async getMySubjects(
+    teacherId: number,
+    year?: number,
+    semester?: number,
+  ): Promise<SubjectEntity[]> {
+    const qb = this.subjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.teachers', 'teacher', 'teacher.id = :teacherId', {
+        teacherId,
+      });
+
+    if (year !== undefined) {
+      qb.andWhere('subject.studyYear = :year', { year });
+    }
+    if (semester !== undefined) {
+      qb.andWhere('subject.semester = :semester', { semester });
+    }
+
+    qb.distinct(true);
+
+    return qb.getMany();
   }
 
   // if is head Teacher
