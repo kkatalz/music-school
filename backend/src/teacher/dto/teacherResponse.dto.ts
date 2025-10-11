@@ -3,4 +3,5 @@ export class TeacherResponseDto {
   lastName: string;
   phone: string;
   email: string;
+  token: string;
 }

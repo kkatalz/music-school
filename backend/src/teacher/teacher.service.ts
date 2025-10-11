@@ -8,6 +8,11 @@ import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/browser';
+import * as dotenv from 'dotenv';
+import { sign } from 'jsonwebtoken';
+import { Role } from 'src/auth/role.enum';
+
+dotenv.config();
 
 @Injectable()
 export class TeacherService {
@@ -22,7 +27,7 @@ export class TeacherService {
 
   async getAllTeachers() {
     const teachers = await this.teacherRepository.find();
-    return this.generateTeachersResponse(teachers);
+    return teachers.map((teacher) => this.generateTeacherResponse(teacher));
   }
 
   async getMyStudents(
@@ -82,7 +87,7 @@ export class TeacherService {
   // if is head Teacher
   async createTeacher(
     createTeacherDto: CreateTeacherDto,
-  ): Promise<TeacherEntity> {
+  ): Promise<TeacherResponseDto> {
     await this.findTeacherByEmail(createTeacherDto.email);
 
     const newTeacher = new TeacherEntity();
@@ -91,7 +96,7 @@ export class TeacherService {
     newTeacher.isHeadTeacher = createTeacherDto.isHeadTeacher || false;
 
     const savedTeacher = await this.teacherRepository.save(newTeacher);
-    return savedTeacher;
+    return this.generateTeacherResponse(savedTeacher);
   }
 
   async updateTeacher(
@@ -119,6 +124,16 @@ export class TeacherService {
     const diffMs = Date.now() - teacher.startWorkDate.getTime();
     const diffMonths = diffMs / (1000 * 60 * 60 * 24 * 30.44);
     return Math.floor(diffMonths);
+  }
+
+  generateToken(teacher: TeacherEntity): string {
+    return sign(
+      {
+        id: teacher.id,
+        role: teacher.isHeadTeacher ? Role.HeadTeacher : Role.Teacher,
+      },
+      process.env.JWT_SECRET ?? 'test',
+    );
   }
 
   // Helpers
@@ -150,12 +165,13 @@ export class TeacherService {
     }
   }
 
-  generateTeachersResponse(teachers: TeacherEntity[]): TeacherResponseDto[] {
-    return teachers.map((teacher) => ({
+  generateTeacherResponse(teacher: TeacherEntity): TeacherResponseDto {
+    return {
       id: teacher.id,
       lastName: teacher.lastName,
       phone: teacher.phone,
       email: teacher.email,
-    }));
+      token: this.generateToken(teacher),
+    };
   }
 }

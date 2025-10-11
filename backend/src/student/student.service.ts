@@ -8,6 +8,11 @@ import { SubjectEntity } from 'src/subject/subject.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { DeleteResult } from 'typeorm/browser';
 import { Repository } from 'typeorm';
+import { sign } from 'jsonwebtoken';
+import { Role } from 'src/auth/role.enum';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Injectable()
 export class StudentService {
@@ -20,17 +25,22 @@ export class StudentService {
     private readonly teacherRepository: Repository<TeacherEntity>,
   ) {}
 
-  async createStudent(createStudentDto: CreateStudentDto): Promise<StudentEntity> {
+  async createStudent(
+    createStudentDto: CreateStudentDto,
+  ): Promise<StudentResponseDto> {
     await this.findStudentByEmail(createStudentDto.email);
 
     const newStudent = new StudentEntity();
     Object.assign(newStudent, createStudentDto);
 
     const savedStudent = await this.studentRepository.save(newStudent);
-    return savedStudent;
+    return this.generateStudentResponse(savedStudent);
   }
 
-  async updateStudent(studentId: number, updateStudentDto: UpdateStudentDto): Promise<StudentEntity> {
+  async updateStudent(
+    studentId: number,
+    updateStudentDto: UpdateStudentDto,
+  ): Promise<StudentEntity> {
     const student = await this.findStudentById(studentId);
 
     if (updateStudentDto.email && updateStudentDto.email !== student.email)
@@ -50,17 +60,26 @@ export class StudentService {
     return await this.findStudentById(studentId);
   }
 
-  async getStudentsByPeriod(startDate: Date, endDate: Date): Promise<StudentEntity[]> {
+  async getStudentsByPeriod(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<StudentEntity[]> {
     return await this.studentRepository
       .createQueryBuilder('student')
-      .where('student.startStudyDate BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .where('student.startStudyDate BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .getMany();
   }
 
   async getTotalStudents(startDate: Date, endDate: Date): Promise<number> {
     return await this.studentRepository
       .createQueryBuilder('student')
-      .where('student.startStudyDate BETWEEN :start AND :end', { start: startDate, end: endDate })
+      .where('student.startStudyDate BETWEEN :start AND :end', {
+        start: startDate,
+        end: endDate,
+      })
       .getCount();
   }
 
@@ -112,8 +131,18 @@ export class StudentService {
     return teachers;
   }
 
+  generateToken(student: StudentEntity): string {
+    return sign(
+      {
+        id: student.id,
+        role: Role.Student,
+      },
+      process.env.JWT_SECRET ?? '',
+    );
+  }
+
   // Helpers
-  private async findStudentById(id: number): Promise<StudentEntity> {
+  async findStudentById(id: number): Promise<StudentEntity> {
     const studentById = await this.studentRepository.findOne({ where: { id } });
 
     if (!studentById)
@@ -123,15 +152,20 @@ export class StudentService {
   }
 
   private async findStudentByEmail(email: string): Promise<void> {
-    const studentByEmail = await this.studentRepository.findOne({ where: { email } });
+    const studentByEmail = await this.studentRepository.findOne({
+      where: { email },
+    });
 
     if (studentByEmail) {
-      throw new HttpException('Email is already taken', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(
+        'Email is already taken',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
   }
 
-  generateStudentsResponse(students: StudentEntity[]): StudentResponseDto[] {
-    return students.map((student) => ({
+  generateStudentResponse(student: StudentEntity): StudentResponseDto {
+    return {
       id: student.id,
       firstName: student.firstName,
       lastName: student.lastName,
@@ -140,7 +174,7 @@ export class StudentService {
       email: student.email,
       address: student.address,
       startStudyDate: student.startStudyDate,
-    }));
+      token: this.generateToken(student),
+    };
   }
-
 }

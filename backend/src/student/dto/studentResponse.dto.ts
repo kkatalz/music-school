@@ -7,4 +7,5 @@ export class StudentResponseDto {
   address: string;
   startStudyDate: Date;
   email: string;
+  token: string;
 }

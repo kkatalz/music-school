@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
+import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { TeacherService } from 'src/teacher/teacher.service';
@@ -52,11 +53,10 @@ export class TeacherController {
     return await this.teacherService.getMySubjects(teacherId, year, semester);
   }
 
-  // only for headTeacher. TODO: Auth, TeacherGuard
   @Post()
   async createTeacher(
     @Body() createTeacherDto: CreateTeacherDto,
-  ): Promise<TeacherEntity> {
+  ): Promise<TeacherResponseDto> {
     return await this.teacherService.createTeacher(createTeacherDto);
   }
 
