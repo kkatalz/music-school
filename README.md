@@ -9,7 +9,7 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 2. Navigate to your backend directory: _cd backend_
 
    - npm install -g @nestjs/cli
-   - npm install @nestjs/typeorm typeorm pg @nestjs/config class-validator
+   - npm install
 
 3. Navigate to your frontend directory: _cd frontend_
 
@@ -36,11 +36,13 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
 
   1. docker-compose down -v
   2. docker-compose up -d --build
+  3. docker-compose exec api npm run migration:run
 
 - If you change _docker-compose.yml_ file, do the following commands in terminal:
 
   1. docker-compose down -v
   2. docker-compose up -d
+  3. docker-compose exec api npm run migration:run
 
 - To generate a migration - stay in root folder (music-school) and run:
   docker-compose exec api npx typeorm-ts-node-commonjs migration:generate -d src/ormconfig.ts src/migrations/CreateTeacherEntity

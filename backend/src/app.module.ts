@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import ormconfig from 'src/ormconfig';
@@ -7,6 +12,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeacherModule } from 'src/teacher/teacher.module';
 import { SubjectModule } from 'src/subject/subject.module';
 import { StudentModule } from 'src/student/student.module';
+import { AuthMiddleware } from 'src/middlewares/auth.middleware';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,6 +34,18 @@ import { StudentModule } from 'src/student/student.module';
     SubjectModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

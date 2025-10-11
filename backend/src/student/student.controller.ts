@@ -7,7 +7,7 @@ import {
   Post,
   Put,
   UseGuards,
-  Query
+  Query,
 } from '@nestjs/common';
 import { StudentEntity } from 'src/student/student.entity';
 import { SubjectEntity } from 'src/subject/subject.entity';
@@ -19,6 +19,8 @@ import { UpdateStudentDto } from './dto/updateStudent.dto';
 import { StudentResponseDto } from './dto/studentResponse.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { BadRequestException } from '@nestjs/common';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 @Controller('students')
 export class StudentContoller {
@@ -92,7 +94,10 @@ export class StudentContoller {
     @Query('start') startDate: string,
     @Query('end') endDate: string,
   ): Promise<StudentEntity[]> {
-    return await this.studentService.getStudentsByPeriod(new Date(startDate), new Date(endDate));
+    return await this.studentService.getStudentsByPeriod(
+      new Date(startDate),
+      new Date(endDate),
+    );
   }
 
   @Get(':id')
@@ -106,7 +111,10 @@ export class StudentContoller {
   }
 
   @Post()
-  async createStudent(@Body() createStudentDto: CreateStudentDto): Promise<StudentEntity> {
+  @Roles(Role.HeadTeacher)
+  async createStudent(
+    @Body() createStudentDto: CreateStudentDto,
+  ): Promise<StudentResponseDto> {
     return await this.studentService.createStudent(createStudentDto);
   }
 
@@ -122,5 +130,4 @@ export class StudentContoller {
   async deleteStudent(@Param('id') studentId: number): Promise<DeleteResult> {
     return await this.studentService.deleteStudent(studentId);
   }
-
 }
