@@ -4,6 +4,7 @@ import {GradeEntity} from "./grade.entity";
 import {Repository} from "typeorm";
 import {GradeResponseDto} from "./dto/gradeResponse.dto";
 import {CreateGradeDto} from "./dto/createGrade.dto";
+import {UpdateGradeDto} from "./dto/updateGradeDto";
 
 @Injectable()
 export class GradeService {
@@ -65,18 +66,18 @@ export class GradeService {
     /**
      *
      * @param gradeId
-     * @param value
+     * @param updateGradeDto
      */
     async updateGrade(
         gradeId: number,
-        value: number,
+        updateGradeDto: UpdateGradeDto,
     ): Promise<GradeEntity> {
         const grade = await this.gradeRepository.findOneBy({ id: gradeId });
         if (!grade)
             throw new NotFoundException(`Grade with id ${gradeId} not found`);
 
         // update the value of the found grade
-        grade.value = value;
+        grade.value = updateGradeDto.value;
         return await this.gradeRepository.save(grade);
     }
 
