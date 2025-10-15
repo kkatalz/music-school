@@ -18,15 +18,28 @@ export class GradeService {
         studentId: number,
         year: number,
         semester: number): Promise<GradeEntity[]> {
+        /**
         return await this.gradeRepository.find({
             where: {
-                student: { id: studentId },
-                subject: { studyYear: year,
+                //student: { id: studentId },
+                subject: {
+                    studyYear: year,
                            semester: semester
                 },
             },
-            relations: ['student', 'subject', 'teacher']
+            //relations: ['student', 'subject', 'teacher']
+            relations: ['subject']
         })
+            **/
+
+        return await this.gradeRepository
+            .createQueryBuilder('grade')
+            .leftJoinAndSelect('grade.subject', 'subject')
+            .innerJoin('subject.students', 'student')
+            .where('subject.studyYear = :year', { year })
+            .andWhere('subject.semester = :semester', { semester })
+            .andWhere('student.id = :studentId', { studentId })
+            .getMany();
     }
 
 
@@ -35,13 +48,25 @@ export class GradeService {
         year: number,
         semester: number
     ): Promise<GradeEntity[]> {
+        /**
         return await this.gradeRepository.find({
-            where: { teacher: {id: teacherId },
+            where:
+                {
+                    //  teacher: {id: teacherId }, // TODO: add checking with teacher's id in Subject
             subject: {studyYear: year,
                      semester: semester }
             },
             relations: ['student', 'subject', 'teacher']
         })
+            **/
+        return await this.gradeRepository
+            .createQueryBuilder('grade')
+            .leftJoinAndSelect('grade.subject', 'subject')
+            .innerJoin('subject.teacher', 'teacher')
+            .where('subject.studyYear = :year', { year })
+            .andWhere('subject.semester = :semester', { semester })
+            .andWhere('teacher.id = :teacherId', { teacherId })
+            .getMany();
     }
 
 
@@ -53,9 +78,9 @@ export class GradeService {
         createGradeDto: CreateGradeDto,
     ): Promise<GradeResponseDto> {
         const newGrade = this.gradeRepository.create( {
-            student: { id: createGradeDto.studentId },
+            //student: { id: createGradeDto.studentId },
             subject: { id: createGradeDto.subjectId },
-            teacher: { id: createGradeDto.teacherId },
+            //teacher: { id: createGradeDto.teacherId },
             value: createGradeDto.value,
         })
 
@@ -88,6 +113,7 @@ export class GradeService {
 
         return {
             id: grade.id,
+            /**
             student: {
                 id: grade.student.id,
                 firstName: grade.student.firstName,
@@ -99,12 +125,13 @@ export class GradeService {
                 email: grade.student.email,
                 token: '',
             },
+                **/
 
             subject: {
                 id: grade.subject.id,
                 name: grade.subject.name,
             },
-
+            /**
             teacher: {
                 id: grade.teacher.id,
                 lastName: grade.teacher.lastName,
@@ -112,6 +139,7 @@ export class GradeService {
                 email: grade.teacher.email,
                 token: '',
             },
+                **/
 
             value: grade.value,
         };
