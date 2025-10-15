@@ -4,9 +4,10 @@ import {
   Column,
   Entity,
   JoinTable,
-  ManyToMany,
+  ManyToMany, OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import {GradeEntity} from "../grade/grade.entity";
 
 @Entity({ name: 'subjects' })
 export class SubjectEntity {
@@ -29,4 +30,7 @@ export class SubjectEntity {
   @ManyToMany(() => StudentEntity, (student) => student.subjects)
   @JoinTable()
   students?: StudentEntity[];
+
+  @OneToMany(() => GradeEntity, (grade) => grade.subject)
+  grades?: GradeEntity[];
 }

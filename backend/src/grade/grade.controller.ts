@@ -25,4 +25,6 @@ export class GradeController {
     ): Promise<GradeEntity> {
         return await this.gradeService.updateGrade(id, updateGradeDto);
     }
+
+
 }

@@ -4,9 +4,9 @@ import { SubjectsNamesResponseDto} from "../../subject/dto/subjectsNamesResponse
 
 export class GradeResponseDto {
     id: number;
-    student: StudentResponseDto;
+    //student: StudentResponseDto;
     subject: SubjectsNamesResponseDto;
-    teacher: TeacherResponseDto;
+    //teacher: TeacherResponseDto;
 
     value?: number;
 }
