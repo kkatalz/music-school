@@ -1,16 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StudentEntity } from 'src/student/student.entity';
-import { SubjectEntity } from 'src/subject/subject.entity';
-import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
-import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
-import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
-import { TeacherEntity } from 'src/teacher/teacher.entity';
+import { StudentEntity } from '../student/student.entity';
+import { SubjectEntity } from '../subject/subject.entity';
+import { CreateTeacherDto } from './dto/createTeacher.dto';
+import { TeacherResponseDto } from './dto/teacherResponse.dto';
+import { UpdateTeacherDto } from './dto/updateTeacherDto';
+import { TeacherEntity } from './teacher.entity';
 import { Repository } from 'typeorm';
 import { DeleteResult } from 'typeorm/browser';
 import * as dotenv from 'dotenv';
 import { sign } from 'jsonwebtoken';
-import { Role } from 'src/auth/role.enum';
+import { Role } from '../auth/types/role.enum';
 
 dotenv.config();
 

@@ -20,7 +20,7 @@ import { StudentResponseDto } from './dto/studentResponse.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { BadRequestException } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/auth/role.enum';
+import { Role } from 'src/auth/types/role.enum';
 
 @Controller('students')
 export class StudentContoller {

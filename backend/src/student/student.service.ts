@@ -9,7 +9,7 @@ import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { DeleteResult } from 'typeorm/browser';
 import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
-import { Role } from 'src/auth/role.enum';
+import { Role } from 'src/auth/types/role.enum';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

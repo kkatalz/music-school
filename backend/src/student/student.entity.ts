@@ -6,7 +6,8 @@ import {
   Column,
   Entity,
   JoinTable,
-  ManyToMany, OneToMany,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -45,9 +46,6 @@ export class StudentEntity {
 
   @ManyToMany(() => SubjectEntity, (subject) => subject.students)
   subjects?: SubjectEntity[];
-
-  @OneToMany(() => GradeEntity, (grade) => grade.student)
-  grades: GradeEntity[];
 
   @BeforeInsert()
   async hashPassword() {

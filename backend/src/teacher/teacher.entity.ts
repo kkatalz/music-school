@@ -1,13 +1,14 @@
 import * as bcrypt from 'bcrypt';
 
 import { SubjectEntity } from '../subject/subject.entity';
-import  { GradeEntity } from "../grade/grade.entity";
+import { GradeEntity } from '../grade/grade.entity';
 import {
   BeforeInsert,
   Column,
   Entity,
   JoinTable,
-  ManyToMany, OneToMany,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -46,9 +47,6 @@ export class TeacherEntity {
 
   @ManyToMany(() => SubjectEntity, (subject) => subject.teachers)
   subjects?: SubjectEntity[];
-
-  @OneToMany(() => GradeEntity, (grade) => grade.teacher)
-  grades: GradeEntity[];
 
   @BeforeInsert()
   async hashPassword() {
