@@ -34,16 +34,30 @@ def show_teacher_dashboard():
 
 
 
-if not st.session_state.get('authenticated'):
-    auth.show_login_page()
-else:
-    role = st.session_state.get('role')
+st.warning("Ви перебуваєте в тестовому режимі. Вхід до системи вимкнено.", icon="⚠️")
+st.session_state['authenticated'] = True
+st.session_state['user'] = {"firstName": "Admin", "role": "head_teacher", "id": 1}
+st.session_state['role'] = "head_teacher"
 
-    if role == 'student':
-        show_student_dashboard()
-    elif role == 'teacher':
-        show_teacher_dashboard()
-    else:
-        st.error("Невідома роль користувача. Будь ласка, зверніться до адміністратора.")
-        auth.add_logout_button()
+st.session_state['token'] = "YOUR_VALID_JWT_TOKEN_HERE"
+st.sidebar.title(f"Вітаю, {st.session_state['user'].get('firstName')}!")
+auth.add_logout_button()
+teacher_students.show()
 
+
+# if not st.session_state.get('authenticated'):
+#     auth.show_login_page()
+# else:
+#     role = st.session_state.get('role')
+#
+#     if role == 'student':
+#         show_student_dashboard()
+#     elif role == 'teacher':
+#         show_teacher_dashboard()
+#     elif role == 'head_teacher':
+#         pass
+#         # TODO: show_head_teacher_dashboard()
+#     else:
+#         st.error("Невідома роль користувача. Будь ласка, зверніться до адміністратора.")
+#         auth.add_logout_button()
+#
