@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.dto';
@@ -9,6 +9,7 @@ import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import { Repository } from 'typeorm';
+import {UpdateSubjectDto} from "./dto/UpdateSubject.dto";
 
 @Injectable()
 export class SubjectService {
@@ -121,6 +122,20 @@ export class SubjectService {
     });
 
     return updatedSubject;
+  }
+
+  async updateSubject(
+      subjectId: number,
+      updateSubjectDto: UpdateSubjectDto,
+  ): Promise<SubjectEntity> {
+    const subject = await this.subjectRepository.findOneBy({ id: subjectId });
+
+    if (!subject) {
+      throw new NotFoundException(`Subject with ID ${subjectId} not found`);
+    }
+
+    Object.assign(subject, updateSubjectDto);
+    return this.subjectRepository.save(subject);
   }
 
   generateSubjectsNamesResponse(

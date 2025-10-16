@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {Body, Controller, Get, Param, Patch, Post} from '@nestjs/common';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { SubjectService } from 'src/subject/subject.service';
+import {UpdateSubjectDto} from "./dto/UpdateSubject.dto";
 
 @Controller('subjects')
 export class SubjectController {
@@ -38,5 +39,13 @@ export class SubjectController {
     @Param('id') subjectId: number,
   ): Promise<SubjectEntity> {
     return await this.subjectService.addStudentToSubject(studentId, subjectId);
+  }
+
+  @Patch("id")
+  async updateSubject(
+      @Param('id') id: number,
+      @Body() updateSubjectDto: UpdateSubjectDto,
+  ): Promise<SubjectEntity> {
+    return await this.subjectService.updateSubject(id, updateSubjectDto);
   }
 }
