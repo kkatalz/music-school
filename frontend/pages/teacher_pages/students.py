@@ -22,7 +22,6 @@ def show():
 
 def display_all_students_by_teacher():
     st.header("Список Моїх Студентів")
-
     teacher_id = st.session_state["user"]["id"]
 
     # filters

@@ -13,21 +13,20 @@ def show_login_page():
         if submitted:
             response = api.login(email, password)
             if response and "token" in response:
-                # Зберігаємо дані користувача та токен у стані сесії
                 st.session_state['authenticated'] = True
                 st.session_state['token'] = response['token']
                 st.session_state['user'] = response['user']
-                st.session_state['role'] = response['user']['role'] # Припускаємо, що роль є у відповіді
+                st.session_state['role'] = response['user']['role']
                 st.success("Logged in successfully!")
-                st.rerun() # Перезапускаємо додаток, щоб показати головний інтерфейс
+                st.rerun()
             else:
                 st.error("Invalid email or password")
 
+
 def add_logout_button():
     """Adds a logout button to the sidebar."""
-    if st.sidebar.button("Logout"):
-        # Очищуємо стан сесії
+    if st.sidebar.button("Logout", key="logout_button"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-        st.rerun() # Перезапускаємо додаток, щоб повернутися на сторінку входу
+        st.rerun()
 
