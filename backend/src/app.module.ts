@@ -15,7 +15,8 @@ import { StudentModule } from 'src/student/student.module';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
-import {GradeModule} from "./grade/grade.module";
+import { GradeModule } from './grade/grade.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import {GradeModule} from "./grade/grade.module";
     TeacherModule,
     StudentModule,
     SubjectModule,
-      GradeModule,
+    GradeModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

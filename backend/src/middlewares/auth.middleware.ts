@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction } from 'express';
 import { verify } from 'jsonwebtoken';
-import { Role } from 'src/auth/role.enum';
+import { Role } from 'src/auth/types/role.enum';
 import { StudentEntity } from 'src/student/student.entity';
 import { StudentService } from 'src/student/student.service';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
