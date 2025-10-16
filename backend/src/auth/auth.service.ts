@@ -68,12 +68,15 @@ export class AuthService {
   ): StudentResponseDto | TeacherResponseDto {
     if (user instanceof TeacherEntity) {
       const teacher = user as TeacherEntity;
+      const role = teacher.isHeadTeacher ? Role.HeadTeacher : Role.Teacher;
       return {
         id: teacher.id,
         lastName: teacher.lastName,
         phone: teacher.phone,
         email: teacher.email,
         token: this.generateToken(teacher, Role.Teacher),
+        isHeadTeacher: teacher.isHeadTeacher,
+        role,
       };
     } else {
       const student = user as StudentEntity;
@@ -87,6 +90,7 @@ export class AuthService {
         startStudyDate: student.startStudyDate,
         email: student.email,
         token: this.generateToken(student, Role.Student),
+        role: Role.Student,
       };
     }
   }
