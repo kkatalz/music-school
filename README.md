@@ -65,3 +65,4 @@ Postgres cheat sheet:
 2. \d teachers - Describe the teachers table
 3. SELECT \* FROM teachers;
 4. \q - exit
+5. DELETE FROM grades;

@@ -1,119 +1,137 @@
-import {Injectable, NotFoundException} from "@nestjs/common";
-import {InjectRepository} from "@nestjs/typeorm";
-import {GradeEntity} from "./grade.entity";
-import {Repository} from "typeorm";
-import {GradeResponseDto} from "./dto/gradeResponse.dto";
-import {CreateGradeDto} from "./dto/createGrade.dto";
-import {UpdateGradeDto} from "./dto/updateGradeDto";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateGradeDto } from './dto/createGrade.dto';
+import { GradeResponseDto } from './dto/gradeResponse.dto';
+import { UpdateGradeDto } from './dto/updateGradeDto';
+import { GradeEntity } from './grade.entity';
+import { SubjectEntity } from 'src/subject/subject.entity';
+import { StudentEntity } from 'src/student/student.entity';
+import { TeacherEntity } from 'src/teacher/teacher.entity';
 
 @Injectable()
 export class GradeService {
-    constructor(
-        @InjectRepository(GradeEntity)
-        private readonly gradeRepository: Repository<GradeEntity>,
-    ) {}
+  constructor(
+    @InjectRepository(GradeEntity)
+    private readonly gradeRepository: Repository<GradeEntity>,
+    @InjectRepository(SubjectEntity)
+    private readonly subjectRepository: Repository<SubjectEntity>,
+    @InjectRepository(StudentEntity)
+    private readonly studentRepository: Repository<StudentEntity>,
+    @InjectRepository(TeacherEntity)
+    private readonly teacherRepository: Repository<TeacherEntity>,
+  ) {}
 
+  async setGrade(createGradeDto: CreateGradeDto): Promise<GradeResponseDto> {
+    const subject = await this.subjectRepository.findOne({
+      where: { id: createGradeDto.subjectId },
+    });
 
-    async getGradesByStudent(
-        studentId: number,
-        year: number,
-        semester: number): Promise<GradeEntity[]> {
-        /**
-        return await this.gradeRepository.find({
-            where: {
-                //student: { id: studentId },
-                subject: {
-                    studyYear: year,
-                           semester: semester
-                },
-            },
-            //relations: ['student', 'subject', 'teacher']
-            relations: ['subject']
-        })
-            **/
-
-        return await this.gradeRepository
-            .createQueryBuilder('grade')
-            .leftJoinAndSelect('grade.subject', 'subject')
-            .innerJoin('subject.students', 'student')
-            .where('subject.studyYear = :year', { year })
-            .andWhere('subject.semester = :semester', { semester })
-            .andWhere('student.id = :studentId', { studentId })
-            .getMany();
+    if (!subject) {
+      throw new HttpException('Subject does not exist', HttpStatus.NOT_FOUND);
     }
 
-
-    async getGradesByTeacher(
-        teacherId: number,
-        year: number,
-        semester: number
-    ): Promise<GradeEntity[]> {
-        /**
-        return await this.gradeRepository.find({
-            where:
-                {
-                    //  teacher: {id: teacherId }, // TODO: add checking with teacher's id in Subject
-            subject: {studyYear: year,
-                     semester: semester }
-            },
-            relations: ['student', 'subject', 'teacher']
-        })
-            **/
-        return await this.gradeRepository
-            .createQueryBuilder('grade')
-            .leftJoinAndSelect('grade.subject', 'subject')
-            .innerJoin('subject.teacher', 'teacher')
-            .where('subject.studyYear = :year', { year })
-            .andWhere('subject.semester = :semester', { semester })
-            .andWhere('teacher.id = :teacherId', { teacherId })
-            .getMany();
+    const student = await this.studentRepository.findOne({
+      where: { id: createGradeDto.studentId },
+    });
+    if (!student) {
+      throw new HttpException('Student does not exist', HttpStatus.NOT_FOUND);
     }
 
+    const teacher = await this.teacherRepository.findOne({
+      where: { id: createGradeDto.teacherId },
+    });
+    if (!teacher) {
+      throw new HttpException('Teacher does not exist', HttpStatus.NOT_FOUND);
+    }
+    const newGrade = new GradeEntity();
 
-    /**
-     *
-     * @param createGradeDto
-     */
-    async setGrade(
-        createGradeDto: CreateGradeDto,
-    ): Promise<GradeResponseDto> {
-        const newGrade = this.gradeRepository.create( {
-            //student: { id: createGradeDto.studentId },
-            subject: { id: createGradeDto.subjectId },
-            //teacher: { id: createGradeDto.teacherId },
-            value: createGradeDto.value,
-        })
+    newGrade.value = createGradeDto.value;
+    newGrade.subject = subject;
+    newGrade.student = student;
+    newGrade.teacher = teacher;
 
-        const savedGrade = await this.gradeRepository.save(newGrade);
-        return this.toGradeResponseDto(savedGrade);
+    const savedGrade = await this.gradeRepository.save(newGrade);
+    const updatedGrade = await this.gradeRepository.findOneOrFail({
+      where: {
+        id: savedGrade.id,
+      },
+      relations: ['subject', 'student', 'teacher'],
+    });
+    return this.gradeResponseDto(updatedGrade);
+  }
+
+  async updateGrade(
+    gradeId: number,
+    updateGradeDto: UpdateGradeDto,
+  ): Promise<GradeEntity> {
+    const grade = await this.gradeRepository.findOneBy({ id: gradeId });
+    if (!grade)
+      throw new NotFoundException(`Grade with id ${gradeId} not found`);
+
+    // update the value of the found grade
+    grade.value = updateGradeDto.value;
+    return await this.gradeRepository.save(grade);
+  }
+
+  async getStudentsGrades(
+    studentId: number,
+    subjectName?: string,
+    year?: number,
+    semester?: number,
+  ): Promise<GradeEntity[]> {
+    const qb = this.gradeRepository
+      .createQueryBuilder('grade')
+      .innerJoinAndSelect('grade.subject', 'subject')
+      .where('grade.student.id = :studentId', { studentId });
+
+    if (subjectName !== undefined) {
+      qb.andWhere('subject.name = :subjectName', { subjectName });
+    }
+    if (year !== undefined) {
+      qb.andWhere('subject.studyYear = :year', { year });
+    }
+    if (semester !== undefined) {
+      qb.andWhere('subject.semester = :semester', { semester });
     }
 
-    /**
-     *
-     * @param gradeId
-     * @param updateGradeDto
-     */
-    async updateGrade(
-        gradeId: number,
-        updateGradeDto: UpdateGradeDto,
-    ): Promise<GradeEntity> {
-        const grade = await this.gradeRepository.findOneBy({ id: gradeId });
-        if (!grade)
-            throw new NotFoundException(`Grade with id ${gradeId} not found`);
+    return qb.getMany();
+  }
 
-        // update the value of the found grade
-        grade.value = updateGradeDto.value;
-        return await this.gradeRepository.save(grade);
+  async getGradesByTeacher(
+    teacherId: number,
+    subjectName?: string,
+    year?: number,
+    semester?: number,
+  ): Promise<GradeEntity[]> {
+    const qb = this.gradeRepository
+      .createQueryBuilder('grade')
+      .innerJoinAndSelect('grade.subject', 'subject')
+      .where('grade.teacher.id = :teacherId', { teacherId });
+
+    if (subjectName !== undefined) {
+      qb.andWhere('subject.name = :subjectName', { subjectName });
     }
 
+    if (year !== undefined) {
+      qb.andWhere('subject.studyYear = :year', { year });
+    }
+    if (semester !== undefined) {
+      qb.andWhere('subject.semester = :semester', { semester });
+    }
 
-    toGradeResponseDto(
-        grade: GradeEntity
-    ): GradeResponseDto {
+    return qb.getMany();
+  }
 
-        return {
-            id: grade.id,
-            /**
+  gradeResponseDto(grade: GradeEntity): GradeResponseDto {
+    return {
+      id: grade.id,
+      /**
             student: {
                 id: grade.student.id,
                 firstName: grade.student.firstName,
@@ -127,11 +145,11 @@ export class GradeService {
             },
                 **/
 
-            subject: {
-                id: grade.subject.id,
-                name: grade.subject.name,
-            },
-            /**
+      subject: {
+        id: grade.subject?.id,
+        name: grade.subject?.name,
+      },
+      /**
             teacher: {
                 id: grade.teacher.id,
                 lastName: grade.teacher.lastName,
@@ -141,7 +159,7 @@ export class GradeService {
             },
                 **/
 
-            value: grade.value,
-        };
-    }
+      value: grade.value,
+    };
+  }
 }

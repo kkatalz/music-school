@@ -1,30 +1,56 @@
-import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common';
-import {GradeService} from "./grade.service";
-import {CreateGradeDto} from "./dto/createGrade.dto";
-import {GradeEntity} from "./grade.entity";
-import {GradeResponseDto} from "./dto/gradeResponse.dto";
-import {UpdateGradeDto} from "./dto/updateGradeDto";
-
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { GradeService } from './grade.service';
+import { CreateGradeDto } from './dto/createGrade.dto';
+import { GradeEntity } from './grade.entity';
+import { GradeResponseDto } from './dto/gradeResponse.dto';
+import { UpdateGradeDto } from './dto/updateGradeDto';
 
 @Controller('grades')
 export class GradeController {
-    constructor(private gradeService: GradeService) {}
+  constructor(private gradeService: GradeService) {}
 
-    @Post()
-    async setGrade(
-        @Body() createGradeDto: CreateGradeDto,
-    ): Promise<GradeResponseDto> {
-        return await this.gradeService.setGrade(createGradeDto);
-    }
+  @Post()
+  async setGrade(
+    @Body() createGradeDto: CreateGradeDto,
+  ): Promise<GradeResponseDto> {
+    return await this.gradeService.setGrade(createGradeDto);
+  }
 
+  @Put(':id')
+  async updateGrade(
+    @Param('id') id: number,
+    @Body() updateGradeDto: UpdateGradeDto,
+  ): Promise<GradeEntity> {
+    return await this.gradeService.updateGrade(id, updateGradeDto);
+  }
 
-    @Put(':id')
-    async updateGrade(
-        @Param('id') id: number,
-        @Body() updateGradeDto: UpdateGradeDto,
-    ): Promise<GradeEntity> {
-        return await this.gradeService.updateGrade(id, updateGradeDto);
-    }
+  @Get('student/:studentId')
+  async getStudentsGrades(
+    @Param('studentId') studentId: number,
+    @Query('subjectName') subjectName?: string,
+    @Query('year') year?: number,
+    @Query('semester') semester?: number,
+  ): Promise<GradeEntity[]> {
+    return await this.gradeService.getStudentsGrades(
+      studentId,
+      subjectName,
+      year,
+      semester,
+    );
+  }
 
-
+  @Get('teacher/:teacherId')
+  async getGradesByTeacher(
+    @Param('teacherId') teacherId: number,
+    @Query('subjectName') subjectName?: string,
+    @Query('year') year?: number,
+    @Query('semester') semester?: number,
+  ): Promise<GradeEntity[]> {
+    return await this.gradeService.getGradesByTeacher(
+      teacherId,
+      subjectName,
+      year,
+      semester,
+    );
+  }
 }
