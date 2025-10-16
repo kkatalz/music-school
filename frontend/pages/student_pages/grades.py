@@ -4,7 +4,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 # -----------------------------------------
-#import api_client as api
+import api_client as api
 
 # student can do:
 # see their grades from subjects;
@@ -15,5 +15,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 # TODO: implement
 
 def show():
-    st.title("📖 Мої Оцінки")
+    #st.title("📖 Мої Оцінки")
     st.info("Ця сторінка знаходиться в розробці.")
+
+    student_id = st.session_state["user"]["id"]
+    #student_grades = api.get_student_grades(student_id, )
+
+

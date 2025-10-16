@@ -22,7 +22,6 @@ def show():
 
 def display_all_students_by_teacher():
     st.header("Список Моїх Студентів")
-
     teacher_id = st.session_state["user"]["id"]
 
     # filters
@@ -54,7 +53,6 @@ def display_all_students_by_teacher():
         year_param = year if year != "всі" else None
         semester_param = semester if semester != "всі" else None
         students_data = api.get_teacher_students(teacher_id, year_param, semester_param)
-        students_data = api.get_all_teachers() # TODO: delete this row (its only for testing)
 
         if students_data:
             st.table(students_data)

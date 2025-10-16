@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import auth
 
 from pages.student_pages import grades as student_grades, subjects as student_subjects, student_info
@@ -31,31 +32,58 @@ TEACHER_PAGES = {
 
 
 def show_student_dashboard():
-    """Відображає бічну панель та сторінки для студента."""
-    st.sidebar.title(f"Вітаю, {st.session_state['user'].get('firstName', 'Студент')}!")
-    selection = st.sidebar.radio("Перейти до", list(STUDENT_PAGES.keys()))
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        st.title(f"Вітаю, {st.session_state['user'].get('firstName', 'Студент')}!")
+    with col2:
+        st.write("")
+        if st.button("Logout", key="logout_button", use_container_width=True):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
+
+    selection = option_menu(
+        menu_title=None,
+        options=list(STUDENT_PAGES.keys()),
+        icons=['journal-check', 'book-half', 'person-circle'],  # from https://icons.getbootstrap.com/
+        orientation="horizontal",
+        styles={
+            "container": {"padding": "0!important", "background-color": "#fafafa"},
+            "icon": {"color": "orange", "font-size": "20px"},
+            "nav-link": {"font-size": "16px", "text-align": "center", "margin":"0px", "--hover-color": "#eee",
+                         "color": "#000000"},
+            "nav-link-selected": {"background-color": "#02ab21"},
+        }
+    )
+
     page = STUDENT_PAGES[selection]
     page.show()
-    auth.add_logout_button()
+
 
 def show_teacher_dashboard():
     """Відображає бічну панель та сторінки для вчителя."""
-    st.sidebar.title(f"Вітаю, {st.session_state['user'].get('firstName', 'Вчитель')}!")
-    selection = st.sidebar.radio("Перейти до", list(TEACHER_PAGES.keys()))
+    #st.sidebar.title(f"Вітаю, {st.session_state['user'].get('firstName', 'Вчитель')}!")
+    #auth.add_logout_button()
+
+    selection = option_menu(
+        menu_title=None,
+        options=list(TEACHER_PAGES.keys()),
+        icons=['speedometer2', 'people-fill'],
+        orientation="horizontal"
+    )
+
     page = TEACHER_PAGES[selection]
     page.show()
-    auth.add_logout_button()
 
 
 
 st.warning("Ви перебуваєте в тестовому режимі. Вхід до системи вимкнено.", icon="⚠️")
 st.session_state['authenticated'] = True
-st.session_state['user'] = {"firstName": "Student", "role": "head_teacher", "id": 1}
+st.session_state['user'] = {"firstName": "Student", "role": "student", "id": 1}
 st.session_state['role'] = "student"
 
 st.session_state['token'] = "YOUR_VALID_JWT_TOKEN_HERE"
-st.sidebar.title(f"Вітаю, {st.session_state['user'].get('firstName')}!")
-auth.add_logout_button()
+#auth.add_logout_button()
 #teacher_students.show()
 show_student_dashboard()
 
@@ -63,6 +91,7 @@ show_student_dashboard()
 # if not st.session_state.get('authenticated'):
 #     auth.show_login_page()
 # else:
+#     auth.add_logout_button()
 #     role = st.session_state.get('role')
 #
 #     if role == 'student':
