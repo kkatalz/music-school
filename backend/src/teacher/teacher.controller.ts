@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { StudentEntity } from 'src/student/student.entity';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
@@ -40,7 +41,7 @@ export class TeacherController {
     @Param('teacherId') teacherId: number,
     @Query('year') year?: number,
     @Query('semester') semester?: number,
-  ) {
+  ): Promise<StudentEntity[]> {
     return await this.teacherService.getMyStudents(teacherId, year, semester);
   }
 

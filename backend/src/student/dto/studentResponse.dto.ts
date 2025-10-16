@@ -1,3 +1,5 @@
+import { Role } from 'src/auth/types/role.enum';
+
 export class StudentResponseDto {
   id: number;
   firstName: string;
@@ -8,4 +10,5 @@ export class StudentResponseDto {
   startStudyDate: Date;
   email: string;
   token: string;
+  role: Role;
 }

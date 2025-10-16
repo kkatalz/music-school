@@ -166,12 +166,15 @@ export class TeacherService {
   }
 
   generateTeacherResponse(teacher: TeacherEntity): TeacherResponseDto {
+    const role = teacher.isHeadTeacher ? Role.HeadTeacher : Role.Teacher;
     return {
       id: teacher.id,
       lastName: teacher.lastName,
       phone: teacher.phone,
       email: teacher.email,
       token: this.generateToken(teacher),
+      isHeadTeacher: teacher.isHeadTeacher,
+      role,
     };
   }
 }

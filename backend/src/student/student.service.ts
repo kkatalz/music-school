@@ -175,6 +175,7 @@ export class StudentService {
       address: student.address,
       startStudyDate: student.startStudyDate,
       token: this.generateToken(student),
+      role: Role.Student,
     };
   }
 }
