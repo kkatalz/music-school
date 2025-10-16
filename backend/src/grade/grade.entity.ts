@@ -1,25 +1,31 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+import { SubjectEntity } from '../subject/subject.entity';
 import { StudentEntity } from '../student/student.entity';
 import { TeacherEntity } from '../teacher/teacher.entity';
-import { SubjectEntity } from '../subject/subject.entity';
 
 @Entity({ name: 'grades' })
 export class GradeEntity {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
+  @Column({ type: 'integer', nullable: true })
+  value?: number;
 
-    @ManyToOne(() => SubjectEntity, { nullable: false })
-    @JoinColumn({ name: 'subject_id' })
-    subject: SubjectEntity;
+  @ManyToOne(() => SubjectEntity)
+  @JoinColumn({ name: 'subject_id' })
+  subject?: SubjectEntity;
 
+  @ManyToOne(() => StudentEntity, (student) => student.grades)
+  @JoinColumn({ name: 'student_id' })
+  student?: StudentEntity;
 
-    @Column({ type: 'integer', nullable: true })
-    value?: number;
+  @ManyToOne(() => TeacherEntity, (teacher) => teacher.grades)
+  @JoinColumn({ name: 'teacher_id' })
+  teacher?: TeacherEntity;
 }

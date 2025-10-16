@@ -48,6 +48,11 @@ export class TeacherEntity {
   @ManyToMany(() => SubjectEntity, (subject) => subject.teachers)
   subjects?: SubjectEntity[];
 
+  @OneToMany(() => GradeEntity, (grade) => grade.teacher, {
+    nullable: false,
+  })
+  grades?: GradeEntity[];
+
   @BeforeInsert()
   async hashPassword() {
     if (this.password) {
