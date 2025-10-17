@@ -12,8 +12,7 @@ export class GradeController {
   constructor(private gradeService: GradeService) {}
 
   @Post()
-  @Roles(Role.Teacher)
-  @Roles(Role.HeadTeacher)
+  @Roles(Role.Teacher, Role.HeadTeacher)
   async setGrade(
     @Body() createGradeDto: CreateGradeDto,
   ): Promise<GradeResponseDto> {
@@ -21,8 +20,7 @@ export class GradeController {
   }
 
   @Put(':id')
-  @Roles(Role.Teacher)
-  @Roles(Role.HeadTeacher)
+  @Roles(Role.Teacher, Role.HeadTeacher)
   async updateGrade(
     @Param('id') id: number,
     @Body() updateGradeDto: UpdateGradeDto,
