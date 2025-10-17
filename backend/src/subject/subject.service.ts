@@ -84,6 +84,21 @@ export class SubjectService {
       throw new HttpException('Teacher not found', HttpStatus.NOT_FOUND);
     }
 
+    const alreadyAssigned = await this.subjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.teachers', 'teacher', 'teacher.id = :teacherId', {
+        teacherId,
+      })
+      .where('subject.id = :subjectId', { subjectId })
+      .getExists();
+
+    if (alreadyAssigned) {
+      throw new HttpException(
+        'Teacher is already assigned to this subject',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     await this.subjectRepository
       .createQueryBuilder()
       .relation(SubjectEntity, 'teachers')
@@ -121,6 +136,21 @@ export class SubjectService {
 
     if (!student) {
       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    const alreadyEnrolled = await this.subjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.students', 'student', 'student.id = :studentId', {
+        studentId,
+      })
+      .where('subject.id = :subjectId', { subjectId })
+      .getExists();
+
+    if (alreadyEnrolled) {
+      throw new HttpException(
+        'Student is already enrolled in this subject',
+        HttpStatus.CONFLICT,
+      );
     }
 
     await this.subjectRepository
