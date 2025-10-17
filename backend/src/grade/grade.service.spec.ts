@@ -57,4 +57,23 @@ describe('GradeService', () => {
     expect(gradeService).toBeDefined();
   });
 
+  const dto = { subjectId: 1, studentId: 2, teacherId: 3, value: 95 };
+
+  it('should throw if subject not found', async () => {
+    jest.spyOn(subjectRepository, 'findOne').mockResolvedValueOnce(null);
+
+    await expect(gradeService.setGrade(dto)).rejects.toThrow(
+    new HttpException('Subject does not exist', HttpStatus.NOT_FOUND),
+    );
+  });
+
+  it('should throw if student not found', async () => {
+    jest.spyOn(subjectRepository, 'findOne').mockResolvedValueOnce({ id: 1 } as SubjectEntity);
+    jest.spyOn(studentRepository, 'findOne').mockResolvedValueOnce(null);
+
+    await expect(gradeService.setGrade(dto)).rejects.toThrow(
+    new HttpException('Student does not exist', HttpStatus.NOT_FOUND),
+    );
+  });
+
 });
