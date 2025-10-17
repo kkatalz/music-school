@@ -5,9 +5,11 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
 import { Role } from 'src/auth/types/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -19,6 +21,7 @@ import { DeleteResult } from 'typeorm/browser';
 import { CreateStudentDto } from './dto/createStudent.dto';
 import { StudentResponseDto } from './dto/studentResponse.dto';
 import { UpdateStudentDto } from './dto/updateStudent.dto';
+import { ChangePasswordDto } from 'src/types/changePassword.dto';
 
 @Controller('students')
 export class StudentContoller {
@@ -27,6 +30,19 @@ export class StudentContoller {
   @Get()
   async getAllStudents(): Promise<StudentEntity[]> {
     return await this.studentService.getAllStudents();
+  }
+
+  @Patch('password')
+  @Roles(Role.Student)
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req,
+  ): Promise<StudentEntity> {
+    const myId = req.student.id;
+    return await this.studentService.changeStudentPassword(
+      changePasswordDto,
+      myId,
+    );
   }
 
   @Get('/total')

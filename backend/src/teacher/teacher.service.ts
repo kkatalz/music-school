@@ -12,6 +12,7 @@ import * as dotenv from 'dotenv';
 import { sign } from 'jsonwebtoken';
 import { Role } from '../auth/types/role.enum';
 import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from 'src/types/changePassword.dto';
 
 dotenv.config();
 
@@ -111,11 +112,6 @@ export class TeacherService {
 
     Object.assign(teacher, updateTeacherDto);
 
-    if (updateTeacherDto.password) {
-      const salt = await bcrypt.genSalt(10);
-      teacher.password = await bcrypt.hash(updateTeacherDto.password, salt);
-    }
-
     return await this.teacherRepository.save(teacher);
   }
 
@@ -150,6 +146,24 @@ export class TeacherService {
       },
       process.env.JWT_SECRET ?? 'test',
     );
+  }
+
+  async changeTeacherPassword(
+    changePasswordDto: ChangePasswordDto,
+    myId: number,
+  ): Promise<TeacherEntity> {
+    const teacher = await this.teacherRepository.findOne({
+      where: { id: myId },
+    });
+
+    if (!teacher) {
+      throw new HttpException('Teacher is not found', HttpStatus.NOT_FOUND);
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    teacher.password = await bcrypt.hash(changePasswordDto.password, salt);
+
+    return await this.teacherRepository.save(teacher);
   }
 
   // Helpers

@@ -19,6 +19,7 @@ import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { TeacherService } from 'src/teacher/teacher.service';
+import { ChangePasswordDto } from 'src/types/changePassword.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -27,6 +28,19 @@ export class TeacherController {
   @Get()
   async getAllTeachers(): Promise<TeacherResponseDto[]> {
     return await this.teacherService.getAllTeachers();
+  }
+
+  @Patch('password')
+  @Roles(Role.Teacher, Role.HeadTeacher)
+  async changeTeacherPassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req,
+  ): Promise<TeacherEntity> {
+    const myId = req.teacher?.id ? req.teacher.id : req.headTeacher.id;
+    return await this.teacherService.changeTeacherPassword(
+      changePasswordDto,
+      myId,
+    );
   }
 
   @Get('experience/:id')

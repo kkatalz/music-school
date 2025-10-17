@@ -21,10 +21,6 @@ export class UpdateTeacherDto {
   @IsOptional()
   readonly email?: string;
 
-  @IsString()
-  @IsOptional()
-  readonly password?: string;
-
   @IsBoolean()
   @IsOptional()
   readonly isHeadTeacher?: boolean;

@@ -11,6 +11,8 @@ import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { Role } from 'src/auth/types/role.enum';
 import * as dotenv from 'dotenv';
+import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from 'src/types/changePassword.dto';
 
 dotenv.config();
 
@@ -170,6 +172,24 @@ export class StudentService {
       },
       process.env.JWT_SECRET ?? '',
     );
+  }
+
+  async changeStudentPassword(
+    changePasswordDto: ChangePasswordDto,
+    myId: number,
+  ): Promise<StudentEntity> {
+    const student = await this.studentRepository.findOne({
+      where: { id: myId },
+    });
+
+    if (!student) {
+      throw new HttpException('Student is not found', HttpStatus.NOT_FOUND);
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    student.password = await bcrypt.hash(changePasswordDto.password, salt);
+
+    return await this.studentRepository.save(student);
   }
 
   // Helpers
