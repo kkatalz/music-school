@@ -11,7 +11,8 @@ import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { Repository } from 'typeorm';
-import { UpdateSubjectDto } from './dto/UpdateSubject.dto';
+import { SubjectResponseDto } from 'src/subject/dto/subjectResponse.dto';
+import { UpdateSubjectDto } from 'src/subject/dto/updateSubject.dto';
 
 @Injectable()
 export class SubjectService {
@@ -224,15 +225,24 @@ export class SubjectService {
   async updateSubject(
     subjectId: number,
     updateSubjectDto: UpdateSubjectDto,
-  ): Promise<SubjectEntity> {
-    const subject = await this.subjectRepository.findOneBy({ id: subjectId });
+  ): Promise<SubjectResponseDto> {
+    const subject = await this.subjectRepository.findOne({
+      where: { id: subjectId },
+    });
 
     if (!subject) {
       throw new NotFoundException(`Subject with ID ${subjectId} not found`);
     }
 
     Object.assign(subject, updateSubjectDto);
-    return this.subjectRepository.save(subject);
+    const saved = await this.subjectRepository.save(subject);
+
+    return {
+      id: saved.id,
+      name: saved.name,
+      studyYear: saved.studyYear,
+      semester: saved.semester,
+    };
   }
 
   async findSubjectById(subjectId: number): Promise<SubjectEntity> {

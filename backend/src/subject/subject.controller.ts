@@ -7,14 +7,16 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { SubjectService } from 'src/subject/subject.service';
-import { UpdateSubjectDto } from './dto/UpdateSubject.dto';
+import { UpdateSubjectDto } from './dto/updateSubject.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/auth/types/role.enum';
 import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.dto';
+import { SubjectResponseDto } from 'src/subject/dto/subjectResponse.dto';
 
 @Controller('subjects')
 export class SubjectController {
@@ -46,10 +48,10 @@ export class SubjectController {
   @Patch(':id')
   @Roles(Role.HeadTeacher)
   async updateSubject(
-    @Param('id') id: number,
+    @Param('id') subjectId: number,
     @Body() updateSubjectDto: UpdateSubjectDto,
-  ): Promise<SubjectEntity> {
-    return await this.subjectService.updateSubject(id, updateSubjectDto);
+  ): Promise<SubjectResponseDto> {
+    return await this.subjectService.updateSubject(subjectId, updateSubjectDto);
   }
 
   @Delete(':id')
