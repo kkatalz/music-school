@@ -156,4 +156,21 @@ describe('GradeService', () => {
     });
   });
 
+  describe('gradeResponseDto', () => {
+    it('should format grade properly', () => {
+      const grade = {
+        id: 1,
+        value: 100,
+        subject: { id: 5, name: 'Bandura' },
+      } as GradeEntity;
+
+      const result = gradeService.gradeResponseDto(grade);
+      expect(result).toEqual({
+        id: 1,
+        subject: { id: 5, name: 'Bandura' },
+        value: 100,
+      });
+    });
+  });
+
 });
