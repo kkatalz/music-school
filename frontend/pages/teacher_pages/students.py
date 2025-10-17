@@ -10,14 +10,12 @@ def show():
     st.title("🎓 Керування студентами")
     """Відображає сторінку управління студентами для вчителя/завуча."""
 
-    tab1, tab2, tab3 = st.tabs(["Перегляд студентів", "Додати нового студента", "Додати нового вчителя"])
+    tab1, tab2 = st.tabs(["Перегляд студентів", "Додати нового студента"])
 
     with tab1:
         display_all_students_by_teacher()
     with tab2:
         display_add_student_form()
-    with tab3:
-        display_add_teacher_form()
 
 
 
@@ -102,47 +100,5 @@ def display_add_student_form():
 
             if success:
                 st.success("Студента успішно додано!")
-                # TODO: here may be logic for clearing the form etc.
             else:
                 st.error("Не вдалося додати студента. Перевірте повідомлення про помилку вище.")
-
-
-
-def display_add_teacher_form():
-    st.header("Форма для додавання нового вчителя")
-
-    with st.form("add_teacher_form"):
-        st.write("Введіть дані нового вчителя:")
-
-        col1, col2 = st.columns(2)
-        with col1:
-            first_name = st.text_input("Ім'я*", key="first_name")
-            last_name = st.text_input("Прізвище*", key="last_name")
-            phone = st.text_input("Телефон*", key="phone")
-
-        with col2:
-            education = st.text_input("Освіта*", key="education")
-            email = st.text_input("Email*", key="email")
-            password = st.text_input("Пароль*", type="password", key="password")
-
-        # submit button
-        submitted = st.form_submit_button("Додати Вчителя")
-
-        if submitted:
-            teacher_data = {
-                "firstName": first_name,
-                "lastName": last_name,
-                "phone": phone,
-                "education": education,
-                "email": email,
-                "password": password,
-            }
-
-            # call the method from api
-            success = api.add_teacher(teacher_data)
-
-            if success:
-                st.success("Вчителя успішно додано!")
-                # TODO: here may be logic for clearing the form etc.
-            else:
-                st.error("Не вдалося додати вчителя. Перевірте повідомлення про помилку вище.")
