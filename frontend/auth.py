@@ -14,9 +14,10 @@ def show_login_page():
             response = api.login(email, password)
             if response and "token" in response:
                 st.session_state['authenticated'] = True
-                st.session_state['token'] = response['token']
-                st.session_state['user'] = response['user']
-                st.session_state['role'] = response['user']['role']
+                st.session_state['token'] = response.get('token')
+                st.session_state['role'] = response.get('role')
+                st.session_state['user'] = response
+
                 st.success("Logged in successfully!")
                 st.rerun()
             else:
