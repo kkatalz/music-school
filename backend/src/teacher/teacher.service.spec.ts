@@ -71,4 +71,11 @@ describe('TeacherService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('returns all teachers', async () => {
+    const result = await service.getAllTeachers();
+    expect(result).toHaveLength(1);
+    expect(teacherRepo.find).toHaveBeenCalled();
+  });
+
 });
