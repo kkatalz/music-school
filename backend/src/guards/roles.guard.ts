@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from 'src/auth/types/role.enum';
 import { ROLES_KEY } from 'src/decorators/roles.decorator';
@@ -27,6 +32,19 @@ export class RolesGuard implements CanActivate {
     if (request?.headTeacher?.id && requiredRoles.includes(Role.HeadTeacher)) {
       return true;
     }
-    return false;
+
+    // Custom Error Handling
+    const userRoles = [];
+    if (request?.student?.id) userRoles.push(Role.Student);
+    if (request?.teacher?.id) userRoles.push(Role.Teacher);
+    if (request?.headTeacher?.id) userRoles.push(Role.HeadTeacher);
+
+    const requiredRoleNames = requiredRoles.join(' or ');
+    const userRoleNames =
+      userRoles.length > 0 ? userRoles.join(' and ') : 'None (Guest)';
+
+    throw new ForbiddenException(
+      `Access denied. Your current role(s) (${userRoleNames}) do not meet the minimum requirement: ${requiredRoleNames}`,
+    );
   }
 }
