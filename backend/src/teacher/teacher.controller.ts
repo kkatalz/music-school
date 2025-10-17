@@ -11,12 +11,12 @@ import {
 import { Role } from 'src/auth/types/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 import { StudentEntity } from 'src/student/student.entity';
+import { SubjectEntity } from 'src/subject/subject.entity';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
 import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { TeacherService } from 'src/teacher/teacher.service';
-import { DeleteResult } from 'typeorm';
 
 @Controller('teachers')
 export class TeacherController {
@@ -51,7 +51,7 @@ export class TeacherController {
     @Param('teacherId') teacherId: number,
     @Query('year') year?: number,
     @Query('semester') semester?: number,
-  ) {
+  ): Promise<SubjectEntity[]> {
     return await this.teacherService.getMySubjects(teacherId, year, semester);
   }
 
