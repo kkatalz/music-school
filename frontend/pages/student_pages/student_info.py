@@ -9,7 +9,6 @@ import api_client as api
 
 
 def show():
-    #st.title("👤 Мій Профіль")
     student_id = st.session_state["user"]["id"]
     student_data = api.get_student_info(student_id)
     student_study_years = api.get_student_study_years(student_id)
