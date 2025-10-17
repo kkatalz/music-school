@@ -114,4 +114,33 @@ describe('StudentService', () => {
       );
     });
    });
+
+   describe('updateStudent', () => {
+    it('should update student data', async () => {
+      const updateDto = {
+        firstName: 'John',
+        lastName: 'Johnson',
+      };
+
+      mockStudentRepository.findOne.mockResolvedValue(mockStudent);
+      mockStudentRepository.save.mockResolvedValue({
+        ...mockStudent,
+        ...updateDto,
+      });
+
+      const result = await service.updateStudent(1, updateDto);
+
+      expect(result.lastName).toBe('Johnson');
+      expect(mockStudentRepository.save).toHaveBeenCalled();
+    });
+
+    it('should throw an error if student is not found', async () => {
+      mockStudentRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.updateStudent(999, {})).rejects.toThrow(
+        HttpException,
+      );
+    });
+  });
+
 });
