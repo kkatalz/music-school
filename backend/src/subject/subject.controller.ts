@@ -38,8 +38,8 @@ export class SubjectController {
   }
 
   @Post(':id/students')
-  @Roles(Role.HeadTeacher)
   @Roles(Role.Teacher)
+  @Roles(Role.HeadTeacher)
   async addStudentToSubject(
     @Body('studentId') studentId: number,
     @Param('id') subjectId: number,

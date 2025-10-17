@@ -24,6 +24,11 @@ import { UpdateStudentDto } from './dto/updateStudent.dto';
 export class StudentContoller {
   constructor(private readonly studentService: StudentService) {}
 
+  @Get()
+  async getAllStudents(): Promise<StudentEntity[]> {
+    return await this.studentService.getAllStudents();
+  }
+
   @Get('/total')
   async getTotalStudents(
     @Query('start') startDate: string,

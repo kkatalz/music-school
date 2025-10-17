@@ -60,6 +60,10 @@ export class StudentService {
     return await this.findStudentById(studentId);
   }
 
+  async getAllStudents(): Promise<StudentEntity[]> {
+    return await this.studentRepository.find();
+  }
+
   async getStudentsByPeriod(
     startDate: Date,
     endDate: Date,
