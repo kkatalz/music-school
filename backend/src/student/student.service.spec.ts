@@ -68,9 +68,9 @@ describe('StudentService', () => {
   describe('createStudent', () => {
     it('should create a new student', async () => {
       const createDto = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jane@example.com',
+        firstName: 'Maryna',
+        lastName: 'Melnyk',
+        email: 'marynamlnk@example.com',
         phone: '+380991111111',
         parentPhone: '+380992222222',
         address: 'Kyiv',
@@ -91,6 +91,27 @@ describe('StudentService', () => {
       expect(result).toHaveProperty('role', Role.Student);
       expect(mockStudentRepository.save).toHaveBeenCalled();
     });
-    
+
+    it('should throw an error if email is already taken', async () => {
+      const createDto = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        phone: '+380991234567',
+        parentPhone: '+380997654321',
+        address: 'Lviv',
+        startStudyDate: new Date('2023-09-01'),
+        password: 'password123',
+      };
+
+      mockStudentRepository.findOne.mockResolvedValue(mockStudent);
+
+      await expect(service.createStudent(createDto)).rejects.toThrow(
+        HttpException,
+      );
+      await expect(service.createStudent(createDto)).rejects.toThrow(
+        'Email is already taken',
+      );
+    });
    });
 });
