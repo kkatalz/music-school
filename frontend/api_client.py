@@ -21,6 +21,7 @@ def _handle_request(method, endpoint, **kwargs):
         response.raise_for_status()
         return response.json() if response.text else True
     except requests.exceptions.HTTPError as e:
+        # TODO: delete in order to see proper messages
         st.error(f"HTTP Error: {e.response.status_code} - Request failed.")
         st.error(f"Backend message: `{e.response.text}`")
     except requests.exceptions.RequestException:
@@ -47,10 +48,6 @@ def login(email: str, password: str):
         return None
 
 def _get_auth_headers():
-    """
-    Helper function to get authorization headers.
-    It reads the JWT token from the session state if it exists.
-    """
     if "token" in st.session_state:
         return {"Authorization": f"Bearer {st.session_state['token']}"}
     return None
@@ -169,3 +166,6 @@ def update_grade(grade_id: str, value: int):
     # TODO: implement
     pass
 
+def update_student_password(student_id: int, new_password: str):
+    # TODO: implement
+    pass

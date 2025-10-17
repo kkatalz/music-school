@@ -1,10 +1,5 @@
 import streamlit as st
-import sys
-import os
 import datetime
-
-#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
-# -----------------------------------------
 import api_client as api
 
 
@@ -49,6 +44,29 @@ def show():
                 st.write(start_date_obj.strftime('%d.%m.%Y'))
             else:
                 st.info("Навчальна інформація не вказана.")
+
+
+        with st.expander("🔑 Змінити пароль"):
+            with st.form("change_password_form", clear_on_submit=True):
+                st.write("Введіть новий пароль та підтвердіть його.")
+                new_password = st.text_input("Новий пароль", type="password")
+                confirm_password = st.text_input("Підтвердіть пароль", type="password")
+
+                submitted = st.form_submit_button("Зберегти новий пароль")
+                if submitted:
+                    if not new_password:
+                        st.warning("Пароль не може бути порожнім.")
+                    elif new_password != confirm_password:
+                        st.error("Паролі не співпадають!")
+                    else:
+                        success = api.update_student_password(student_id, new_password)
+                        if success:
+                            st.success("Пароль успішно оновлено!")
+                        else:
+                            st.error("Не вдалося оновити пароль.")
+
+
+
 
     else:
         st.error("Не вдалося завантажити інформацію про профіль.")
