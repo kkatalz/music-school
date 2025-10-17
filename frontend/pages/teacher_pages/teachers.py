@@ -1,17 +1,8 @@
 import streamlit as st
-import sys
-import os
-
-# -- Блок для виправлення імпорту --
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
-# ---------------------------------
 import api_client as api
 
 
 def show():
-    """Відображає сторінку управління вчителями з можливістю редагування."""
-    st.title("👨‍🏫 Управління Вчителями")
-
     tab1, tab2 = st.tabs(["Перегляд Вчителів", "Додати Нового Вчителя"])
 
     with tab1:
@@ -31,9 +22,8 @@ def display_teacher_list():
     """Відображає список вчителів у вигляді карток з кнопками дій."""
     st.header("Список Вчителів")
 
-    if st.button("🔄 Оновити список"):
-        # Очищуємо кеш, щоб отримати свіжі дані (якщо ви використовуєте кешування)
-        st.cache_data.clear()
+    #if st.button("🔄 Оновити список"):
+    #    st.cache_data.clear()
 
     all_teachers_data = api.get_all_teachers()
 
@@ -50,18 +40,21 @@ def display_teacher_list():
 
                 with col2:
                     st.subheader(f"{teacher.get('firstName', '')} {teacher.get('lastName', '')}")
-                    st.markdown(f"📧 **Email:** `{teacher.get('email', 'N/A')}`")
-                    st.markdown(f"📞 **Телефон:** {teacher.get('phone', 'N/A')}")
+                    st.markdown(f"📧 **Email:** `{teacher.get('email', '-')}`")
+                    st.markdown(f"📞 **Телефон:** {teacher.get('phone', '-')}")
+                    st.markdown(f" **Education:** {teacher.get('education', '-')}")
+                    role = 'Head Teacher' if teacher.get('role') == 'headTeacher' else 'Teacher'
+                    st.markdown(f" **Position:** {role}")
 
                 st.divider()
 
                 action_col1, action_col2 = st.columns(2)
 
-                if action_col1.button(f"✏️ Редагувати {teacher_id}", key=f"edit_{teacher_id}", use_container_width=True):
+                if action_col1.button(f"✏️ Редагувати", key=f"edit_{teacher_id}", use_container_width=True):
                     st.session_state.teacher_id_to_edit = teacher_id
                     st.rerun()
 
-                if action_col2.button(f"🗑️ Видалити {teacher_id}", key=f"delete_{teacher_id}", use_container_width=True):
+                if action_col2.button(f"🗑️ Видалити", key=f"delete_{teacher_id}", use_container_width=True):
                     success = api.delete_teacher(teacher_id)
                     if success:
                         st.success(f"Вчителя {teacher.get('firstName')} видалено.")
@@ -73,10 +66,10 @@ def display_teacher_list():
 
 
 def display_edit_form(teacher_id: int):
-    """Відображає форму для редагування конкретного вчителя."""
-    st.header(f"Редагування вчителя (ID: {teacher_id})")
-
     teacher_data = api.get_teacher(teacher_id)
+    """Відображає форму для редагування конкретного вчителя."""
+    st.header(f"Редагування вчителя ({teacher_data.get('firstName')} {teacher_data.get('lastName')})")
+
 
     if not teacher_data:
         st.error("Не вдалося завантажити дані вчителя.")
@@ -94,6 +87,10 @@ def display_edit_form(teacher_id: int):
         phone = st.text_input("Телефон", value=str(teacher_data.get('phone', '')))
         education = st.text_input("Освіта", value=teacher_data.get('education', ''))
 
+        role_options = ["Teacher", "Head Teacher"]
+        current_role_index = 1 if teacher_data.get('isHeadTeacher') else 0
+        role = st.selectbox('Position:', role_options, index=current_role_index)
+
         submitted = st.form_submit_button("Зберегти зміни")
         if submitted:
             updated_data = {
@@ -101,7 +98,8 @@ def display_edit_form(teacher_id: int):
                 "lastName": last_name,
                 "email": email,
                 "phone": phone,
-                "education": education
+                "education": education,
+                "isHeadTeacher": True if role == 'Head Teacher' else False
             }
 
             success = api.update_teacher(teacher_id, updated_data)
@@ -120,7 +118,6 @@ def display_add_teacher_form():
     """Відображає форму для додавання нового вчителя."""
     st.header("Форма для додавання нового вчителя")
 
-    # ВИПРАВЛЕНО: Додано clear_on_submit=True для автоматичного очищення форми
     with st.form("add_teacher_form", clear_on_submit=True):
         st.write("Введіть дані нового вчителя:")
 
@@ -140,7 +137,7 @@ def display_add_teacher_form():
             teacher_data = {
                 "firstName": first_name,
                 "lastName": last_name,
-                "phone": int(phone) if phone.isdigit() else 0,
+                "phone": phone,
                 "education": education,
                 "email": email,
                 "password": password,
@@ -149,6 +146,5 @@ def display_add_teacher_form():
             success = api.add_teacher(teacher_data)
             if success:
                 st.success("Вчителя успішно додано!")
-            else:
-                st.error("Не вдалося додати вчителя. Перевірте повідомлення про помилку вище.")
+                st.rerun()
 
