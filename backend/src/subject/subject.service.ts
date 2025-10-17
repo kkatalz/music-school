@@ -116,7 +116,7 @@ export class SubjectService {
 
     const student = await this.studentRepository.findOne({
       where: { id: studentId },
-      // relations: ['subjects'],
+      relations: ['subjects'],
     });
 
     if (!student) {
@@ -137,6 +137,66 @@ export class SubjectService {
     });
 
     return updatedSubject;
+  }
+
+  async removeTeacherFromSubject(
+    teacherId: number,
+    subjectId: number,
+  ): Promise<SubjectEntity> {
+    const subject = await this.subjectRepository.findOne({
+      where: { id: subjectId },
+      relations: ['teachers'],
+    });
+
+    if (!subject) {
+      throw new HttpException('Subject not found', HttpStatus.NOT_FOUND);
+    }
+
+    const teacher = await this.teacherRepository.findOneBy({ id: teacherId });
+    if (!teacher) {
+      throw new HttpException('Teacher not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.subjectRepository
+      .createQueryBuilder()
+      .relation(SubjectEntity, 'teachers')
+      .of(subjectId)
+      .remove(teacherId);
+
+    return this.subjectRepository.findOneOrFail({
+      where: { id: subjectId },
+      relations: ['teachers'],
+    });
+  }
+
+  async removeStudentFromSubject(
+    studentId: number,
+    subjectId: number,
+  ): Promise<SubjectEntity> {
+    const subject = await this.subjectRepository.findOne({
+      where: { id: subjectId },
+      relations: ['students'],
+    });
+
+    if (!subject) {
+      throw new HttpException('Subject not found', HttpStatus.NOT_FOUND);
+    }
+
+    const student = await this.studentRepository.findOneBy({ id: studentId });
+    if (!student) {
+      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.subjectRepository
+      .createQueryBuilder()
+      .relation(SubjectEntity, 'students')
+      .of(subjectId)
+      .remove(studentId);
+
+    return this.subjectRepository.findOneOrFail({
+      where: { id: subjectId },
+      relations: ['students'],
+    });
   }
 
   async updateSubject(

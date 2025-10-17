@@ -57,7 +57,10 @@ export class StudentService {
   }
 
   async getStudentInfo(studentId: number): Promise<StudentEntity> {
-    return await this.findStudentById(studentId);
+    return await this.studentRepository.findOneOrFail({
+      where: { id: studentId },
+      relations: ['subjects'],
+    });
   }
 
   async getAllStudents(): Promise<StudentEntity[]> {

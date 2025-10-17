@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -36,7 +37,7 @@ export class SubjectController {
     return await this.subjectService.createSubject(createSubjectDto);
   }
 
-  @Post(':id')
+  @Post(':id/teachers')
   @Roles(Role.HeadTeacher)
   async addTeacherToSubject(
     @Body('teacherId') teacherId: number,
@@ -46,12 +47,30 @@ export class SubjectController {
   }
 
   @Post(':id/students')
-  @Roles(Role.Teacher, Role.HeadTeacher)
+  @Roles(Role.HeadTeacher)
   async addStudentToSubject(
     @Body('studentId') studentId: number,
     @Param('id') subjectId: number,
   ): Promise<SubjectEntity> {
     return await this.subjectService.addStudentToSubject(studentId, subjectId);
+  }
+
+  @Delete(':id/teachers')
+  @Roles(Role.HeadTeacher)
+  async removeTeacherFromSubject(
+    @Param('id', ParseIntPipe) subjectId: number,
+    @Body('teacherId', ParseIntPipe) teacherId: number,
+  ): Promise<SubjectEntity> {
+    return this.subjectService.removeTeacherFromSubject(teacherId, subjectId);
+  }
+
+  @Delete(':id/students')
+  @Roles(Role.HeadTeacher)
+  async removeStudentFromSubject(
+    @Param('id', ParseIntPipe) subjectId: number,
+    @Body('studentId', ParseIntPipe) studentId: number,
+  ): Promise<SubjectEntity> {
+    return this.subjectService.removeStudentFromSubject(studentId, subjectId);
   }
 
   @Patch('id')
