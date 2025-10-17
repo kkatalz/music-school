@@ -83,4 +83,34 @@ describe('SubjectService', () => {
     ).rejects.toThrow(HttpException);
   });
 
+  it('should create and return new subject', async () => {
+    subjectRepository.findOne.mockResolvedValue(null);
+    subjectRepository.save.mockResolvedValue({
+      id: 1,
+      name: 'Drums',
+    } as any);
+
+    const result = await service.createSubject({
+      name: 'Drums',
+      semester: 2,
+      studyYear: 2,
+    } as any);
+
+    expect(result.name).toBe('Drums');
+  });
+
+  it('should throw if subject not found on delete', async () => {
+    subjectRepository.findOne.mockResolvedValue(null);
+
+    await expect(service.deleteSubject(1)).rejects.toThrow(HttpException);
+  });
+
+  it('should delete subject successfully', async () => {
+    subjectRepository.findOne.mockResolvedValue({ id: 1 } as any);
+    subjectRepository.delete.mockResolvedValue({} as any);
+
+    const result = await service.deleteSubject(1);
+    expect(result.id).toBe(1);
+  });
+  
 });
