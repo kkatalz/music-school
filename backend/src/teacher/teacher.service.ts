@@ -113,9 +113,12 @@ export class TeacherService {
     return await this.teacherRepository.save(teacher);
   }
 
-  async deleteTeacher(teacherId: number): Promise<TeacherResponseDto> {
+  async deleteTeacher(
+    teacherId: number,
+    authHeadTeacherId: number,
+  ): Promise<TeacherResponseDto> {
     const teacher = await this.findTeacherById(teacherId);
-    if (teacherId == teacher.id) {
+    if (teacherId == authHeadTeacherId) {
       throw new HttpException(
         'You can not delete yourself',
         HttpStatus.FORBIDDEN,

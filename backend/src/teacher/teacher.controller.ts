@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
 import { Role } from 'src/auth/types/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -76,7 +77,12 @@ export class TeacherController {
   @Roles(Role.HeadTeacher)
   async deleteTeacher(
     @Param('id') teacherId: number,
+    @Req() req,
   ): Promise<TeacherResponseDto> {
-    return await this.teacherService.deleteTeacher(teacherId);
+    const authHeadTeacherId = req.headTeacher.id;
+    return await this.teacherService.deleteTeacher(
+      teacherId,
+      authHeadTeacherId,
+    );
   }
 }

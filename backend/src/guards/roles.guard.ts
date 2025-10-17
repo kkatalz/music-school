@@ -34,7 +34,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // Custom Error Handling
-    const userRoles = [];
+    const userRoles: Role[] = [];
     if (request?.student?.id) userRoles.push(Role.Student);
     if (request?.teacher?.id) userRoles.push(Role.Teacher);
     if (request?.headTeacher?.id) userRoles.push(Role.HeadTeacher);
