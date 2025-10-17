@@ -173,4 +173,16 @@ describe('StudentService', () => {
     });
   });
 
+  describe('getAllStudents', () => {
+    it('should return all students', async () => {
+    const students = [mockStudent, { ...mockStudent, id: 2 }];
+    mockStudentRepository.find.mockResolvedValue(students);
+
+    const result = await service.getAllStudents();
+
+    expect(result).toHaveLength(2);
+    expect(mockStudentRepository.find).toHaveBeenCalled();
+    });
+  });
+
 });
