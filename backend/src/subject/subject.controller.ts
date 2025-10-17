@@ -14,19 +14,25 @@ import { SubjectService } from 'src/subject/subject.service';
 import { UpdateSubjectDto } from './dto/UpdateSubject.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/auth/types/role.enum';
+import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.dto';
 
 @Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @Get()
-  async getSubjectsNames() {
+  async getSubjectsNames(): Promise<SubjectsNamesResponseDto[]> {
     return await this.subjectService.getSubjectsNames();
   }
 
   @Get('info')
-  async getSubjectsInfo() {
+  async getSubjectsInfo(): Promise<SubjectEntity[]> {
     return await this.subjectService.getSubjectsInfo();
+  }
+
+  @Get(':id')
+  async getSubjectById(@Param('id') subjectId: number): Promise<SubjectEntity> {
+    return await this.subjectService.findSubjectById(subjectId);
   }
 
   @Post()
@@ -35,6 +41,21 @@ export class SubjectController {
     @Body() createSubjectDto: CreateSubjectDto,
   ): Promise<SubjectEntity> {
     return await this.subjectService.createSubject(createSubjectDto);
+  }
+
+  @Patch(':id')
+  @Roles(Role.HeadTeacher)
+  async updateSubject(
+    @Param('id') id: number,
+    @Body() updateSubjectDto: UpdateSubjectDto,
+  ): Promise<SubjectEntity> {
+    return await this.subjectService.updateSubject(id, updateSubjectDto);
+  }
+
+  @Delete(':id')
+  @Roles(Role.HeadTeacher)
+  async deleteSubject(@Param('id') subjectId: number): Promise<SubjectEntity> {
+    return await this.subjectService.deleteSubject(subjectId);
   }
 
   @Post(':id/teachers')
@@ -71,14 +92,5 @@ export class SubjectController {
     @Body('studentId', ParseIntPipe) studentId: number,
   ): Promise<SubjectEntity> {
     return this.subjectService.removeStudentFromSubject(studentId, subjectId);
-  }
-
-  @Patch('id')
-  @Roles(Role.HeadTeacher)
-  async updateSubject(
-    @Param('id') id: number,
-    @Body() updateSubjectDto: UpdateSubjectDto,
-  ): Promise<SubjectEntity> {
-    return await this.subjectService.updateSubject(id, updateSubjectDto);
   }
 }

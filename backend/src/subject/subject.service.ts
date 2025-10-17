@@ -24,12 +24,12 @@ export class SubjectService {
     private readonly studentRepository: Repository<StudentEntity>,
   ) {}
 
-  async getSubjectsNames() {
+  async getSubjectsNames(): Promise<SubjectsNamesResponseDto[]> {
     const subjects = await this.subjectRepository.find();
     return this.generateSubjectsNamesResponse(subjects);
   }
 
-  async getSubjectsInfo() {
+  async getSubjectsInfo(): Promise<SubjectEntity[]> {
     return await this.subjectRepository
       .createQueryBuilder('subject')
       .loadAllRelationIds({ relations: ['teachers', 'students'] })
@@ -43,12 +43,14 @@ export class SubjectService {
     const subject = await this.subjectRepository.findOne({
       where: {
         name: createSubjectDto.name,
+        semester: createSubjectDto.semester,
+        studyYear: createSubjectDto.studyYear,
       },
     });
 
     if (subject) {
       throw new HttpException(
-        'Subject with given name already exists',
+        'Subject with this name already exists in the given semester and year',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -60,20 +62,18 @@ export class SubjectService {
     return savedSubject;
   }
 
+  async deleteSubject(subjectId: number): Promise<SubjectEntity> {
+    const subject = await this.findSubjectById(subjectId);
+    await this.subjectRepository.delete(subjectId);
+    return subject;
+  }
+
   // multiple teachers can teachone subject
   async addTeacherToSubject(
     teacherId: number,
     subjectId: number,
   ): Promise<SubjectEntity> {
-    const subject = await this.subjectRepository.findOne({
-      where: {
-        id: subjectId,
-      },
-    });
-
-    if (!subject) {
-      throw new HttpException('Subject not found', HttpStatus.NOT_FOUND);
-    }
+    await this.findSubjectById(subjectId);
 
     const teacher = await this.teacherRepository.findOne({
       where: { id: teacherId },
@@ -119,15 +119,7 @@ export class SubjectService {
     studentId: number,
     subjectId: number,
   ): Promise<SubjectEntity> {
-    const subject = await this.subjectRepository.findOne({
-      where: {
-        id: subjectId,
-      },
-    });
-
-    if (!subject) {
-      throw new HttpException('Subject not found', HttpStatus.NOT_FOUND);
-    }
+    await this.findSubjectById(subjectId);
 
     const student = await this.studentRepository.findOne({
       where: { id: studentId },
@@ -241,6 +233,20 @@ export class SubjectService {
 
     Object.assign(subject, updateSubjectDto);
     return this.subjectRepository.save(subject);
+  }
+
+  async findSubjectById(subjectId: number): Promise<SubjectEntity> {
+    const subject = await this.subjectRepository.findOne({
+      where: { id: subjectId },
+    });
+
+    if (!subject) {
+      throw new HttpException(
+        'Subject not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    return subject;
   }
 
   generateSubjectsNamesResponse(
