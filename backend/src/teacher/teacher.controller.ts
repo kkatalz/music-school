@@ -7,8 +7,9 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
+import { Role } from 'src/auth/types/role.enum';
+import { Roles } from 'src/decorators/roles.decorator';
 import { StudentEntity } from 'src/student/student.entity';
 import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
 import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
@@ -37,7 +38,7 @@ export class TeacherController {
   }
 
   @Get(':teacherId/students')
-  async getMyStudents(
+  async getTeachersStudents(
     @Param('teacherId') teacherId: number,
     @Query('year') year?: number,
     @Query('semester') semester?: number,
@@ -46,7 +47,7 @@ export class TeacherController {
   }
 
   @Get(':teacherId/subjects')
-  async getMySubjects(
+  async getTeachersSubjects(
     @Param('teacherId') teacherId: number,
     @Query('year') year?: number,
     @Query('semester') semester?: number,
@@ -55,6 +56,7 @@ export class TeacherController {
   }
 
   @Post()
+  @Roles(Role.HeadTeacher)
   async createTeacher(
     @Body() createTeacherDto: CreateTeacherDto,
   ): Promise<TeacherResponseDto> {
@@ -62,6 +64,7 @@ export class TeacherController {
   }
 
   @Put(':id')
+  @Roles(Role.HeadTeacher)
   async updateTeacher(
     @Param('id') teacherId: number,
     @Body() updateTeacherDto: UpdateTeacherDto,
@@ -70,7 +73,10 @@ export class TeacherController {
   }
 
   @Delete(':id')
-  async deleteTeacher(@Param('id') teacherId: number): Promise<DeleteResult> {
+  @Roles(Role.HeadTeacher)
+  async deleteTeacher(
+    @Param('id') teacherId: number,
+  ): Promise<TeacherResponseDto> {
     return await this.teacherService.deleteTeacher(teacherId);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -6,21 +7,18 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
   Query,
 } from '@nestjs/common';
+import { Role } from 'src/auth/types/role.enum';
+import { Roles } from 'src/decorators/roles.decorator';
 import { StudentEntity } from 'src/student/student.entity';
+import { StudentService } from 'src/student/student.service';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
-import { StudentService } from 'src/student/student.service';
-import { SubjectService } from 'src/subject/subject.service';
-import { CreateStudentDto } from './dto/createStudent.dto';
-import { UpdateStudentDto } from './dto/updateStudent.dto';
-import { StudentResponseDto } from './dto/studentResponse.dto';
 import { DeleteResult } from 'typeorm/browser';
-import { BadRequestException } from '@nestjs/common';
-import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/auth/types/role.enum';
+import { CreateStudentDto } from './dto/createStudent.dto';
+import { StudentResponseDto } from './dto/studentResponse.dto';
+import { UpdateStudentDto } from './dto/updateStudent.dto';
 
 @Controller('students')
 export class StudentContoller {
@@ -119,6 +117,7 @@ export class StudentContoller {
   }
 
   @Put(':id')
+  @Roles(Role.HeadTeacher)
   async updateStudent(
     @Param('id') studentId: number,
     @Body() updateStudentDto: UpdateStudentDto,
@@ -127,6 +126,7 @@ export class StudentContoller {
   }
 
   @Delete(':id')
+  @Roles(Role.HeadTeacher)
   async deleteStudent(@Param('id') studentId: number): Promise<DeleteResult> {
     return await this.studentService.deleteStudent(studentId);
   }

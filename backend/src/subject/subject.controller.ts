@@ -1,8 +1,10 @@
-import {Body, Controller, Get, Param, Patch, Post} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { SubjectService } from 'src/subject/subject.service';
-import {UpdateSubjectDto} from "./dto/UpdateSubject.dto";
+import { UpdateSubjectDto } from './dto/UpdateSubject.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/types/role.enum';
 
 @Controller('subjects')
 export class SubjectController {
@@ -19,6 +21,7 @@ export class SubjectController {
   }
 
   @Post()
+  @Roles(Role.HeadTeacher)
   async createSubject(
     @Body() createSubjectDto: CreateSubjectDto,
   ): Promise<SubjectEntity> {
@@ -26,6 +29,7 @@ export class SubjectController {
   }
 
   @Post(':id')
+  @Roles(Role.HeadTeacher)
   async addTeacherToSubject(
     @Body('teacherId') teacherId: number,
     @Param('id') subjectId: number,
@@ -34,6 +38,8 @@ export class SubjectController {
   }
 
   @Post(':id/students')
+  @Roles(Role.HeadTeacher)
+  @Roles(Role.Teacher)
   async addStudentToSubject(
     @Body('studentId') studentId: number,
     @Param('id') subjectId: number,
@@ -41,10 +47,11 @@ export class SubjectController {
     return await this.subjectService.addStudentToSubject(studentId, subjectId);
   }
 
-  @Patch("id")
+  @Patch('id')
+  @Roles(Role.HeadTeacher)
   async updateSubject(
-      @Param('id') id: number,
-      @Body() updateSubjectDto: UpdateSubjectDto,
+    @Param('id') id: number,
+    @Body() updateSubjectDto: UpdateSubjectDto,
   ): Promise<SubjectEntity> {
     return await this.subjectService.updateSubject(id, updateSubjectDto);
   }

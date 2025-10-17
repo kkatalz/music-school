@@ -4,12 +4,16 @@ import { CreateGradeDto } from './dto/createGrade.dto';
 import { GradeEntity } from './grade.entity';
 import { GradeResponseDto } from './dto/gradeResponse.dto';
 import { UpdateGradeDto } from './dto/updateGradeDto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/types/role.enum';
 
 @Controller('grades')
 export class GradeController {
   constructor(private gradeService: GradeService) {}
 
   @Post()
+  @Roles(Role.Teacher)
+  @Roles(Role.HeadTeacher)
   async setGrade(
     @Body() createGradeDto: CreateGradeDto,
   ): Promise<GradeResponseDto> {
@@ -17,6 +21,8 @@ export class GradeController {
   }
 
   @Put(':id')
+  @Roles(Role.Teacher)
+  @Roles(Role.HeadTeacher)
   async updateGrade(
     @Param('id') id: number,
     @Body() updateGradeDto: UpdateGradeDto,
@@ -40,6 +46,8 @@ export class GradeController {
   }
 
   @Get('teacher/:teacherId')
+  @Roles(Role.Teacher)
+  @Roles(Role.HeadTeacher)
   async getGradesByTeacher(
     @Param('teacherId') teacherId: number,
     @Query('subjectName') subjectName?: string,
