@@ -117,4 +117,15 @@ describe('TeacherService', () => {
     (teacherRepo.findOne as jest.Mock).mockResolvedValue(mockTeacher);
     await expect(service.findTeacherByEmail('teacher@example.com')).rejects.toThrow(HttpException);
   });
+
+  it('returns teacher if found by id', async () => {
+    (teacherRepo.findOne as jest.Mock).mockResolvedValue(mockTeacher);
+    const result = await service.findTeacherById(1);
+    expect(result).toBe(mockTeacher);
+  });
+
+  it('throws an error if teacher not found by id', async () => {
+    (teacherRepo.findOne as jest.Mock).mockResolvedValue(null);
+    await expect(service.findTeacherById(999)).rejects.toThrow(HttpException);
+  });
 });
