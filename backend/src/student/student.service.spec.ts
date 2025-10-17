@@ -250,4 +250,24 @@ describe('StudentService', () => {
     });
   });
 
+  describe('generateToken', () => {
+    it('should generate a JWT token', () => {
+      const token = service.generateToken(mockStudent);
+
+      expect(typeof token).toBe('string');
+      expect(token.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('generateStudentResponse', () => {
+    it('should generate response with student data', () => {
+      const response = service.generateStudentResponse(mockStudent);
+
+      expect(response).toHaveProperty('id');
+      expect(response).toHaveProperty('token');
+      expect(response).toHaveProperty('role', Role.Student);
+      expect(response).not.toHaveProperty('password');
+    });
+  });
+
 });
