@@ -78,4 +78,19 @@ describe('TeacherService', () => {
     expect(teacherRepo.find).toHaveBeenCalled();
   });
 
+  it('creates a new teacher when email is unique', async () => {
+    jest.spyOn(service, 'findTeacherByEmail').mockResolvedValue(undefined);
+    const dto = { ...mockTeacher, email: 'new@example.com' };
+    const result = await service.createTeacher(dto);
+    expect(result.email).toBe(mockTeacher.email);
+    expect(teacherRepo.save).toHaveBeenCalled();
+  });
+
+  it('throws an error when email already exists', async () => {
+    jest
+      .spyOn(service, 'findTeacherByEmail')
+      .mockRejectedValue(new HttpException('Email is already taken', HttpStatus.UNPROCESSABLE_ENTITY));
+
+    await expect(service.createTeacher(mockTeacher)).rejects.toThrow(HttpException);
+  });
 });
