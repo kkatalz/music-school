@@ -185,4 +185,19 @@ describe('StudentService', () => {
     });
   });
 
+  describe('getStudyYears', () => {
+    it('should calculate the number of study years', async () => {
+      const student = {
+        ...mockStudent,
+        startStudyDate: new Date(Date.now() - 2 * 365.25 * 24 * 60 * 60 * 1000),
+      };
+      mockStudentRepository.findOne.mockResolvedValue(student);
+
+      const result = await service.getStudyYears(1);
+
+      expect(result).toBeGreaterThanOrEqual(1);
+      expect(typeof result).toBe('number');
+    });
+  });
+
 });
