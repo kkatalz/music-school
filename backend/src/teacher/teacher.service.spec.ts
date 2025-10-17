@@ -113,4 +113,8 @@ describe('TeacherService', () => {
     expect(months).toBeGreaterThan(0);
   });
 
+  it('throws an error if teacher with given email already exists', async () => {
+    (teacherRepo.findOne as jest.Mock).mockResolvedValue(mockTeacher);
+    await expect(service.findTeacherByEmail('teacher@example.com')).rejects.toThrow(HttpException);
+  });
 });
