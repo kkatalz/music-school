@@ -129,5 +129,27 @@ describe('SubjectService', () => {
     const result = await service.updateSubject(1, { name: 'Updated' } as any);
     expect(result.name).toBe('Updated');
   });
-  
+
+  it('should throw if subject not found by id', async () => {
+    subjectRepository.findOne.mockResolvedValue(null);
+    await expect(service.findSubjectById(1)).rejects.toThrow(HttpException);
+  });
+
+  it('should find subject by id', async () => {
+    subjectRepository.findOne.mockResolvedValue({ id: 1, name: 'Drums' } as any);
+    const result = await service.findSubjectById(1);
+    expect(result.id).toBe(1);
+  });
+
+  it('should generate subjects names response correctly', () => {
+    const result = service.generateSubjectsNamesResponse([
+      { id: 1, name: 'Flute' },
+      { id: 2, name: 'Bandura' },
+    ] as any);
+
+    expect(result).toEqual([
+      { id: 1, name: 'Flute' },
+      { id: 2, name: 'Bandura' },
+    ]);
+  });
 });
