@@ -1,4 +1,9 @@
-import {HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.dto';
@@ -9,7 +14,7 @@ import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import { Repository } from 'typeorm';
-import {UpdateSubjectDto} from "./dto/UpdateSubject.dto";
+import { UpdateSubjectDto } from './dto/UpdateSubject.dto';
 
 @Injectable()
 export class SubjectService {
@@ -38,6 +43,19 @@ export class SubjectService {
   async createSubject(
     createSubjectDto: CreateSubjectDto,
   ): Promise<SubjectEntity> {
+    const subject = await this.subjectRepository.findOne({
+      where: {
+        name: createSubjectDto.name,
+      },
+    });
+
+    if (subject) {
+      throw new HttpException(
+        'Subject with given name already exists',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newSubject = new SubjectEntity();
     Object.assign(newSubject, createSubjectDto);
 
@@ -89,6 +107,7 @@ export class SubjectService {
     studentId: number,
     subjectId: number,
   ): Promise<SubjectEntity> {
+    console.log(studentId);
     const subject = await this.subjectRepository.findOne({
       where: {
         id: subjectId,
@@ -103,6 +122,7 @@ export class SubjectService {
       where: { id: studentId },
       relations: ['subjects'],
     });
+    console.log(student);
 
     if (!student) {
       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
@@ -125,8 +145,8 @@ export class SubjectService {
   }
 
   async updateSubject(
-      subjectId: number,
-      updateSubjectDto: UpdateSubjectDto,
+    subjectId: number,
+    updateSubjectDto: UpdateSubjectDto,
   ): Promise<SubjectEntity> {
     const subject = await this.subjectRepository.findOneBy({ id: subjectId });
 
