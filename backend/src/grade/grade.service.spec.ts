@@ -101,4 +101,40 @@ describe('GradeService', () => {
     await expect(gradeService.setGrade(dto)).rejects.toThrow(HttpException);
   });
 
+  it('should save grade successfully', async () => {
+    const subject = { id: 1, name: 'Math' } as SubjectEntity;
+    const student = { id: 2 } as StudentEntity;
+    const teacher = { id: 3 } as TeacherEntity;
+
+    jest.spyOn(subjectRepository, 'findOne').mockResolvedValue(subject);
+    jest.spyOn(studentRepository, 'findOne').mockResolvedValue(student);
+    jest.spyOn(teacherRepository, 'findOne').mockResolvedValue(teacher);
+
+    const qbMock = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      getOne: jest.fn().mockResolvedValue({}),
+    };
+    jest.spyOn(subjectRepository, 'createQueryBuilder').mockReturnValue(qbMock as any);
+
+    const savedGrade = { id: 10 } as GradeEntity;
+    const finalGrade = {
+      id: 10,
+      value: 95,
+      subject,
+      student,
+      teacher,
+    } as GradeEntity;
+
+    jest.spyOn(gradeRepository, 'save').mockResolvedValue(savedGrade);
+    jest.spyOn(gradeRepository, 'findOneOrFail').mockResolvedValue(finalGrade);
+
+    const result = await gradeService.setGrade(dto);
+    expect(result).toEqual({
+      id: 10,
+      subject: { id: 1, name: 'Math' },
+      value: 95,
+    });
+  });
+
 });
