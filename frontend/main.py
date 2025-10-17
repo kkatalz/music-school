@@ -140,5 +140,3 @@ teacher_data = {
     "password": "pass",
 }
 
-# call the method from api
-#api.add_teacher(teacher_data)
