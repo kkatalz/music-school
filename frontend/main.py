@@ -5,6 +5,8 @@ import auth
 from pages.student_pages import grades as student_grades, subjects as student_subjects, student_info
 from pages.teacher_pages import dashboard as teacher_dashboard, students as teacher_students
 
+import api_client as api
+
 def load_css(file_name: str):
     try:
         with open(file_name, 'r') as f:
@@ -77,31 +79,43 @@ def show_teacher_dashboard():
 
 
 
-st.warning("Ви перебуваєте в тестовому режимі. Вхід до системи вимкнено.", icon="⚠️")
-st.session_state['authenticated'] = True
-st.session_state['user'] = {"firstName": "Student", "role": "student", "id": 1}
-st.session_state['role'] = "student"
-
-st.session_state['token'] = "YOUR_VALID_JWT_TOKEN_HERE"
-#auth.add_logout_button()
-#teacher_students.show()
-show_student_dashboard()
-
-
-# if not st.session_state.get('authenticated'):
-#     auth.show_login_page()
-# else:
-#     auth.add_logout_button()
-#     role = st.session_state.get('role')
+# st.warning("Ви перебуваєте в тестовому режимі. Вхід до системи вимкнено.", icon="⚠️")
+# st.session_state['authenticated'] = True
+# st.session_state['user'] = {"firstName": "Student", "role": "student", "id": 1}
+# st.session_state['role'] = "student"
 #
-#     if role == 'student':
-#         show_student_dashboard()
-#     elif role == 'teacher':
-#         show_teacher_dashboard()
-#     elif role == 'head_teacher':
-#         pass
-#         # TODO: show_head_teacher_dashboard()
-#     else:
-#         st.error("Невідома роль користувача. Будь ласка, зверніться до адміністратора.")
-#         auth.add_logout_button()
+# st.session_state['token'] = "YOUR_VALID_JWT_TOKEN_HERE"
+# #auth.add_logout_button()
+# #teacher_students.show()
+# show_student_dashboard()
 #
+
+
+if not st.session_state.get('authenticated'):
+    auth.show_login_page()
+else:
+    auth.add_logout_button()
+    role = st.session_state.get('role')
+
+    if role == 'student':
+        show_student_dashboard()
+    elif role == 'teacher':
+        show_teacher_dashboard()
+    elif role == 'head_teacher':
+        pass
+        # TODO: show_head_teacher_dashboard()
+    else:
+        st.error("Невідома роль користувача. Будь ласка, зверніться до адміністратора.")
+        auth.add_logout_button()
+
+teacher_data = {
+    "firstName": "Марія",
+    "lastName": "Коваленко",
+    "phone": "0501112233",
+    "education": "Національна музична академія",
+    "email": " maria.kovalenko2@email.com",
+    "password": "pass",
+}
+
+# call the method from api
+#api.add_teacher(teacher_data)
