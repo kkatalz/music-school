@@ -76,4 +76,29 @@ describe('GradeService', () => {
     );
   });
 
+  it('should throw if teacher not found', async () => {
+    jest.spyOn(subjectRepository, 'findOne').mockResolvedValueOnce({ id: 1 } as SubjectEntity);
+    jest.spyOn(studentRepository, 'findOne').mockResolvedValueOnce({ id: 2 } as StudentEntity);
+    jest.spyOn(teacherRepository, 'findOne').mockResolvedValueOnce(null);
+
+    await expect(gradeService.setGrade(dto)).rejects.toThrow(
+      new HttpException('Teacher does not exist', HttpStatus.NOT_FOUND),
+    );
+  });
+
+  it('should throw if student not enrolled in subject', async () => {
+    jest.spyOn(subjectRepository, 'findOne').mockResolvedValue({ id: 1 } as SubjectEntity);
+    jest.spyOn(studentRepository, 'findOne').mockResolvedValue({ id: 2 } as StudentEntity);
+    jest.spyOn(teacherRepository, 'findOne').mockResolvedValue({ id: 3 } as TeacherEntity);
+
+    const qbMock = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      getOne: jest.fn().mockResolvedValue(null),
+    };
+
+    jest.spyOn(subjectRepository, 'createQueryBuilder').mockReturnValue(qbMock as any);
+    await expect(gradeService.setGrade(dto)).rejects.toThrow(HttpException);
+  });
+
 });
