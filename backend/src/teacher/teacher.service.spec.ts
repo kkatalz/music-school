@@ -93,4 +93,17 @@ describe('TeacherService', () => {
 
     await expect(service.createTeacher(mockTeacher)).rejects.toThrow(HttpException);
   });
+
+  it('deletes a teacher (not self)', async () => {
+    jest.spyOn(service, 'findTeacherById').mockResolvedValue(mockTeacher);
+    const result = await service.deleteTeacher(1, 2);
+    expect(result.email).toBe(mockTeacher.email);
+    expect(teacherRepo.delete).toHaveBeenCalledWith(1);
+  });
+
+  it('throws an error when trying to delete self', async () => {
+    jest.spyOn(service, 'findTeacherById').mockResolvedValue(mockTeacher);
+    await expect(service.deleteTeacher(1, 1)).rejects.toThrow(HttpException);
+  });
+  
 });
