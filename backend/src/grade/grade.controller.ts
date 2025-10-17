@@ -44,8 +44,7 @@ export class GradeController {
   }
 
   @Get('teacher/:teacherId')
-  @Roles(Role.Teacher)
-  @Roles(Role.HeadTeacher)
+  @Roles(Role.Teacher, Role.HeadTeacher)
   async getGradesByTeacher(
     @Param('teacherId') teacherId: number,
     @Query('subjectName') subjectName?: string,
