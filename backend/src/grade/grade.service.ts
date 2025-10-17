@@ -28,8 +28,12 @@ export class GradeService {
   ) {}
 
   async setGrade(createGradeDto: CreateGradeDto): Promise<GradeResponseDto> {
+    const { subjectId, studentId, teacherId, value } = createGradeDto;
+
     const subject = await this.subjectRepository.findOne({
-      where: { id: createGradeDto.subjectId },
+      where: {
+        id: subjectId,
+      },
     });
 
     if (!subject) {
@@ -37,21 +41,54 @@ export class GradeService {
     }
 
     const student = await this.studentRepository.findOne({
-      where: { id: createGradeDto.studentId },
+      where: { id: studentId },
     });
+
     if (!student) {
       throw new HttpException('Student does not exist', HttpStatus.NOT_FOUND);
     }
 
     const teacher = await this.teacherRepository.findOne({
-      where: { id: createGradeDto.teacherId },
+      where: { id: teacherId },
     });
+
     if (!teacher) {
       throw new HttpException('Teacher does not exist', HttpStatus.NOT_FOUND);
     }
+
+    const enrolled = await this.subjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.students', 'student', 'student.id = :studentId', {
+        studentId,
+      })
+      .where('subject.id = :subjectId', { subjectId })
+      .getOne();
+
+    if (!enrolled) {
+      throw new HttpException(
+        `Student ${studentId} is not enrolled in subject ${subjectId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const teacherAssigned = await this.subjectRepository
+      .createQueryBuilder('subject')
+      .innerJoin('subject.teachers', 'teacher', 'teacher.id = :teacherId', {
+        teacherId,
+      })
+      .where('subject.id = :subjectId', { subjectId })
+      .getOne();
+
+    if (!teacherAssigned) {
+      throw new HttpException(
+        `Teacher ${teacherId} is not assigned to subject ${subjectId}`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     const newGrade = new GradeEntity();
 
-    newGrade.value = createGradeDto.value;
+    newGrade.value = value;
     newGrade.subject = subject;
     newGrade.student = student;
     newGrade.teacher = teacher;
