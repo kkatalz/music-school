@@ -12,9 +12,9 @@ def _handle_request(method, endpoint, **kwargs):
     """A centralized function to handle all API requests and errors."""
     url = f"{API_HOST}/{endpoint}"
     headers = _get_auth_headers()
-    if not headers and not endpoint.startswith("auth/"):
-        st.warning("You must be logged in to perform this action.")
-        return None
+   # if not headers and not endpoint.startswith("auth/"):
+   #     st.warning("You must be logged in to perform this action.")
+   #     return None
 
     try:
         response = requests.request(method, url, headers=headers, timeout=10, **kwargs)
@@ -36,7 +36,7 @@ def login(email: str, password: str):
     """
     try:
         response = requests.post(
-            f"{API_HOST}/auth/login",  # TODO: change endpoint to a relevant one
+            f"{API_HOST}/auth/login",
             json={"email": email, "password": password},
             timeout=10
         )
