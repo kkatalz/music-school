@@ -137,4 +137,23 @@ describe('GradeService', () => {
     });
   });
 
+  describe('updateGrade', () => {
+    it('should throw if grade not found', async () => {
+      jest.spyOn(gradeRepository, 'findOneBy').mockResolvedValueOnce(null);
+
+      await expect(
+        gradeService.updateGrade(1, { value: 80 }),
+      ).rejects.toThrow(new NotFoundException('Grade with id 1 not found'));
+    });
+
+    it('should update grade successfully', async () => {
+      const grade = { id: 1, value: 50 } as GradeEntity;
+      jest.spyOn(gradeRepository, 'findOneBy').mockResolvedValueOnce(grade);
+      jest.spyOn(gradeRepository, 'save').mockResolvedValueOnce({ ...grade, value: 80 });
+
+      const result = await gradeService.updateGrade(1, { value: 80 });
+      expect(result.value).toBe(80);
+    });
+  });
+
 });
