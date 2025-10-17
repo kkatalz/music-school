@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -64,7 +65,7 @@ export class TeacherController {
     return await this.teacherService.createTeacher(createTeacherDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles(Role.HeadTeacher)
   async updateTeacher(
     @Param('id') teacherId: number,

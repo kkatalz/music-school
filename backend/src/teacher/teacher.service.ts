@@ -11,6 +11,7 @@ import { DeleteResult } from 'typeorm/browser';
 import * as dotenv from 'dotenv';
 import { sign } from 'jsonwebtoken';
 import { Role } from '../auth/types/role.enum';
+import * as bcrypt from 'bcrypt';
 
 dotenv.config();
 
@@ -109,6 +110,11 @@ export class TeacherService {
       await this.findTeacherByEmail(updateTeacherDto.email);
 
     Object.assign(teacher, updateTeacherDto);
+
+    if (updateTeacherDto.password) {
+      const salt = await bcrypt.genSalt(10);
+      teacher.password = await bcrypt.hash(updateTeacherDto.password, salt);
+    }
 
     return await this.teacherRepository.save(teacher);
   }
