@@ -155,4 +155,22 @@ describe('StudentService', () => {
     });
   });
 
+  describe('getStudentInfo', () => {
+    it('should return student information with subjects', async () => {
+      mockStudentRepository.findOne.mockResolvedValue(mockStudent);
+      mockStudentRepository.findOneOrFail.mockResolvedValue({
+        ...mockStudent,
+        subjects: [{ id: 1, name: 'Mathematics' }],
+      });
+
+      const result = await service.getStudentInfo(1);
+
+      expect(result).toHaveProperty('subjects');
+      expect(mockStudentRepository.findOneOrFail).toHaveBeenCalledWith({
+        where: { id: 1 },
+        relations: ['subjects'],
+      });
+    });
+  });
+
 });
