@@ -105,5 +105,12 @@ describe('TeacherService', () => {
     jest.spyOn(service, 'findTeacherById').mockResolvedValue(mockTeacher);
     await expect(service.deleteTeacher(1, 1)).rejects.toThrow(HttpException);
   });
-  
+
+  it('calculates teacher experience in months', async () => {
+    jest.spyOn(service, 'findTeacherById').mockResolvedValue(mockTeacher);
+    const months = await service.calculateExperience(1);
+    expect(typeof months).toBe('number');
+    expect(months).toBeGreaterThan(0);
+  });
+
 });
