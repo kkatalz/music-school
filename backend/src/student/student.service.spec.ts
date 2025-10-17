@@ -200,4 +200,25 @@ describe('StudentService', () => {
     });
   });
 
+  describe('getStudentsByPeriod', () => {
+    it('should return students within a period', async () => {
+      const mockQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockStudent]),
+      };
+
+      mockStudentRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
+
+      const start = new Date('2020-01-01');
+      const end = new Date('2020-12-31');
+
+      const result = await service.getStudentsByPeriod(start, end);
+
+      expect(result).toHaveLength(1);
+      expect(mockQueryBuilder.where).toHaveBeenCalled();
+    });
+  });
+
 });
