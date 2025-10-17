@@ -138,7 +138,7 @@ describe('TeacherService', () => {
   });
 
   it('returns subjects for a given teacher', async () => {
-    mockQueryBuilder.getMany.mockResolvedValue([{ id: 5, name: 'Math' }]);
+    mockQueryBuilder.getMany.mockResolvedValue([{ id: 5, name: 'Piano' }]);
     const result = await service.getMySubjects(1, 2023, 2);
     expect(result).toHaveLength(1);
     expect(subjectRepo.createQueryBuilder).toHaveBeenCalledWith('subject');
