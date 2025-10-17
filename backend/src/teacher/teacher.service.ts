@@ -113,10 +113,17 @@ export class TeacherService {
     return await this.teacherRepository.save(teacher);
   }
 
-  async deleteTeacher(teacherId: number): Promise<DeleteResult> {
-    await this.findTeacherById(teacherId);
+  async deleteTeacher(teacherId: number): Promise<TeacherResponseDto> {
+    const teacher = await this.findTeacherById(teacherId);
+    if (teacherId == teacher.id) {
+      throw new HttpException(
+        'You can not delete yourself',
+        HttpStatus.FORBIDDEN,
+      );
+    }
 
-    return await this.teacherRepository.delete(teacherId);
+    await this.teacherRepository.delete(teacherId);
+    return this.generateTeacherResponse(teacher);
   }
 
   async calculateExperience(teacherId: number): Promise<Number> {
