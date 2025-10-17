@@ -143,4 +143,16 @@ describe('StudentService', () => {
     });
   });
 
+  describe('deleteStudent', () => {
+    it('should delete a student', async () => {
+      mockStudentRepository.findOne.mockResolvedValue(mockStudent);
+      mockStudentRepository.delete.mockResolvedValue({ affected: 1 });
+
+      const result = await service.deleteStudent(1);
+
+      expect(result).toHaveProperty('id', 1);
+      expect(mockStudentRepository.delete).toHaveBeenCalledWith(1);
+    });
+  });
+
 });
