@@ -66,3 +66,6 @@ Postgres cheat sheet:
 3. SELECT \* FROM teachers;
 4. \q - exit
 5. DELETE FROM grades;
+6. INSERT INTO teachers ( first_name, last_name, phone, education, email, password, is_head_teacher) VALUES ('Head', 'Headovich', '3809565909', 'Master of Computer Science', 'headovich@example.com', '$2a$12$vd.E6Rf8xJZzi9sUMB0JVuqOSRTAko8vxDzLqMJQHyViiu37GdJ1K', TRUE);
+
+<!-- password: test12 -->

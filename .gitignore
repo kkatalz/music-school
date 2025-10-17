@@ -2,5 +2,9 @@
 /backend/node_modules
 
 /frontend/venv
+frontend/__pycache__
+frontend/pages/__pycache__
+frontend/pages/student_pages/__pycache__
+frontend/pages/teacher_pages/__pycache__
 
 .env
