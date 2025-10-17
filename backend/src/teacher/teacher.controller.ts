@@ -23,17 +23,17 @@ export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
   @Get()
-  async getAllTeachers() {
+  async getAllTeachers(): Promise<TeacherResponseDto[]> {
     return await this.teacherService.getAllTeachers();
   }
 
-  @Get('/experience/:id')
-  async calculateExperience(@Param('id') teacherId: number) {
+  @Get('experience/:id')
+  async calculateExperience(@Param('id') teacherId: number): Promise<Number> {
     return await this.teacherService.calculateExperience(teacherId);
   }
 
   @Get(':id')
-  async getTeacher(@Param('id') teacherId: number) {
+  async getTeacher(@Param('id') teacherId: number): Promise<TeacherEntity> {
     return await this.teacherService.findTeacherById(teacherId);
   }
 

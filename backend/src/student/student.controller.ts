@@ -114,7 +114,9 @@ export class StudentContoller {
 
   @Delete(':id')
   @Roles(Role.HeadTeacher)
-  async deleteStudent(@Param('id') studentId: number): Promise<DeleteResult> {
+  async deleteStudent(
+    @Param('id') studentId: number,
+  ): Promise<StudentResponseDto> {
     return await this.studentService.deleteStudent(studentId);
   }
 }

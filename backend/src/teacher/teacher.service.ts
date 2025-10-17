@@ -25,7 +25,7 @@ export class TeacherService {
     private readonly subjectRepository: Repository<SubjectEntity>,
   ) {}
 
-  async getAllTeachers() {
+  async getAllTeachers(): Promise<TeacherResponseDto[]> {
     const teachers = await this.teacherRepository.find();
     return teachers.map((teacher) => this.generateTeacherResponse(teacher));
   }
@@ -176,8 +176,11 @@ export class TeacherService {
     const role = teacher.isHeadTeacher ? Role.HeadTeacher : Role.Teacher;
     return {
       id: teacher.id,
+      firstName: teacher.firstName,
       lastName: teacher.lastName,
       phone: teacher.phone,
+      education: teacher.education,
+      startWorkDate: teacher.startWorkDate,
       email: teacher.email,
       token: this.generateToken(teacher),
       isHeadTeacher: teacher.isHeadTeacher,

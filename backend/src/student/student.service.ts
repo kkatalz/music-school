@@ -51,12 +51,15 @@ export class StudentService {
     return await this.studentRepository.save(student);
   }
 
-  async deleteStudent(studentId: number): Promise<DeleteResult> {
-    await this.findStudentById(studentId);
-    return await this.studentRepository.delete(studentId);
+  async deleteStudent(studentId: number): Promise<StudentResponseDto> {
+    const student = await this.findStudentById(studentId);
+    await this.studentRepository.delete(studentId);
+    return this.generateStudentResponse(student);
   }
 
   async getStudentInfo(studentId: number): Promise<StudentEntity> {
+    await this.findStudentById(studentId);
+
     return await this.studentRepository.findOneOrFail({
       where: { id: studentId },
       relations: ['subjects'],
