@@ -3,7 +3,7 @@ from streamlit_option_menu import option_menu
 import auth
 
 from pages.student_pages import grades as student_grades, subjects as student_subjects, student_info
-from pages.teacher_pages import dashboard as teacher_dashboard, students as teacher_students
+from pages.teacher_pages import dashboard as teacher_dashboard, students as teacher_students, teachers
 
 import api_client as api
 
@@ -30,6 +30,13 @@ TEACHER_PAGES = {
     "Панель керування": teacher_dashboard,
     "Студенти": teacher_students,
 }
+
+HEAD_TEACHER_PAGES = {
+    "Панель керування": teacher_dashboard,
+    "Студенти": teacher_students,
+    "Вчителі": teachers,
+}
+
 
 
 
@@ -78,6 +85,23 @@ def show_teacher_dashboard():
     page.show()
 
 
+def show_head_teacher_dashboard():
+    """Відображає бічну панель та сторінки для вчителя."""
+    #st.sidebar.title(f"Вітаю, {st.session_state['user'].get('firstName', 'Вчитель')}!")
+    #auth.add_logout_button()
+
+    selection = option_menu(
+        menu_title=None,
+        options=list(HEAD_TEACHER_PAGES.keys()),
+        icons=['speedometer2', 'people-fill'],
+        orientation="horizontal"
+    )
+
+    page = HEAD_TEACHER_PAGES[selection]
+    page.show()
+
+
+
 
 # st.warning("Ви перебуваєте в тестовому режимі. Вхід до системи вимкнено.", icon="⚠️")
 # st.session_state['authenticated'] = True
@@ -96,17 +120,16 @@ if not st.session_state.get('authenticated'):
 else:
     auth.add_logout_button()
     role = st.session_state.get('role')
-
+    st.info(f'Role={role}')
     if role == 'student':
         show_student_dashboard()
     elif role == 'teacher':
         show_teacher_dashboard()
-    elif role == 'head_teacher':
-        pass
-        # TODO: show_head_teacher_dashboard()
+    elif role == 'headTeacher':
+        show_head_teacher_dashboard()
     else:
         st.error("Невідома роль користувача. Будь ласка, зверніться до адміністратора.")
-        auth.add_logout_button()
+        #auth.add_logout_button()
 
 teacher_data = {
     "firstName": "Марія",
