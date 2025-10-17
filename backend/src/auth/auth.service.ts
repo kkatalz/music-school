@@ -74,7 +74,7 @@ export class AuthService {
         lastName: teacher.lastName,
         phone: teacher.phone,
         email: teacher.email,
-        token: this.generateToken(teacher, Role.Teacher),
+        token: this.generateToken(teacher, role),
         isHeadTeacher: teacher.isHeadTeacher,
         role,
       };
