@@ -221,4 +221,33 @@ describe('StudentService', () => {
     });
   });
 
+  describe('getStudentSubjects', () => {
+    it('should return student subjects', async () => {
+      const mockQueryBuilder = {
+        innerJoin: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([{ id: 1, name: 'Mathematics' }]),
+      };
+
+      mockStudentRepository.findOne.mockResolvedValue(mockStudent);
+      mockSubjectRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
+
+      const result = await service.getStudentSubjects(1, 2, 1);
+
+      expect(result).toHaveLength(1);
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
+    });
+
+    it('should throw an error if student is not found', async () => {
+      mockStudentRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.getStudentSubjects(999)).rejects.toThrow(
+        'Student not found',
+      );
+    });
+  });
+
 });
