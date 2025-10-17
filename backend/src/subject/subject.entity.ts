@@ -1,13 +1,14 @@
-import { StudentEntity } from '../student/student.entity';
-import { TeacherEntity } from '../teacher/teacher.entity';
 import {
   Column,
   Entity,
   JoinTable,
-  ManyToMany, OneToMany,
+  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {GradeEntity} from "../grade/grade.entity";
+import { GradeEntity } from '../grade/grade.entity';
+import { StudentEntity } from '../student/student.entity';
+import { TeacherEntity } from '../teacher/teacher.entity';
 
 @Entity({ name: 'subjects' })
 export class SubjectEntity {

@@ -1,21 +1,27 @@
-import { IsBoolean, IsEmail, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateTeacherDto {
   @IsString()
-  readonly lastName: string;
+  @IsOptional()
+  readonly lastName?: string;
 
   @IsString()
-  readonly phone: string;
+  @IsOptional()
+  readonly phone?: string;
 
   @IsString()
+  @IsOptional()
   readonly education?: string;
 
   @IsEmail()
-  readonly email: string;
+  @IsOptional()
+  readonly email?: string;
 
   @IsString()
-  readonly password: string;
+  @IsOptional()
+  readonly password?: string;
 
   @IsBoolean()
-  readonly isHeadTeacher: boolean;
+  @IsOptional()
+  readonly isHeadTeacher?: boolean;
 }

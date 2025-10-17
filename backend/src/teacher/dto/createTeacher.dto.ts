@@ -18,8 +18,8 @@ export class CreateTeacherDto {
   lastName: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  phone: number;
+  @IsString()
+  phone: string;
 
   @IsOptional()
   @IsString()

@@ -1,16 +1,15 @@
 import * as bcrypt from 'bcrypt';
 
-import { SubjectEntity } from '../subject/subject.entity';
-import { GradeEntity } from '../grade/grade.entity';
 import {
   BeforeInsert,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { GradeEntity } from '../grade/grade.entity';
+import { SubjectEntity } from '../subject/subject.entity';
 
 @Entity({ name: 'teachers' })
 export class TeacherEntity {
