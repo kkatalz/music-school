@@ -100,22 +100,37 @@ export class StudentService {
 
   async getStudentSubjects(
     studentId: number,
-    year: number,
-    semester: number,
+    year?: number,
+    semester?: number,
   ): Promise<SubjectEntity[]> {
-    return await this.subjectRepository
+    const student = await this.studentRepository.findOne({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+    }
+
+    const query = this.subjectRepository
       .createQueryBuilder('subject')
       .innerJoin('subject.students', 'student')
-      .where('student.id = :studentId', { studentId })
-      .andWhere('subject.studyYear = :year', { year })
-      .andWhere('subject.semester = :semester', { semester })
-      .getMany();
+      .where('student.id = :studentId', { studentId });
+
+    if (year !== undefined) {
+      query.andWhere('subject.studyYear = :year', { year });
+    }
+
+    if (semester !== undefined) {
+      query.andWhere('subject.semester = :semester', { semester });
+    }
+
+    return query.getMany();
   }
 
-  async getTeachers(
+  async getStudentTeachers(
     studentId: number,
-    year: number,
-    semester: number,
+    year?: number,
+    semester?: number,
   ): Promise<TeacherEntity[]> {
     const student = await this.studentRepository.findOne({
       where: { id: studentId },
@@ -125,17 +140,23 @@ export class StudentService {
       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
     }
 
-    const teachers = await this.teacherRepository
+    const query = this.teacherRepository
       .createQueryBuilder('teacher')
       .innerJoin('teacher.subjects', 'subject')
-      .innerJoin('subject.students', 'student')
-      .where('student.id = :studentId', { studentId })
-      .andWhere('subject.studyYear = :year', { year })
-      .andWhere('subject.semester = :semester', { semester })
-      .distinct(true)
-      .getMany();
+      .innerJoin('subject.students', 'student', 'student.id = :studentId', {
+        studentId,
+      })
+      .distinct(true);
 
-    return teachers;
+    if (year !== undefined) {
+      query.andWhere('subject.studyYear = :year', { year });
+    }
+
+    if (semester !== undefined) {
+      query.andWhere('subject.semester = :semester', { semester });
+    }
+
+    return query.getMany();
   }
 
   generateToken(student: StudentEntity): string {

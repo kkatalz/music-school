@@ -51,44 +51,26 @@ export class StudentContoller {
   @Get(':studentId/subjects')
   async getStudentSubjects(
     @Param('studentId') studentId: number,
-    @Query('year') year: string,
-    @Query('semester') semester: string,
+    @Query('year') year?: number,
+    @Query('semester') semester?: number,
   ): Promise<SubjectEntity[]> {
-    if (!year || !semester) {
-      throw new BadRequestException('Year and semester are required');
-    }
-
-    const yearNum = parseInt(year);
-    const semesterNum = parseInt(semester);
-
-    if (isNaN(yearNum) || isNaN(semesterNum)) {
-      throw new BadRequestException('Year and semester must be valid numbers');
-    }
-
     return await this.studentService.getStudentSubjects(
       studentId,
-      yearNum,
-      semesterNum,
+      year,
+      semester,
     );
   }
 
   @Get(':id/teachers')
-  async getTeachers(
-    @Param('id') studentId: string,
-    @Query('year') year: string,
-    @Query('semester') semester: string,
+  async getStudentTeachers(
+    @Param('id') studentId: number,
+    @Query('year') year?: number,
+    @Query('semester') semester?: number,
   ): Promise<TeacherEntity[]> {
-    const yearNum = parseInt(year, 10);
-    const semesterNum = parseInt(semester, 10);
-
-    if (isNaN(yearNum) || isNaN(semesterNum)) {
-      throw new BadRequestException('Year and semester must be valid numbers');
-    }
-
-    return await this.studentService.getTeachers(
-      parseInt(studentId, 10),
-      yearNum,
-      semesterNum,
+    return await this.studentService.getStudentTeachers(
+      studentId,
+      year,
+      semester,
     );
   }
 
