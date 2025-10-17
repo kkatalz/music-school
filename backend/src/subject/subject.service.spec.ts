@@ -112,5 +112,22 @@ describe('SubjectService', () => {
     const result = await service.deleteSubject(1);
     expect(result.id).toBe(1);
   });
+
+  it('should throw when updating non-existing subject', async () => {
+    subjectRepository.findOne.mockResolvedValue(null);
+
+    await expect(service.updateSubject(1, { name: 'Updated' } as any)).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it('should update existing subject', async () => {
+    const subject = { id: 1, name: 'Old Name' };
+    subjectRepository.findOne.mockResolvedValue(subject as any);
+    subjectRepository.save.mockResolvedValue({ ...subject, name: 'Updated' } as any);
+
+    const result = await service.updateSubject(1, { name: 'Updated' } as any);
+    expect(result.name).toBe('Updated');
+  });
   
 });
