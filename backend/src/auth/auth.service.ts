@@ -71,7 +71,10 @@ export class AuthService {
       const role = teacher.isHeadTeacher ? Role.HeadTeacher : Role.Teacher;
       return {
         id: teacher.id,
+        firstName: teacher.firstName,
         lastName: teacher.lastName,
+        education: teacher.education,
+        startWorkDate: teacher.startWorkDate,
         phone: teacher.phone,
         email: teacher.email,
         token: this.generateToken(teacher, role),
