@@ -128,4 +128,21 @@ describe('TeacherService', () => {
     (teacherRepo.findOne as jest.Mock).mockResolvedValue(null);
     await expect(service.findTeacherById(999)).rejects.toThrow(HttpException);
   });
+
+  it('returns students for a given teacher', async () => {
+    mockQueryBuilder.getMany.mockResolvedValue([{ id: 1, firstName: 'Student' }]);
+    const result = await service.getMyStudents(1, 2023, 1);
+    expect(result).toHaveLength(1);
+    expect(studentRepo.createQueryBuilder).toHaveBeenCalledWith('student');
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
+  });
+
+  it('returns subjects for a given teacher', async () => {
+    mockQueryBuilder.getMany.mockResolvedValue([{ id: 5, name: 'Math' }]);
+    const result = await service.getMySubjects(1, 2023, 2);
+    expect(result).toHaveLength(1);
+    expect(subjectRepo.createQueryBuilder).toHaveBeenCalledWith('subject');
+    expect(mockQueryBuilder.andWhere).toHaveBeenCalledTimes(2);
+  });
+
 });
