@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { SubjectService } from 'src/subject/subject.service';
@@ -38,8 +46,7 @@ export class SubjectController {
   }
 
   @Post(':id/students')
-  @Roles(Role.Teacher)
-  @Roles(Role.HeadTeacher)
+  @Roles(Role.Teacher, Role.HeadTeacher)
   async addStudentToSubject(
     @Body('studentId') studentId: number,
     @Param('id') subjectId: number,

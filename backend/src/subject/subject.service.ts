@@ -5,14 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { StudentEntity } from 'src/student/student.entity';
 import { CreateSubjectDto } from 'src/subject/dto/createSubject.dto';
 import { SubjectsNamesResponseDto } from 'src/subject/dto/subjectsNamesResponse.dto';
 import { SubjectEntity } from 'src/subject/subject.entity';
-import { CreateTeacherDto } from 'src/teacher/dto/createTeacher.dto';
-import { TeacherResponseDto } from 'src/teacher/dto/teacherResponse.dto';
-import { UpdateTeacherDto } from 'src/teacher/dto/updateTeacherDto';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
-import { StudentEntity } from 'src/student/student.entity';
 import { Repository } from 'typeorm';
 import { UpdateSubjectDto } from './dto/UpdateSubject.dto';
 
@@ -23,7 +20,7 @@ export class SubjectService {
     private readonly subjectRepository: Repository<SubjectEntity>,
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
-    @InjectRepository(TeacherEntity)
+    @InjectRepository(StudentEntity)
     private readonly studentRepository: Repository<StudentEntity>,
   ) {}
 
@@ -107,7 +104,6 @@ export class SubjectService {
     studentId: number,
     subjectId: number,
   ): Promise<SubjectEntity> {
-    console.log(studentId);
     const subject = await this.subjectRepository.findOne({
       where: {
         id: subjectId,
@@ -120,9 +116,8 @@ export class SubjectService {
 
     const student = await this.studentRepository.findOne({
       where: { id: studentId },
-      relations: ['subjects'],
+      // relations: ['subjects'],
     });
-    console.log(student);
 
     if (!student) {
       throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
