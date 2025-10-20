@@ -6,6 +6,7 @@ import { GradeService } from './grade.service';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TeacherEntity } from 'src/teacher/teacher.entity';
       StudentEntity,
       TeacherEntity,
     ]),
+    MailModule,
   ],
   controllers: [GradeController],
   providers: [GradeService],

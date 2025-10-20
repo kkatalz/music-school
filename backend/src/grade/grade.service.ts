@@ -13,6 +13,7 @@ import { GradeEntity } from './grade.entity';
 import { SubjectEntity } from 'src/subject/subject.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class GradeService {
@@ -25,6 +26,7 @@ export class GradeService {
     private readonly studentRepository: Repository<StudentEntity>,
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
+    private readonly mailService: MailService,
   ) {}
 
   async setGrade(createGradeDto: CreateGradeDto): Promise<GradeResponseDto> {
@@ -100,6 +102,16 @@ export class GradeService {
       },
       relations: ['subject', 'student', 'teacher'],
     });
+
+    // Відправка листа учню
+    if (updatedGrade.student && updatedGrade.student.email) {
+      await this.mailService.sendGradeNotification(
+        updatedGrade.student.email,
+        updatedGrade.subject?.name ?? 'Unknown subject',
+        updatedGrade.value!,
+      );
+    }
+
     return this.gradeResponseDto(updatedGrade);
   }
 

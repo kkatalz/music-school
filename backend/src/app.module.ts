@@ -17,6 +17,7 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { GradeModule } from './grade/grade.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AuthModule } from 'src/auth/auth.module';
     SubjectModule,
     GradeModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [
