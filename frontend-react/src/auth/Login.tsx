@@ -3,6 +3,7 @@ import type { LoginCredentials } from "./auth.types";
 import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 
+//import backgroundImage from '../assets/background-main.jpg';
 
 
 export const Login = () => {
@@ -19,9 +20,18 @@ export const Login = () => {
     mutate({ email, password });
   };
 
-  
+
   return (
-   <div  className="flex justify-center items-center min-h-screen bg-gray-50">
+    <>
+    <div className="fixed top-0 left-0 w-screen h-screen -z-10">
+      <img src="/background-main.jpg"
+      alt="Background"
+      className="w-full h-full object-cover">
+      </img>
+    </div>
+
+
+   <div  className="flex justify-center items-center min-h-screen">
       <form
         className="p-8 border border-gray-200 rounded-lg shadow-lg max-w-md w-full bg-white" 
        onSubmit={handleSubmit}>
@@ -70,5 +80,6 @@ export const Login = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
