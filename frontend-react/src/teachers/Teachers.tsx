@@ -1,4 +1,3 @@
-import React from "react";
 import { useTeachers } from "./useTeachers";
 
 export const Teachers = () => {

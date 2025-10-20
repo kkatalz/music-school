@@ -1,18 +1,39 @@
 import { loginUser } from "./auth.service";
 import type { LoginCredentials } from "./auth.types";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
-
-//import backgroundImage from '../assets/background-main.jpg';
+import { Role } from "../teachers/teacher.types";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+    const navigate = useNavigate();
+  const { login } = useAuth();
+
+
     const { mutate, isPending, isError, error, data, isSuccess } = useMutation({
     mutationFn: (credentials: LoginCredentials) => loginUser(credentials),
   });
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      // save user data in global context
+      login(data);
+      
+      // go to proper page based on user's role
+      if (data.role === Role.Student) {
+        navigate('/student');
+      } else  if (data.role === Role.Teacher) {
+        console.log('teacher!!!')
+      } else if (data.role === Role.HeadTeacher) {
+        console.log('head Teacher!!!')
+      }
+    }
+  }, [isSuccess, data, login, navigate]);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
