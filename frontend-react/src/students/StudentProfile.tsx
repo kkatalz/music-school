@@ -1,4 +1,4 @@
-import { useGetStudentInfo } from "./useStudents";
+import { useGetStudentInfo, useGetStudentStudyYears } from "./useStudents";
 import { useAuth } from "../auth/AuthContext";
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ export const StudentProfile = () => {
     const studentId = user ? Number(user.id) : null; 
 
     const { data: student, isLoading, isError, error } = useGetStudentInfo(studentId);
+    const { data: studyYears } = useGetStudentStudyYears(studentId);
 
   if (isLoading) {
     return <div>Loading info...</div>;
@@ -63,6 +64,15 @@ export const StudentProfile = () => {
                 {new Date(student.startStudyDate).toLocaleDateString()}
             </span>
           </div>
+          <div className="flex items-center">
+            <svg className="w-5 h-5 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span className="font-semibold text-gray-700">Year of study:</span>
+            <span className="ml-2 text-gray-900">
+                {Number(studyYears) + 1}
+            </span>
+          </div>
+
+          
         </div>
       </div>
     </div>

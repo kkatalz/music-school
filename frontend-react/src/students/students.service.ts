@@ -23,3 +23,8 @@ export const updateStudentPassword = async(newPassword: string): Promise<Student
     const response: AxiosResponse<StudentResponse> = await axios.patch(`/api/students/password`, payload, getAuthHeaders());
     return response.data;
 }
+
+export const getStudentStudyYears = async(studentId: number | null): Promise<number> => {
+  const response: AxiosResponse<number> = await axios.get(`/api/students/${studentId}/study-years`, getAuthHeaders());
+  return response.data;
+}
