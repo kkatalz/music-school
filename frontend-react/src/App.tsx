@@ -1,19 +1,25 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import { Teachers } from "./teachers/Teachers";
 import { Login } from "./auth/Login";
-const queryClient = new QueryClient();
+import { StudentDashboardLayout } from "./students/StudentDashboardLayout";
+import { StudentProfile } from "./students/StudentProfile";
+import { StudentGrades } from "./students/StudentGrades";
+import { ProtectedRoute } from "./auth/ProtectedRoute";
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/teachers" element={<Teachers />} />
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
+      <Route path="/login" element={<Login />} />
+      <Route path="/teachers" element={<Teachers />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/student" element={<StudentDashboardLayout />}>
+          <Route path="profile" element={<StudentProfile />} />
+          <Route path="grades" element={<StudentGrades />} />
+        </Route>
+      </Route>
+
+    </Routes>
   );
 };
 

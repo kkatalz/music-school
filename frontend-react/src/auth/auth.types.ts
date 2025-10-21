@@ -18,7 +18,7 @@ export interface StudentResponse extends BaseUser {
   role: Role.Student;
   parentPhone: string;
   address: string;
-  startStudyDate: string;
+  startStudyDate: Date;
 }
 
 export interface TeacherResponse extends BaseUser {
