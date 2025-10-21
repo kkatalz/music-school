@@ -1,6 +1,6 @@
 import { useGetStudentInfo, useGetStudentStudyYears } from "./useStudents";
 import { useAuth } from "../auth/AuthContext";
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { ChangeStudentPasswordForm } from "./ChangeStudentPasswordForm";
 
 
 
@@ -20,7 +20,7 @@ export const StudentProfile = () => {
   }
 
   if(!student) {
-        return <div className="text-center mt-10">Не вдалося завантажити інформацію про студента.</div>; 
+        return <div className="text-center mt-10">Could not load student's data.</div>; 
   }
 
   return (
@@ -75,6 +75,9 @@ export const StudentProfile = () => {
           
         </div>
       </div>
+          {<ChangeStudentPasswordForm></ChangeStudentPasswordForm>}
+
     </div>
+    
   );
 }
