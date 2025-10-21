@@ -28,9 +28,9 @@ export const Login = () => {
       if (data.role === Role.Student) {
         navigate('/student');
       } else  if (data.role === Role.Teacher) {
-        console.log('teacher!!!')
+        navigate('/teacher')
       } else if (data.role === Role.HeadTeacher) {
-        console.log('head Teacher!!!')
+        navigate('/headTeacher');
       }
     }
   }, [isSuccess, data, login, navigate]);

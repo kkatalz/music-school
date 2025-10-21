@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import type { StudentResponse } from "../auth/auth.types";
+import type { Student } from "./student.types";
 
 
 const getAuthHeaders = () => {
@@ -26,5 +27,15 @@ export const updateStudentPassword = async(newPassword: string): Promise<Student
 
 export const getStudentStudyYears = async(studentId: number | null): Promise<number> => {
   const response: AxiosResponse<number> = await axios.get(`/api/students/${studentId}/study-years`, getAuthHeaders());
+  return response.data;
+}
+
+export const getAllStudents = async(): Promise<StudentResponse[]> => {
+  const response: AxiosResponse<StudentResponse[]> = await axios.get("/api/students");
+  return response.data;
+}
+
+export const createStudent = async(student: Student): Promise<StudentResponse> => {
+  const response: AxiosResponse<StudentResponse> = await axios.post("/api/students", student);
   return response.data;
 }
