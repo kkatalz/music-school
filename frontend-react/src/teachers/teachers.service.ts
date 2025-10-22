@@ -32,7 +32,13 @@ export const updateTeacher = async (teacherId: number, newTeacherData: UpdateTea
   return response.data;
 }
 
-export const getTeacherById = async(teacherId: number): Promise<Teacher> => {
+export const getTeacherById = async(teacherId: number | null): Promise<Teacher> => {
   const response: AxiosResponse<Teacher> = await axios.get(`/api/teachers/${teacherId}`, getAuthHeaders());
   return response.data;
+}
+
+export const updateTeacherPassword = async(newPassword: string): Promise<Teacher> => {
+    const payload = { password: newPassword};
+    const response: AxiosResponse<Teacher> = await axios.patch(`/api/teachers/password`, payload, getAuthHeaders());
+    return response.data;
 }

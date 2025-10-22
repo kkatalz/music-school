@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTeachers, createTeacher, deleteTeacher, updateTeacher, getTeacherById } from "./teachers.service";
+import { getTeachers, createTeacher, deleteTeacher, updateTeacher, getTeacherById, updateTeacherPassword } from "./teachers.service";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from "react-router";
 import type { CreateTeacher, UpdateTeacher } from "./teacher.types";
@@ -19,7 +19,7 @@ export const useTeachers = () => {
   });
 };
 
-export const useGetTeacherById = (teacherId: number) => {
+export const useGetTeacherById = (teacherId: number | null) => {
   return useQuery({
     queryKey: ["teacherById", teacherId],
     queryFn: () => getTeacherById(teacherId),
@@ -89,6 +89,25 @@ export const useUpdateTeacher = () => {
       console.error("Error while deleting:", err);
     }
   });
+};
+
+
+export const useUpdateTeacherPassword = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    return useMutation({
+      mutationFn: (newPassword: string) => updateTeacherPassword(newPassword),
+
+      onSuccess: () => {
+        alert('Password was successfully updated!');
+        // setNewPassword('');
+        // setNewPasswordFinal('');
+        queryClient.invalidateQueries({ queryKey: ['teachers'] });
+      },
+      onError: (err: any) => {
+        console.error("Error while updating password:", err);
+      }
+    })
 };
 
 
