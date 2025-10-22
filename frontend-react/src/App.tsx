@@ -9,6 +9,8 @@ import { TeacherDashboard } from "./teachers/TeacherDashboard";
 import { HeadTeacherDashboard } from "./teachers/HeadTeacherDashboard";
 import { AllStudents } from "./students/AllStudents";
 import { CreateStudentForm } from "./students/CreateStudentForm";
+import { CreateTeacherForm } from "./teachers/CreateTeacherForm";
+import { UpdateTeacherForm } from "./teachers/UpdateTeacherForm";
 
 const App = () => {
   return (
@@ -21,6 +23,10 @@ const App = () => {
 
       <Route element={<ProtectedRoute />}>
           <Route path="/headTeacher" element={<HeadTeacherDashboard />} >
+          <Route path="teachers" element={<Teachers />} />
+          <Route path="teachers/new" element={<CreateTeacherForm/>} />
+          <Route path="teachers/edit/:teacherId" element={<UpdateTeacherForm/>} />
+          
           <Route path="students" element={< AllStudents/>} />
           <Route path="students/new" element={< CreateStudentForm/>} />
 

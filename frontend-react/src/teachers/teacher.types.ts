@@ -26,3 +26,12 @@ export interface CreateTeacher {
   password: string;
   isHeadTeacher?: boolean;
 }
+
+export interface UpdateTeacher {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  education?: string;
+  email?: string;
+  isHeadTeacher?: boolean;
+}

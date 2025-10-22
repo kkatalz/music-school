@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from "axios";
-import type { Teacher, CreateTeacher } from "./teacher.types";
+import type { Teacher, CreateTeacher, UpdateTeacher } from "./teacher.types";
 
 
 const getAuthHeaders = () => {
@@ -19,5 +19,20 @@ export const getTeachers = async (): Promise<Teacher[]> => {
 
 export const createTeacher = async (newTeacher: CreateTeacher): Promise<Teacher> => {
   const response: AxiosResponse<Teacher> = await axios.post("/api/teachers", newTeacher, getAuthHeaders());
+  return response.data;
+}
+
+export const deleteTeacher = async (teacherId: number): Promise<Teacher> => {
+  const response: AxiosResponse<Teacher> = await axios.delete(`/api/teachers/${teacherId}`, getAuthHeaders());
+  return response.data;
+}
+
+export const updateTeacher = async (teacherId: number, newTeacherData: UpdateTeacher): Promise<Teacher> => {
+  const response: AxiosResponse<Teacher> = await axios.patch(`/api/teachers/${teacherId}`, newTeacherData, getAuthHeaders());
+  return response.data;
+}
+
+export const getTeacherById = async(teacherId: number): Promise<Teacher> => {
+  const response: AxiosResponse<Teacher> = await axios.get(`/api/teachers/${teacherId}`, getAuthHeaders());
   return response.data;
 }
