@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStudentInfo, updateStudentPassword, getStudentStudyYears, getAllStudents, createStudent} from "./students.service";
+import { getStudentInfo, updateStudentPassword, getStudentStudyYears, getAllStudents, createStudent, 
+  updateStudent, deleteStudent
+} from "./students.service";
 import type { StudentResponse } from "../auth/auth.types";
 import type { Student } from "./student.types";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -49,3 +51,46 @@ export const useCreateStudent = () => {
     }
   });
 };
+
+
+export const useUpdateStudent = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+        mutationFn: ({ studentId, newStudentData }: { studentId: number, newStudentData: any }) => 
+          updateStudent(studentId, newStudentData),
+    
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      alert('Student was updated!');
+      navigate('/headTeacher/students'); 
+    },
+    onError: (err: any) => {
+      alert(err);
+      console.error("Error while updating:", err);
+    }
+  });
+};
+
+
+export const useDeleteStudent = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: (studentId: number) => deleteStudent(studentId),
+    
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      alert('Student was deleted!');
+      navigate('/headTeacher/students'); 
+    },
+    onError: (err: any) => {
+      alert(err);
+      console.error("Error while deleting:", err);
+    }
+  });
+};
+
+

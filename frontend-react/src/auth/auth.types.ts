@@ -6,7 +6,7 @@ export interface LoginCredentials {
 }
 
 interface BaseUser {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   phone: string;

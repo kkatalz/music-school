@@ -2,9 +2,11 @@ import type { StudentResponse } from "../auth/auth.types";
 
 interface StudentCardProps {
   student: StudentResponse;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-export const StudentCard = ({ student }: StudentCardProps) => {
+export const StudentCard = ({ student, onEdit, onDelete }: StudentCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
       <div className="border-b border-gray-200 pb-4 mb-4">
@@ -33,6 +35,21 @@ export const StudentCard = ({ student }: StudentCardProps) => {
       <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
         <span>Start study date: {new Date(student.startStudyDate).toLocaleDateString()}</span>
       </div>
+
+       <div className="flex space-x-2">
+          <button 
+            onClick={onEdit}
+            className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors"
+          >
+            Edit
+          </button>
+          <button 
+             onClick={onDelete}
+            className="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
     </div>
   );
 };

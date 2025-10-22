@@ -35,6 +35,15 @@ export const HeadTeacherDashboard = () => {
           >
             Students
           </NavLink>
+
+           <NavLink
+            to="/headTeacher/teachers"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
+            }
+          >
+            Teachers
+          </NavLink>
          
         </nav>
         <div className="p-4 border-t border-gray-700">
