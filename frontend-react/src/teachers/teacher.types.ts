@@ -16,3 +16,13 @@ export interface Teacher {
   isHeadTeacher: boolean;
   role: Role;
 }
+
+export interface CreateTeacher {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  education?: string;
+  email: string;
+  password: string;
+  isHeadTeacher?: boolean;
+}
