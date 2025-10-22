@@ -18,7 +18,7 @@ export const Teachers = () => {
   };
 
     const handleEdit = (teacherId: number) => {
-    navigate(`/headTeacher/teachers/edit/${teacherId}`); // TODO: add this path to App.tsx
+    navigate(`/headTeacher/teachers/edit/${teacherId}`);
   };
 
 

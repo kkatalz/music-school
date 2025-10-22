@@ -1,11 +1,26 @@
-import { useGetAllStudents } from "./useStudents";
+import { useGetAllStudents, useDeleteStudent } from "./useStudents";
 import { StudentCard } from "./StudentCatd";
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 
 
 export const AllStudents = () => {
+  const navigate = useNavigate();
   const { data: students, isLoading, isError, error } = useGetAllStudents();
+  const { mutate: deleteStudent } = useDeleteStudent();
+
+    const handleDelete = (studentId: number) => {
+    if (window.confirm("Are you sure about deleting this student?")) {
+      deleteStudent(studentId);
+    }
+  };
+
+    const handleEdit = (studentId: number) => {
+      // TODO: implement
+    navigate(`/headTeacher/students/edit/${studentId}`);
+  };
+
 
   if (isError) {
     return <h1>{error.message}</h1>;
@@ -33,7 +48,12 @@ export const AllStudents = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {students.map((student) => (
-            <StudentCard key={student.id} student={student} />
+            <StudentCard 
+            key={student.id} 
+            student={student}
+            onEdit={() => handleEdit(student.id)}
+            onDelete={() => handleDelete(student.id)}
+             />
           ))}
         </div>
       )}

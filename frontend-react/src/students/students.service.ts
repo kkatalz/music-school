@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import type { StudentResponse } from "../auth/auth.types";
-import type { Student } from "./student.types";
+import type { Student, UpdateStudent } from "./student.types";
 
 
 const getAuthHeaders = () => {
@@ -37,5 +37,15 @@ export const getAllStudents = async(): Promise<StudentResponse[]> => {
 
 export const createStudent = async(student: Student): Promise<StudentResponse> => {
   const response: AxiosResponse<StudentResponse> = await axios.post("/api/students", student, getAuthHeaders());
+  return response.data;
+}
+
+export const updateStudent = async(studentId: number, newStudentData: UpdateStudent) => {
+  const response: AxiosResponse<StudentResponse> = await axios.put(`/api/students/${studentId}`, newStudentData, getAuthHeaders());
+  return response.data;
+}
+
+export const deleteStudent = async (studentId: number): Promise<StudentResponse> => {
+  const response: AxiosResponse<StudentResponse> = await axios.delete(`/api/students/${studentId}`, getAuthHeaders());
   return response.data;
 }

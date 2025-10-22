@@ -12,6 +12,7 @@ import { CreateStudentForm } from "./students/CreateStudentForm";
 import { CreateTeacherForm } from "./teachers/CreateTeacherForm";
 import { UpdateTeacherForm } from "./teachers/UpdateTeacherForm";
 import { TeacherProfile } from "./teachers/TeacherProfile";
+import { UpdateStudentForm } from "./students/UpdateStudentForm";
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
           
           <Route path="students" element={< AllStudents/>} />
           <Route path="students/new" element={< CreateStudentForm/>} />
+          <Route path="students/edit/:studentId" element={<UpdateStudentForm/>} />
 
       </Route>
       </Route>
