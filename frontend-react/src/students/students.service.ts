@@ -36,6 +36,6 @@ export const getAllStudents = async(): Promise<StudentResponse[]> => {
 }
 
 export const createStudent = async(student: Student): Promise<StudentResponse> => {
-  const response: AxiosResponse<StudentResponse> = await axios.post("/api/students", student);
+  const response: AxiosResponse<StudentResponse> = await axios.post("/api/students", student, getAuthHeaders());
   return response.data;
 }

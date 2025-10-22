@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { TeacherDashboard } from "./teachers/TeacherDashboard";
 import { HeadTeacherDashboard } from "./teachers/HeadTeacherDashboard";
 import { AllStudents } from "./students/AllStudents";
+import { CreateStudentForm } from "./students/CreateStudentForm";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
       <Route element={<ProtectedRoute />}>
           <Route path="/headTeacher" element={<HeadTeacherDashboard />} >
           <Route path="students" element={< AllStudents/>} />
+          <Route path="students/new" element={< CreateStudentForm/>} />
 
       </Route>
       </Route>
