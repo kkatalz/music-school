@@ -34,13 +34,15 @@ export const deleteSubject = async (subjectId: number): Promise<SubjectResponse>
 }
 
 export const addTeacherToSubject = async (teacherId: number, subjectId: number): Promise<SubjectResponse> => {
-  const response: AxiosResponse<SubjectResponse> = await axios.post(`/api/subjects/${subjectId}/teachers`, teacherId, 
+  const body = { teacherId: teacherId};
+  const response: AxiosResponse<SubjectResponse> = await axios.post(`/api/subjects/${subjectId}/teachers`, body, 
     getAuthHeaders());
     return response.data;
 }
 
 export const addStudentToSubject = async (studentId: number, subjectId: number): Promise<SubjectResponse> => {
-  const response: AxiosResponse<SubjectResponse> = await axios.post(`/api/subjects/${subjectId}/students`, studentId, 
+  const body = { studentId: studentId};
+  const response: AxiosResponse<SubjectResponse> = await axios.post(`/api/subjects/${subjectId}/students`, body, 
     getAuthHeaders());
     return response.data;
 }

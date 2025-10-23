@@ -86,7 +86,7 @@ export const AddTeacherToSubject = () => {
         
         {isError && (
           <p className="mt-4 text-red-500 text-sm">
-            Помилка: {error?.response?.data?.message || 'Could not add teacher to subject.'}
+            Error: {error?.response?.data?.message || 'Could not add teacher to subject.'}
           </p>
         )}
         
