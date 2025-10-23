@@ -87,7 +87,7 @@ export const useAddTeacherToSubject = () => {
       navigate('/headTeacher/subjects/addTeacherToSubject'); 
     },
     onError: (err: any) => {
-      console.error("Error while deleting:", err);
+      console.error("Error while adding:", err);
     }
   });
 };
@@ -97,16 +97,16 @@ export const useAddStudentToSubject = () => {
   const navigate = useNavigate();
 
   return useMutation({
-        mutationFn: ({ studentId, subjectId }: { studentId: number, subjectId: number }) => 
+        mutationFn: ({ studentId, subjectId }: { studentId: number, subjectId: number }) =>
           addStudentToSubject(studentId, subjectId),
     
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subjects'] });
       alert('Student was added to the subject!');
-      navigate('/headTeacher/subjects/addStudentToSubject'); // TODO: add this path to App.tsx
+      navigate('/headTeacher/subjects/addStudentToSubject'); 
     },
     onError: (err: any) => {
-      console.error("Error while deleting:", err);
+      console.error("Error while adding:", err);
     }
   });
 };
