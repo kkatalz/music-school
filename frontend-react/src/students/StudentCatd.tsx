@@ -1,5 +1,5 @@
 import type { StudentResponse } from "../auth/auth.types";
-
+import { useGetStudentStudyYears } from "./useStudents";
 interface StudentCardProps {
   student: StudentResponse;
   onEdit: () => void;
@@ -7,6 +7,8 @@ interface StudentCardProps {
 }
 
 export const StudentCard = ({ student, onEdit, onDelete }: StudentCardProps) => {
+  const { data: studyYears, isLoading: isLoadingYears } = useGetStudentStudyYears(student.id);
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
       <div className="border-b border-gray-200 pb-4 mb-4">
@@ -34,6 +36,19 @@ export const StudentCard = ({ student, onEdit, onDelete }: StudentCardProps) => 
 
       <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
         <span>Start study date: {new Date(student.startStudyDate).toLocaleDateString()}</span>
+      </div>
+
+      <div className="flex items-center justify-left text-xs mb-3">
+        <span className="text-gray-500">Years of study:</span>
+        {isLoadingYears ? (
+          <span className="text-gray-400 italic ml-1">Loading...</span>
+        ) : (
+          <span className="font-medium text-blue-600 ml-1">
+            {studyYears === 0
+              ? 'Less than 1 year'
+              : `${studyYears} ${studyYears === 1 ? 'year' : 'years'}`}
+          </span>
+        )}
       </div>
 
        <div className="flex space-x-2">
