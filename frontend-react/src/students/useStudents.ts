@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getStudentInfo, updateStudentPassword, getStudentStudyYears, getAllStudents, createStudent, 
-  updateStudent, deleteStudent, getMyStudents
+  updateStudent, deleteStudent, getMyStudents, getStudentsByPeriod, getTotalStudentsByPeriod
 } from "./students.service";
 import type { StudentResponse } from "../auth/auth.types";
 import type { Student } from "./student.types";
@@ -113,4 +113,24 @@ export const useGetMyStudents = (
   });
 };
 
+export const useGetStudentsByPeriod = (
+  startDate: string | null, 
+  endDate: string | null
+) => {
+  return useQuery({
+    queryKey: ["studentsByPeriod", startDate, endDate],
+    queryFn: () => getStudentsByPeriod(startDate!, endDate!),
+    enabled: !!startDate && !!endDate,
+  });
+}
 
+export const useGetTotalStudentsByPeriod = (
+  startDate: string | null, 
+  endDate: string | null
+) => {
+  return useQuery({
+    queryKey: ["totalStudentsByPeriod", startDate, endDate],
+    queryFn: () => getTotalStudentsByPeriod(startDate!, endDate!),
+    enabled: !!startDate && !!endDate,
+  });
+}

@@ -67,3 +67,31 @@ export const getMyStudents = async (teacherId: number, year: number | null, seme
 
   return response.data;
 }
+
+export const getStudentsByPeriod = async(
+  startDate: string, 
+  endDate: string
+): Promise<StudentResponse[]> => {
+  const response: AxiosResponse<StudentResponse[]> = await axios.get(
+    "/api/students", 
+    {
+      params: { start: startDate, end: endDate },
+      ...getAuthHeaders()
+    }
+  );
+  return response.data;
+}
+
+export const getTotalStudentsByPeriod = async(
+  startDate: string, 
+  endDate: string
+): Promise<number> => {
+  const response: AxiosResponse<number> = await axios.get(
+    "/api/students/total", 
+    {
+      params: { start: startDate, end: endDate },
+      ...getAuthHeaders()
+    }
+  );
+  return response.data;
+}

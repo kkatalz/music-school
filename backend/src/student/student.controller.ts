@@ -27,11 +27,6 @@ import { ChangePasswordDto } from 'src/types/changePassword.dto';
 export class StudentContoller {
   constructor(private readonly studentService: StudentService) {}
 
-  @Get()
-  async getAllStudents(): Promise<StudentEntity[]> {
-    return await this.studentService.getAllStudents();
-  }
-
   @Patch('password')
   @Roles(Role.Student)
   async changePassword(
@@ -45,7 +40,7 @@ export class StudentContoller {
     );
   }
 
-  @Get('/total')
+  @Get('total')
   async getTotalStudents(
     @Query('start') startDate: string,
     @Query('end') endDate: string,
@@ -90,15 +85,9 @@ export class StudentContoller {
     );
   }
 
-  @Get()
-  async getStudentsByPeriod(
-    @Query('start') startDate: string,
-    @Query('end') endDate: string,
-  ): Promise<StudentEntity[]> {
-    return await this.studentService.getStudentsByPeriod(
-      new Date(startDate),
-      new Date(endDate),
-    );
+  @Get(':id/study-years')
+  async getStudyYears(@Param('id') studentId: number): Promise<number> {
+    return await this.studentService.getStudyYears(studentId);
   }
 
   @Get(':id')
@@ -106,9 +95,18 @@ export class StudentContoller {
     return await this.studentService.getStudentInfo(studentId);
   }
 
-  @Get(':id/study-years')
-  async getStudyYears(@Param('id') studentId: number): Promise<number> {
-    return await this.studentService.getStudyYears(studentId);
+  @Get()
+  async getAllStudents(
+    @Query('start') startDate?: string,
+    @Query('end') endDate?: string,
+  ): Promise<StudentEntity[]> {
+    if (startDate && endDate) {
+      return await this.studentService.getStudentsByPeriod(
+        new Date(startDate),
+        new Date(endDate),
+      );
+    }
+    return await this.studentService.getAllStudents();
   }
 
   @Post()
