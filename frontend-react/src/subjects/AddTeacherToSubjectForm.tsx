@@ -1,19 +1,19 @@
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import {
   useCreateSubject,
   useAddTeacherToSubject,
   useSubjects,
-} from "./hooks/useSubjects";
-import { useTeachers } from "../teachers/useTeachers";
+} from './hooks/useSubjects';
+import { useTeachers } from '../teachers/useTeachers';
 
 export const AddTeacherToSubject = () => {
   const { data: teachers } = useTeachers();
   const { data: subjects } = useSubjects();
 
   const [formData, setFormData] = useState({
-    teacher: "",
-    subject: "",
+    teacher: '',
+    subject: '',
   });
 
   const { mutate, isPending, isError, error } = useAddTeacherToSubject();
@@ -88,19 +88,19 @@ export const AddTeacherToSubject = () => {
               </option>
               {subjects?.map((subject) => (
                 <option key={subject.id} value={subject.id}>
-                  {subject.name} | Year: {subject.studyYear} | Semester:{" "}
+                  {subject.name} | Year: {subject.studyYear} | Semester:{' '}
                   {subject.semester}
                 </option>
               ))}
-            </select>{" "}
+            </select>{' '}
           </div>
         </div>
 
         {isError && (
           <p className="mt-4 text-red-500 text-sm">
-            Error:{" "}
+            Error:{' '}
             {error?.response?.data?.message ||
-              "Could not add teacher to subject."}
+              'Could not add teacher to subject.'}
           </p>
         )}
 
@@ -110,7 +110,7 @@ export const AddTeacherToSubject = () => {
             disabled={isPending}
             className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
           >
-            {isPending ? "Adding..." : "Add Teacher"}
+            {isPending ? 'Adding...' : 'Add Teacher'}
           </button>
         </div>
       </form>

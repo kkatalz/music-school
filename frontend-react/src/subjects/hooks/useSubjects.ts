@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 import {
   createSubject,
   updateSubject,
@@ -7,28 +7,30 @@ import {
   addStudentToSubject,
   getSubjectsNames,
   getSubjectsInfo,
-} from "../service/subjects.service";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
-import type { CreateSubject, UpdateSubject } from "../types/subjects.types";
+  removeTeacherFromSubject,
+  removeStudentFromSubject,
+} from '../service/subjects.service';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
+import type { CreateSubject, UpdateSubject } from '../types/subjects.types';
 
 export const useSubjects = () => {
   return useQuery({
-    queryKey: ["subjects"],
+    queryKey: ['subjects'],
     queryFn: getSubjectsInfo,
   });
 };
 
 export const useSubjectsNames = () => {
   return useQuery({
-    queryKey: ["subjectsNames"],
+    queryKey: ['subjectsNames'],
     queryFn: getSubjectsNames,
   });
 };
 
 export const useSubjectsInfo = () => {
   return useQuery({
-    queryKey: ["subjectsInfo"],
+    queryKey: ['subjectsInfo'],
     queryFn: getSubjectsInfo,
   });
 };
@@ -41,12 +43,12 @@ export const useCreateSubject = () => {
     mutationFn: (newSubject: CreateSubject) => createSubject(newSubject),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-      alert("Subject was added!");
-      navigate("/headTeacher/subjects");
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      alert('Subject was added!');
+      navigate('/headTeacher/subjects');
     },
     onError: (err: any) => {
-      console.error("Error while creating:", err);
+      console.error('Error while creating:', err);
     },
   });
 };
@@ -59,12 +61,12 @@ export const useDeleteSubject = () => {
     mutationFn: (subjectId: number) => deleteSubject(subjectId),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-      alert("Subject was deleted!");
-      navigate("/headTeacher/subjects");
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      alert('Subject was deleted!');
+      navigate('/headTeacher/subjects');
     },
     onError: (err: any) => {
-      console.error("Error while deleting:", err);
+      console.error('Error while deleting:', err);
     },
   });
 };
@@ -83,12 +85,12 @@ export const useUpdateSubject = () => {
     }) => updateSubject(subjectId, newSubjectData),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-      alert("Subject was updated!");
-      navigate("/headTeacher/subjects");
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      alert('Subject was updated!');
+      navigate('/headTeacher/subjects');
     },
     onError: (err: any) => {
-      console.error("Error while updating:", err);
+      console.error('Error while updating:', err);
     },
   });
 };
@@ -107,12 +109,12 @@ export const useAddTeacherToSubject = () => {
     }) => addTeacherToSubject(teacherId, subjectId),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-      alert("Teacher was added to the subject!");
-      navigate("/headTeacher/subjects/addTeacherToSubject");
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      alert('Teacher was added to the subject!');
+      navigate('/headTeacher/subjects/addTeacherToSubject');
     },
     onError: (err: any) => {
-      console.error("Error while adding:", err);
+      console.error('Error while adding:', err);
     },
   });
 };
@@ -131,12 +133,62 @@ export const useAddStudentToSubject = () => {
     }) => addStudentToSubject(studentId, subjectId),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["subjects"] });
-      alert("Student was added to the subject!");
-      navigate("/headTeacher/subjects/addStudentToSubject");
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      alert('Student was added to the subject!');
+      navigate('/headTeacher/subjects/addStudentToSubject');
     },
     onError: (err: any) => {
-      console.error("Error while adding:", err);
+      console.error('Error while adding:', err);
+    },
+  });
+};
+
+export const useRemoveTeacherFromSubject = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: ({
+      teacherId,
+      subjectId,
+    }: {
+      teacherId: number;
+      subjectId: number;
+    }) => removeTeacherFromSubject(teacherId, subjectId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      queryClient.invalidateQueries({ queryKey: ['subjectsInfo'] });
+      alert('Teacher was removed from the subject!');
+      navigate('/headTeacher/subjects/removeTeacherFromSubject');
+    },
+    onError: (err: any) => {
+      console.error('Error while removing teacher:', err);
+    },
+  });
+};
+
+export const useRemoveStudentFromSubject = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: ({
+      studentId,
+      subjectId,
+    }: {
+      studentId: number;
+      subjectId: number;
+    }) => removeStudentFromSubject(studentId, subjectId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['subjects'] });
+      queryClient.invalidateQueries({ queryKey: ['subjectsInfo'] });
+      alert('Student was removed from the subject!');
+      navigate('/headTeacher/subjects/removeStudentFromSubject');
+    },
+    onError: (err: any) => {
+      console.error('Error while removing student:', err);
     },
   });
 };

@@ -1,13 +1,13 @@
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
-import { useCreateSubject } from "./hooks/useSubjects";
-import type { CreateSubject } from "./types/subjects.types";
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { useCreateSubject } from './hooks/useSubjects';
+import type { CreateSubject } from './types/subjects.types';
 
 export const CreateSubjectForm = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    studyYear: "",
-    semester: "",
+    name: '',
+    studyYear: '',
+    semester: '',
   });
 
   const { mutate, isPending, isError, error } = useCreateSubject();
@@ -102,14 +102,14 @@ export const CreateSubjectForm = () => {
                   {year}
                 </option>
               ))}
-            </select>{" "}
+            </select>{' '}
           </div>
         </div>
 
         {isError && (
           <p className="mt-4 text-red-500 text-sm">
-            Error:{" "}
-            {error?.response?.data?.message || "Could not add new subject."}
+            Error:{' '}
+            {error?.response?.data?.message || 'Could not add new subject.'}
           </p>
         )}
 
@@ -119,7 +119,7 @@ export const CreateSubjectForm = () => {
             disabled={isPending}
             className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
           >
-            {isPending ? "Adding..." : "Add Subject"}
+            {isPending ? 'Adding...' : 'Add Subject'}
           </button>
         </div>
       </form>

@@ -1,14 +1,14 @@
-import axios, { type AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from 'axios';
 import type {
   SubjectResponse,
   SubjectNameResponse,
   UpdateSubject,
   CreateSubject,
   SubjectInfo,
-} from "../types/subjects.types";
+} from '../types/subjects.types';
 
 const getAuthHeaders = () => {
-  const userString = localStorage.getItem("user");
+  const userString = localStorage.getItem('user');
   if (!userString) {
     return {};
   }
@@ -18,14 +18,14 @@ const getAuthHeaders = () => {
 
 export const getSubjectsNames = async (): Promise<SubjectNameResponse[]> => {
   const response: AxiosResponse<SubjectNameResponse[]> = await axios.get(
-    "/api/subjects"
+    '/api/subjects'
   );
   return response.data;
 };
 
 export const getSubjectsInfo = async (): Promise<SubjectInfo[]> => {
   const response: AxiosResponse<SubjectInfo[]> = await axios.get(
-    "/api/subjects/info"
+    '/api/subjects/info'
   );
   return response.data;
 };
@@ -34,7 +34,7 @@ export const createSubject = async (
   newSubject: CreateSubject
 ): Promise<SubjectResponse> => {
   const response: AxiosResponse<SubjectResponse> = await axios.post(
-    "/api/subjects",
+    '/api/subjects',
     newSubject,
     getAuthHeaders()
   );
@@ -85,6 +85,36 @@ export const addStudentToSubject = async (
     `/api/subjects/${subjectId}/students`,
     body,
     getAuthHeaders()
+  );
+  return response.data;
+};
+
+export const removeTeacherFromSubject = async (
+  teacherId: number,
+  subjectId: number
+): Promise<SubjectResponse> => {
+  const body = { teacherId: teacherId };
+  const response: AxiosResponse<SubjectResponse> = await axios.delete(
+    `/api/subjects/${subjectId}/teachers`,
+    {
+      ...getAuthHeaders(),
+      data: body,
+    }
+  );
+  return response.data;
+};
+
+export const removeStudentFromSubject = async (
+  studentId: number,
+  subjectId: number
+): Promise<SubjectResponse> => {
+  const body = { studentId: studentId };
+  const response: AxiosResponse<SubjectResponse> = await axios.delete(
+    `/api/subjects/${subjectId}/students`,
+    {
+      ...getAuthHeaders(),
+      data: body,
+    }
   );
   return response.data;
 };

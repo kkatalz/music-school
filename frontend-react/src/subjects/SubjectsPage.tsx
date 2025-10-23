@@ -1,13 +1,13 @@
-"use client";
-import { Link } from "react-router";
-import { useState } from "react";
-import { useSubjectsNames, useSubjectsInfo } from "./hooks/useSubjects";
-import { SubjectCard } from "./SubjectCard";
+'use client';
+import { Link } from 'react-router';
+import { useState } from 'react';
+import { useSubjectsNames, useSubjectsInfo } from './hooks/useSubjects';
+import { SubjectCard } from './SubjectCard';
 
-type ViewMode = "names" | "info";
+type ViewMode = 'names' | 'info';
 
 export const SubjectsPage = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>("info");
+  const [viewMode, setViewMode] = useState<ViewMode>('info');
 
   const {
     data: subjectNames,
@@ -22,9 +22,9 @@ export const SubjectsPage = () => {
     error: errorInfo,
   } = useSubjectsInfo();
 
-  const isLoading = viewMode === "names" ? isLoadingNames : isLoadingInfo;
-  const isError = viewMode === "names" ? isErrorNames : isErrorInfo;
-  const error = viewMode === "names" ? errorNames : errorInfo;
+  const isLoading = viewMode === 'names' ? isLoadingNames : isLoadingInfo;
+  const isError = viewMode === 'names' ? isErrorNames : isErrorInfo;
+  const error = viewMode === 'names' ? errorNames : errorInfo;
 
   if (isLoading) {
     return (
@@ -41,7 +41,7 @@ export const SubjectsPage = () => {
       <div className="p-4 sm:p-8">
         <div className="text-center mt-10 text-red-600 bg-red-50 p-8 rounded-lg">
           <h3 className="text-xl font-semibold">Error loading subjects</h3>
-          <p>{error?.message || "Something went wrong"}</p>
+          <p>{error?.message || 'Something went wrong'}</p>
         </div>
       </div>
     );
@@ -54,21 +54,21 @@ export const SubjectsPage = () => {
 
         <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
           <button
-            onClick={() => setViewMode("names")}
+            onClick={() => setViewMode('names')}
             className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              viewMode === "names"
-                ? "bg-white text-blue-600 shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
+              viewMode === 'names'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             Names Only
           </button>
           <button
-            onClick={() => setViewMode("info")}
+            onClick={() => setViewMode('info')}
             className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              viewMode === "info"
-                ? "bg-white text-blue-600 shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
+              viewMode === 'info'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             Full Info
@@ -98,8 +98,29 @@ export const SubjectsPage = () => {
           Add Student to Subject
         </Link>
       </div>
+      <div className="flex flex-wrap gap-3 mb-6">
+        {/* <Link
+          to="/headTeacher/subjects/delete"
+          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+        >
+          Remove Subject
+        </Link> */}
+        <Link
+          to="/headTeacher/subjects/removeTeacherFromSubject"
+          className="px-4 py-2 bg-rose-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-sm"
+        >
+          Remove Teacher from Subject
+        </Link>
 
-      {viewMode === "names" ? (
+        <Link
+          to="/headTeacher/subjects/removeStudentFromSubject"
+          className="px-4 py-2 bg-pink-600 text-white font-semibold rounded-md hover:bg-pink-700 transition-colors shadow-sm"
+        >
+          Remove Student from Subject
+        </Link>
+      </div>
+
+      {viewMode === 'names' ? (
         // Names View - Simple list
         !subjectNames || subjectNames.length === 0 ? (
           <div className="text-center mt-10 text-gray-600 bg-white p-8 rounded-lg shadow-md">
