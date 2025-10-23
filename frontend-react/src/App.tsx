@@ -20,6 +20,8 @@ import { AddStudentToSubject } from './subjects/AddStudentToSubjectForm';
 import { MyStudentsPage } from './students/MyStudentsPage';
 import { RemoveTeacherFromSubject } from './subjects/RemoveTeacherFromSubject';
 import { RemoveStudentFromSubject } from './subjects/RemoveStudentFromSubject';
+import { DeleteSubjectForm } from './subjects/DeleteSubjectForm';
+import { UpdateSubjectForm } from './subjects/UpdateSubjectForm';
 
 const App = () => {
   return (
@@ -38,7 +40,8 @@ const App = () => {
           <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
           <Route path="subjects/new" element={<CreateSubjectForm />} />
-          {/* <Route path="subjects/delete" element={<DeleteSubjectForm />} /> */}
+          <Route path="subjects/delete" element={<DeleteSubjectForm />} />
+          <Route path="subjects/update" element={<UpdateSubjectForm />} />
           <Route
             path="subjects/addTeacherToSubject"
             element={<AddTeacherToSubject />}

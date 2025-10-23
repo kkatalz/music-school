@@ -76,7 +76,7 @@ export const SubjectsPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-6">
+      <div className="flex flex-wrap gap-4 mb-6">
         <Link
           to="/headTeacher/subjects/new"
           className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors shadow-sm"
@@ -84,6 +84,21 @@ export const SubjectsPage = () => {
           Add Subject
         </Link>
 
+        <Link
+          to={`/headTeacher/subjects/update`}
+          className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition-colors shadow-sm"
+        >
+          Edit
+        </Link>
+
+        <Link
+          to="/headTeacher/subjects/delete"
+          className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-sm"
+        >
+          Delete Subject
+        </Link>
+      </div>
+      <div className="flex flex-wrap gap-3 mb-6">
         <Link
           to="/headTeacher/subjects/addTeacherToSubject"
           className="px-4 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors shadow-sm"
@@ -99,15 +114,9 @@ export const SubjectsPage = () => {
         </Link>
       </div>
       <div className="flex flex-wrap gap-3 mb-6">
-        {/* <Link
-          to="/headTeacher/subjects/delete"
-          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors shadow-sm"
-        >
-          Remove Subject
-        </Link> */}
         <Link
           to="/headTeacher/subjects/removeTeacherFromSubject"
-          className="px-4 py-2 bg-rose-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-sm"
+          className="px-4 py-2 bg-orange-600 text-white font-semibold rounded-md hover:bg-orange-700 transition-colors shadow-sm"
         >
           Remove Teacher from Subject
         </Link>

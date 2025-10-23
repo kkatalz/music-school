@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import type { SubjectInfo } from "./types/subjects.types";
+import type { SubjectInfo } from './types/subjects.types';
 
 interface SubjectCardProps {
   subject: SubjectInfo;
@@ -12,6 +12,7 @@ export const SubjectCard = ({ subject }: SubjectCardProps) => {
       <div className="flex justify-between items-start mb-4">
         <h2 className="text-2xl font-bold text-gray-800">{subject.name}</h2>
         <div className="flex gap-2"></div>
+        <span className="text-sm text-gray-500">ID: {subject.id}</span>
       </div>
 
       <div className="space-y-3">
