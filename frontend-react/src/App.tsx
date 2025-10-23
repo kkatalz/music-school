@@ -21,41 +21,52 @@ import { MyStudentsPage } from "./students/MyStudentsPage";
 
 const App = () => {
   return (
-        <Routes>
+    <Routes>
       <Route path="/login" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>
-          <Route path="/teacher" element={<TeacherDashboard />} >
+        <Route path="/teacher" element={<TeacherDashboard />}>
+          <Route path="profile" element={<TeacherProfile />} />
           <Route path="myStudents" element={<MyStudentsPage />} />
-          </Route>
+        </Route>
       </Route>
 
       <Route element={<ProtectedRoute />}>
-          <Route path="/headTeacher" element={<HeadTeacherDashboard />} >
+        <Route path="/headTeacher" element={<HeadTeacherDashboard />}>
           <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
-          <Route path="subjects/new" element={< CreateSubjectForm/>} />
-           <Route path="subjects/addTeacherToSubject" element={< AddTeacherToSubject/>} />
-          <Route path="subjects/addStudentToSubject" element={< AddStudentToSubject/>} />
+          <Route path="subjects/new" element={<CreateSubjectForm />} />
+          <Route
+            path="subjects/addTeacherToSubject"
+            element={<AddTeacherToSubject />}
+          />
+          <Route
+            path="subjects/addStudentToSubject"
+            element={<AddStudentToSubject />}
+          />
           <Route path="profile" element={<TeacherProfile />} />
           <Route path="teachers" element={<Teachers />} />
-          <Route path="teachers/new" element={<CreateTeacherForm/>} />
-          <Route path="teachers/edit/:teacherId" element={<UpdateTeacherForm/>} />
-          
-          <Route path="students" element={< AllStudents/>} />
-          <Route path="students/new" element={< CreateStudentForm/>} />
-          <Route path="students/edit/:studentId" element={<UpdateStudentForm/>} />
+          <Route path="teachers/new" element={<CreateTeacherForm />} />
+          <Route
+            path="teachers/edit/:teacherId"
+            element={<UpdateTeacherForm />}
+          />
 
+          <Route path="students" element={<AllStudents />} />
+          <Route path="students/new" element={<CreateStudentForm />} />
+          <Route
+            path="students/edit/:studentId"
+            element={<UpdateStudentForm />}
+          />
+        </Route>
       </Route>
-      </Route>
-      
+
       <Route element={<ProtectedRoute />}>
         <Route path="/student" element={<StudentDashboardLayout />}>
           <Route path="profile" element={<StudentProfile />} />
           <Route path="grades" element={<StudentGrades />} />
         </Route>
       </Route>
-
     </Routes>
   );
 };
