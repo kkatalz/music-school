@@ -32,6 +32,7 @@ const App = () => {
 
       <Route element={<ProtectedRoute />}>
           <Route path="/headTeacher" element={<HeadTeacherDashboard />} >
+          <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
           <Route path="subjects/new" element={< CreateSubjectForm/>} />
            <Route path="subjects/addTeacherToSubject" element={< AddTeacherToSubject/>} />
