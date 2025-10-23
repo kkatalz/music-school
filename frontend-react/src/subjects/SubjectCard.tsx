@@ -1,0 +1,76 @@
+"use client";
+
+import type { SubjectInfo } from "./types/subjects.types";
+
+interface SubjectCardProps {
+  subject: SubjectInfo;
+}
+
+export const SubjectCard = ({ subject }: SubjectCardProps) => {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-2xl font-bold text-gray-800">{subject.name}</h2>
+        <div className="flex gap-2"></div>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-gray-700">Study Year:</span>
+          <span className="text-gray-600">{subject.studyYear}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-gray-700">Semester:</span>
+          <span className="text-gray-600">{subject.semester}</span>
+        </div>
+
+        <div className="pt-3 border-t border-gray-200">
+          <div className="mb-3">
+            <span className="font-semibold text-gray-700">Teachers:</span>
+            <div className="mt-1">
+              {subject.teachers && subject.teachers.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {subject.teachers.map((teacherId) => (
+                    <span
+                      key={teacherId}
+                      className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded"
+                    >
+                      ID: {teacherId}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-gray-500 text-sm">
+                  No teachers assigned
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <span className="font-semibold text-gray-700">Students:</span>
+            <div className="mt-1">
+              {subject.students && subject.students.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {subject.students.map((studentId) => (
+                    <span
+                      key={studentId}
+                      className="px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded"
+                    >
+                      ID: {studentId}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-gray-500 text-sm">
+                  No students assigned
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

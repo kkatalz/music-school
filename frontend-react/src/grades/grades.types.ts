@@ -1,7 +1,7 @@
-import type { SubjectNameResponse  } from "../subjects/subjects.types";
+import type { SubjectNameResponse } from "../subjects/types/subjects.types";
 
 export interface Grade {
-    id: number;
-    subject?: SubjectNameResponse;
-    value?: number;
+  id: number;
+  subject?: SubjectNameResponse;
+  value?: number;
 }
