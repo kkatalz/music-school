@@ -2,10 +2,12 @@ import { useGetMyStudents } from "./useStudents"
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import type { StudentResponse } from "../auth/auth.types";
-
+import { useGetStudentStudyYears } from "./useStudents";
 
 
 const StudentCard = ({ student }: { student: StudentResponse }) => {
+  const { data: studyYears, isLoading: isLoadingYears } = useGetStudentStudyYears(student.id);
+
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all hover:shadow-lg">
       <div className="p-5">
@@ -22,6 +24,16 @@ const StudentCard = ({ student }: { student: StudentResponse }) => {
             label="Start Date" 
             value={new Date(student.startStudyDate).toLocaleDateString()} 
           />
+          <InfoRow label="Year of study" 
+            value={
+              isLoadingYears
+                ? 'Loading...'
+                : studyYears === undefined
+                ? '—'
+                : studyYears === 0
+                ? '<1 year'
+                : `${studyYears + 1}`
+            } />
         </div>
       </div>
     </div>
