@@ -13,6 +13,9 @@ import { CreateTeacherForm } from "./teachers/CreateTeacherForm";
 import { UpdateTeacherForm } from "./teachers/UpdateTeacherForm";
 import { TeacherProfile } from "./teachers/TeacherProfile";
 import { UpdateStudentForm } from "./students/UpdateStudentForm";
+import { SubjectsPage } from "./subjects/SubjectsPage";
+import { CreateSubjectForm } from "./subjects/CreateSubjectForm";
+import { AddTeacherToSubject } from "./subjects/AddTeacherToSubjectForm";
 
 const App = () => {
   return (
@@ -25,6 +28,9 @@ const App = () => {
 
       <Route element={<ProtectedRoute />}>
           <Route path="/headTeacher" element={<HeadTeacherDashboard />} >
+          <Route path="subjects" element={<SubjectsPage />} />
+          <Route path="subjects/new" element={< CreateSubjectForm/>} />
+           <Route path="subjects/addTeacherToSubject" element={< AddTeacherToSubject/>} />
           <Route path="profile" element={<TeacherProfile />} />
           <Route path="teachers" element={<Teachers />} />
           <Route path="teachers/new" element={<CreateTeacherForm/>} />

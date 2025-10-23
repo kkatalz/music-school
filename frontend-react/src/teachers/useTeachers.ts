@@ -5,13 +5,6 @@ import { useNavigate } from "react-router";
 import type { CreateTeacher, UpdateTeacher } from "./teacher.types";
 
 
-// interface UpdateTeacherVariables {
-//   teacherId: number;
-//   newTeacherData: UpdateTeacher;
-// }
-
-
-
 export const useTeachers = () => {
   return useQuery({
     queryKey: ["teachers"],
@@ -75,11 +68,10 @@ export const useUpdateTeacher = () => {
   const navigate = useNavigate();
 
   return useMutation({
-        mutationFn: ({ teacherId, newTeacherData }: { teacherId: number, newTeacherData: any }) => 
+        mutationFn: ({ teacherId, newTeacherData }: { teacherId: number, newTeacherData: UpdateTeacher }) => 
           updateTeacher(teacherId, newTeacherData),
     
     onSuccess: () => {
-      // query to 'teachers' to update list
       queryClient.invalidateQueries({ queryKey: ['teachers'] });
       alert('Teacher was updated!');
       navigate('/headTeacher/teachers'); 
