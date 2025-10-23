@@ -26,8 +26,20 @@ export const TeacherDashboard = () => {
           >
             My profile
           </NavLink>
+
+           <NavLink
+            to="/teacher/myStudents"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
+            }
+          >
+            My students
+          </NavLink>
          
         </nav>
+
+         
+         
         <div className="p-4 border-t border-gray-700">
           <button
             onClick={handleLogout}

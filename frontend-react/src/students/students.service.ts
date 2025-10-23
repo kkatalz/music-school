@@ -49,3 +49,21 @@ export const deleteStudent = async (studentId: number): Promise<StudentResponse>
   const response: AxiosResponse<StudentResponse> = await axios.delete(`/api/students/${studentId}`, getAuthHeaders());
   return response.data;
 }
+
+export const getMyStudents = async (teacherId: number, year: number | null, semester: number | null): Promise<StudentResponse[]> => {
+  const authConfig = getAuthHeaders();
+  const params: { year?: number; semester?: number} = {}
+  if (year !== null) {
+    params.year = year;
+  }
+
+  if (semester !== null) {
+    params.semester = semester;
+  }
+  const response: AxiosResponse<StudentResponse[]> = await axios.get(`/api/teachers/${teacherId}/students`, {
+    params: params, 
+    ...authConfig
+  });
+
+  return response.data;
+}

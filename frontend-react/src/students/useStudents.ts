@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getStudentInfo, updateStudentPassword, getStudentStudyYears, getAllStudents, createStudent, 
-  updateStudent, deleteStudent
+  updateStudent, deleteStudent, getMyStudents
 } from "./students.service";
 import type { StudentResponse } from "../auth/auth.types";
 import type { Student } from "./student.types";
@@ -90,6 +90,26 @@ export const useDeleteStudent = () => {
       alert(err);
       console.error("Error while deleting:", err);
     }
+  });
+};
+
+
+export const useGetMyStudents = (
+  teacherId: number | undefined, 
+  year: string, 
+  semester: string
+) => {
+  return useQuery({
+    queryKey: ['myStudents', teacherId, year, semester],
+    
+    queryFn: () => {
+      const yearNum = year ? parseInt(year, 10) : null;
+      const semesterNum = semester ? parseInt(semester, 10) : null;
+      
+      return getMyStudents(teacherId!, yearNum, semesterNum);
+    },
+    
+    enabled: !!teacherId 
   });
 };
 
