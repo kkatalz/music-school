@@ -39,14 +39,12 @@ export const StudentCard = ({ student, onEdit, onDelete }: StudentCardProps) => 
       </div>
 
       <div className="flex items-center justify-left text-xs mb-3">
-        <span className="text-gray-500">Years of study:</span>
+        <span className="text-gray-500">Year of study:</span>
         {isLoadingYears ? (
           <span className="text-gray-400 italic ml-1">Loading...</span>
         ) : (
           <span className="font-medium text-blue-600 ml-1">
-            {studyYears === 0
-              ? 'Less than 1 year'
-              : `${studyYears} ${studyYears === 1 ? 'year' : 'years'}`}
+            {(studyYears ?? 0) + 1}
           </span>
         )}
       </div>
