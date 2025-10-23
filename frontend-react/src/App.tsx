@@ -17,6 +17,7 @@ import { SubjectsPage } from "./subjects/SubjectsPage";
 import { CreateSubjectForm } from "./subjects/CreateSubjectForm";
 import { AddTeacherToSubject } from "./subjects/AddTeacherToSubjectForm";
 import { AddStudentToSubject } from "./subjects/AddStudentToSubjectForm";
+import { MyStudentsPage } from "./students/MyStudentsPage";
 
 const App = () => {
   return (
@@ -24,11 +25,14 @@ const App = () => {
       <Route path="/login" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>
-          <Route path="/teacher" element={<TeacherDashboard />} />
+          <Route path="/teacher" element={<TeacherDashboard />} >
+          <Route path="myStudents" element={<MyStudentsPage />} />
+          </Route>
       </Route>
 
       <Route element={<ProtectedRoute />}>
           <Route path="/headTeacher" element={<HeadTeacherDashboard />} >
+          <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
           <Route path="subjects/new" element={< CreateSubjectForm/>} />
            <Route path="subjects/addTeacherToSubject" element={< AddTeacherToSubject/>} />
