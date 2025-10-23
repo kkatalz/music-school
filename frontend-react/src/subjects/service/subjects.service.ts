@@ -118,3 +118,11 @@ export const removeStudentFromSubject = async (
   );
   return response.data;
 };
+
+export const getStudentSubjects = async (studentId: number): Promise<SubjectResponse[]> => {
+  const response: AxiosResponse<SubjectResponse[]> = await axios.get(
+    `/api/students/${studentId}/subjects`,
+    getAuthHeaders()
+  );
+  return response.data;
+};

@@ -27,7 +27,7 @@ export const StudentGrades = () => {
 
     return (
         <div>
-            <h2 className="text-3xl font-bold mb-6">Мої оцінки</h2>
+            <h2 className="text-3xl font-bold mb-6">My grades</h2>
             <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
                 {grades.map((grade) => (
                     <div key={grade.id} className="flex justify-between items-center border-b pb-2">

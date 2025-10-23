@@ -8,7 +8,7 @@ import {
   getSubjectsNames,
   getSubjectsInfo,
   removeTeacherFromSubject,
-  removeStudentFromSubject,
+  removeStudentFromSubject, getStudentSubjects
 } from '../service/subjects.service';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
@@ -190,5 +190,13 @@ export const useRemoveStudentFromSubject = () => {
     onError: (err: any) => {
       console.error('Error while removing student:', err);
     },
+  });
+};
+
+export const useStudentSubjects = (studentId: number | null) => {
+  return useQuery({
+    queryKey: ["studentSubjects", studentId],
+    queryFn: () => getStudentSubjects(studentId!),
+    enabled: !!studentId,
   });
 };
