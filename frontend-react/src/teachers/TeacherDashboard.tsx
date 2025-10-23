@@ -1,5 +1,5 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
 
 export const TeacherDashboard = () => {
   const { user, logout } = useAuth();
@@ -7,39 +7,42 @@ export const TeacherDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login'); 
+    navigate("/login");
   };
-
+  //
   return (
     <div className="flex h-screen bg-gray-100">
       <aside className="w-64 bg-gray-800 text-white flex flex-col">
         <div className="p-4 text-xl font-bold border-b border-gray-700">
-          <span className="block text-sm font-normal text-gray-400">Teacher</span>
+          <span className="block text-sm font-normal text-gray-400">
+            Teacher
+          </span>
           {user?.firstName} {user?.lastName}
         </div>
         <nav className="flex-1 p-2 space-y-2">
           <NavLink
             to="/teacher/profile"
             className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive ? "bg-gray-900" : ""
+              }`
             }
           >
             My profile
           </NavLink>
 
-           <NavLink
+          <NavLink
             to="/teacher/myStudents"
             className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive ? "bg-gray-900" : ""
+              }`
             }
           >
             My students
           </NavLink>
-         
         </nav>
 
-         
-         
         <div className="p-4 border-t border-gray-700">
           <button
             onClick={handleLogout}
@@ -51,9 +54,8 @@ export const TeacherDashboard = () => {
       </aside>
 
       <main className="flex-1 p-8 overflow-y-auto">
-        <Outlet /> 
+        <Outlet />
       </main>
     </div>
   );
 };
-
