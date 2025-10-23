@@ -22,7 +22,10 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
    The command above will build a project. You shouldn't see any errors in terminal. To check if everything is okay, go
    to http://localhost:8501/ (frontend page) and http://localhost:3000/api (backend page)
 
-# ! 1. To run a project use _docker-compose up -d_ -> docker-compose exec api npm run migration:run -> docker-compose logs -f api
+# ! 1. To run a project
+
+- backend use _docker-compose up -d_ -> docker-compose exec api npm run migration:run -> docker-compose logs -f api
+- frontend do: cd frontend-react -> npm i -> npm run dev
 
 ! In order to make any changes in terminal (generate migration, drop db) you should run your project using the command above first (docker-compose up -d) because it starts the db with backend. And when it's running, just open another window in terminal and do your commands there.
 
