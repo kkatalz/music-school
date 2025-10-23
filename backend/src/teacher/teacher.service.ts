@@ -180,7 +180,7 @@ export class TeacherService {
     return teacherById;
   }
 
-  async findTeacherByEmail(email: string): Promise<void> {
+  private async findTeacherByEmail(email: string): Promise<void> {
     const teacherByEmail = await this.teacherRepository.findOne({
       where: {
         email,
