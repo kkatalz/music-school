@@ -1,8 +1,8 @@
-import { Role } from "../teachers/teacher.types";
+import { Role } from '../teachers/teacher.types';
 
 export interface LoginCredentials {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 interface BaseUser {
@@ -19,6 +19,7 @@ export interface StudentResponse extends BaseUser {
   parentPhone: string;
   address: string;
   startStudyDate: Date;
+  subjects?: Array<{ id: number; name: string }>;
 }
 
 export interface TeacherResponse extends BaseUser {
@@ -27,7 +28,5 @@ export interface TeacherResponse extends BaseUser {
   startWorkDate: string;
   isHeadTeacher: boolean;
 }
-
-
 
 export type AuthResponse = StudentResponse | TeacherResponse;
