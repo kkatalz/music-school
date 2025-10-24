@@ -1,6 +1,10 @@
 import type { Teacher } from './teacher.types';
 import type { JSX } from 'react';
-import { useCalculateExperience } from './useTeachers';
+import { Link } from 'react-router';
+import { useCalculateExperience,
+  useGetTeacherSubjects,
+  useGetTeacherStudents
+ } from './useTeachers';
 
 interface TeacherCardProps {
   teacher: Teacher;
@@ -60,7 +64,7 @@ export const TeacherCard = ({
   onDelete,
 }: TeacherCardProps) => {
   // get teacher's experience to display it on the card
-  const { data: experience } = useCalculateExperience(teacher.id);
+  const { data: experience } = useCalculateExperience(teacher.id); 
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
@@ -118,6 +122,22 @@ export const TeacherCard = ({
           >
             Delete
           </button>
+
+           {/* go to teacher's students */}
+          <Link
+            to={`/headTeacher/teachers/${teacher.id}/students`}
+            className="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition-colors"
+          >
+            Students
+          </Link>
+
+           {/* go to teacher's subjects */}
+          <Link
+            to={`/headTeacher/teachers/${teacher.id}/subjects`}
+            className="px-3 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-md hover:bg-indigo-200 transition-colors"
+          >
+            Subjects
+          </Link>
         </div>
       </div>
     </div>
