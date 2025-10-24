@@ -2,7 +2,7 @@ import { useGetMyStudents } from "./useStudents"
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import type { StudentResponse } from "../auth/auth.types";
-import { useGetStudentStudyYears, useGetStudentInfo } from "./useStudents";
+import { useGetStudentStudyYears } from "./useStudents";
 
 
 const StudentCard = ({ student }: { student: StudentResponse }) => {
@@ -60,21 +60,12 @@ export const MyStudentsPage = () => {
 
   const { data: myStudents, isLoading: isLoadingMyStudents, isError, error } = useGetMyStudents(teacherId, year, semester);
 
-  const {
-    data: searchedStudent,
-    isLoading: isLoadingSearch,
-    isError: isErrorSearch,
-  } = useGetStudentInfo(
-    searchEnabled && searchId ? Number(searchId) : null
-  );
-
-  const students = searchEnabled && searchedStudent 
-    ? [searchedStudent] 
+  const students = searchEnabled
+    ? myStudents?.filter(s => s.id === Number(searchId))
     : myStudents;
-    
-  const isLoading = searchEnabled 
-    ? isLoadingSearch 
-    : isLoadingMyStudents;
+
+  const isLoading = isLoadingMyStudents;
+
 
   const handleSearchById = () => {
     if (searchId && !isNaN(Number(searchId))) {
@@ -132,16 +123,16 @@ export const MyStudentsPage = () => {
 
         {searchEnabled && (
           <div className={`mt-4 p-3 rounded-md border ${
-            searchedStudent 
-              ? 'bg-green-50 border-green-200' 
+            students && students.length > 0
+              ? 'bg-green-50 border-green-200'
               : 'bg-red-50 border-red-200'
           }`}>
             <p className={`font-medium ${
-              searchedStudent ? 'text-green-800' : 'text-red-800'
+              students && students.length > 0 ? 'text-green-800' : 'text-red-800'
             }`}>
-              {searchedStudent 
-                ? `Found student with ID: ${searchId}` 
-                : `Student with ID ${searchId} was not found`}
+              {students && students.length > 0
+                ? `Found student with ID: ${searchId}`
+                : `Student with ID ${searchId} was not found among your students`}
             </p>
           </div>
         )}
