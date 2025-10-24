@@ -109,7 +109,7 @@ export const TeacherSubjects = () => {
             </div>
           ) : (
             <div className="text-center text-gray-500">
-              No students found for these criteria.
+              No subjects found for these criteria.
             </div>
           )}
         </>
