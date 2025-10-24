@@ -2,7 +2,7 @@ import { useGetMyStudents } from "./useStudents"
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import type { StudentResponse } from "../auth/auth.types";
-import { useGetStudentStudyYears } from "./useStudents";
+import { useGetStudentStudyYears, useGetStudentInfo } from "./useStudents";
 
 
 const StudentCard = ({ student }: { student: StudentResponse }) => {
@@ -55,8 +55,37 @@ export const MyStudentsPage = () => {
 
   const [year, setYear] = useState<string>('');
   const [semester, setSemester] = useState<string>('');
+  const [searchId, setSearchId] = useState<string>('');
+  const [searchEnabled, setSearchEnabled] = useState(false);
 
-  const { data: students, isLoading, isError, error } = useGetMyStudents(teacherId, year, semester);
+  const { data: myStudents, isLoading: isLoadingMyStudents, isError, error } = useGetMyStudents(teacherId, year, semester);
+
+  const {
+    data: searchedStudent,
+    isLoading: isLoadingSearch,
+    isError: isErrorSearch,
+  } = useGetStudentInfo(
+    searchEnabled && searchId ? Number(searchId) : null
+  );
+
+  const students = searchEnabled && searchedStudent 
+    ? [searchedStudent] 
+    : myStudents;
+    
+  const isLoading = searchEnabled 
+    ? isLoadingSearch 
+    : isLoadingMyStudents;
+
+  const handleSearchById = () => {
+    if (searchId && !isNaN(Number(searchId))) {
+      setSearchEnabled(true);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchId('');
+    setSearchEnabled(false);
+  };
 
   if (!user) {
     return <div className="p-4 text-center text-gray-500">Loading user data...</div>;
@@ -67,6 +96,56 @@ export const MyStudentsPage = () => {
       <h1 className="text-3xl font-bold text-gray-800">
         Students for {user.firstName} {user.lastName}
       </h1>
+
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Search by Student ID
+        </h2>
+        <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex-1 min-w-[200px]">
+            <input
+              type="number"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              placeholder="Enter student ID"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSearchById}
+              disabled={!searchId || isNaN(Number(searchId))}
+              className="px-4 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              Search
+            </button>
+            {searchEnabled && (
+              <button
+                onClick={handleClearSearch}
+                className="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
+        </div>
+
+        {searchEnabled && (
+          <div className={`mt-4 p-3 rounded-md border ${
+            searchedStudent 
+              ? 'bg-green-50 border-green-200' 
+              : 'bg-red-50 border-red-200'
+          }`}>
+            <p className={`font-medium ${
+              searchedStudent ? 'text-green-800' : 'text-red-800'
+            }`}>
+              {searchedStudent 
+                ? `Found student with ID: ${searchId}` 
+                : `Student with ID ${searchId} was not found`}
+            </p>
+          </div>
+        )}
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
         <div className="flex-1">
