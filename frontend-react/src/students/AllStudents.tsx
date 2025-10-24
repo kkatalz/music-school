@@ -1,9 +1,13 @@
-import { useGetAllStudents, useDeleteStudent, useGetStudentsByPeriod, useGetTotalStudentsByPeriod } from "./useStudents";
-import { StudentCard } from "./StudentCatd";
+import {
+  useGetAllStudents,
+  useDeleteStudent,
+  useGetStudentsByPeriod,
+  useGetTotalStudentsByPeriod,
+} from './useStudents';
+import { StudentCard } from './StudentCatd';
 import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export const AllStudents = () => {
   const navigate = useNavigate();
@@ -12,8 +16,17 @@ export const AllStudents = () => {
   const [endDate, setEndDate] = useState<string | null>(null);
   const [filterEnabled, setFilterEnabled] = useState(false);
 
-  const { data: allStudents, isLoading: isLoadingAll, isError: isErrorAll, error: errorAll } = useGetAllStudents();
-  const { data: filteredStudents, isLoading: isLoadingFiltered, isError: isErrorFiltered } = useGetStudentsByPeriod(
+  const {
+    data: allStudents,
+    isLoading: isLoadingAll,
+    isError: isErrorAll,
+    error: errorAll,
+  } = useGetAllStudents();
+  const {
+    data: filteredStudents,
+    isLoading: isLoadingFiltered,
+    isError: isErrorFiltered,
+  } = useGetStudentsByPeriod(
     filterEnabled ? startDate : null,
     filterEnabled ? endDate : null
   );
@@ -30,13 +43,12 @@ export const AllStudents = () => {
   const error = isErrorAll ? errorAll : null;
 
   const handleDelete = (studentId: number) => {
-    if (window.confirm("Are you sure about deleting this student?")) {
+    if (window.confirm('Are you sure about deleting this student?')) {
       deleteStudent(studentId);
     }
   };
 
   const handleEdit = (studentId: number) => {
-      // TODO: implement
     navigate(`/headTeacher/students/edit/${studentId}`);
   };
 
@@ -53,12 +65,11 @@ export const AllStudents = () => {
   };
 
   if (isError) {
-    return <h1>{error?.message || "An error occurred"}</h1>;
+    return <h1>{error?.message || 'An error occurred'}</h1>;
   }
   if (isLoading) return <h1>loading ...</h1>;
 
   return (
-    
     <div className="p-4 sm:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Student list</h1>
@@ -71,7 +82,9 @@ export const AllStudents = () => {
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Filter by enrollment period</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Filter by enrollment period
+        </h2>
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[200px]">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -113,12 +126,13 @@ export const AllStudents = () => {
             )}
           </div>
         </div>
-        
+
         {filterEnabled && totalCount !== undefined && (
           <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
             <p className="text-blue-800 font-medium">
-              Found {totalCount} student{totalCount !== 1 ? 's' : ''} enrolled between{' '}
-              {new Date(startDate!).toLocaleDateString()} and {new Date(endDate!).toLocaleDateString()}
+              Found {totalCount} student{totalCount !== 1 ? 's' : ''} enrolled
+              between {new Date(startDate!).toLocaleDateString()} and{' '}
+              {new Date(endDate!).toLocaleDateString()}
             </p>
           </div>
         )}
@@ -127,14 +141,16 @@ export const AllStudents = () => {
       {!students || students.length === 0 ? (
         <div className="text-center mt-10 text-gray-600 bg-white p-8 rounded-lg shadow-md">
           <h3 className="text-xl">
-            {filterEnabled ? "No students found for this period." : "No students at the moment."}
+            {filterEnabled
+              ? 'No students found for this period.'
+              : 'No students at the moment.'}
           </h3>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {students.map((student) => (
-            <StudentCard 
-              key={student.id} 
+            <StudentCard
+              key={student.id}
               student={student}
               onEdit={() => handleEdit(student.id)}
               onDelete={() => handleDelete(student.id)}
