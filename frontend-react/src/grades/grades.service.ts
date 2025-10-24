@@ -1,10 +1,20 @@
 import axios, { type AxiosResponse } from 'axios';
 import type { CreateGrade, Grade, UpdateGrade } from './grades.types';
 
+const getAuthHeaders = () => {
+  const userString = localStorage.getItem('user');
+  if (!userString) {
+    return {};
+  }
+  const user = JSON.parse(userString);
+  return { headers: { Authorization: `Bearer ${user.token}` } };
+};
+
 export const setGrade = async (createGradeDto: CreateGrade): Promise<Grade> => {
   const response: AxiosResponse<Grade> = await axios.post(
     '/api/grades',
-    createGradeDto
+    createGradeDto,
+    getAuthHeaders()
   );
   return response.data;
 };
@@ -15,7 +25,8 @@ export const updateGrade = async (
 ): Promise<Grade> => {
   const response: AxiosResponse<Grade> = await axios.put(
     `/api/grades/${gradeId}`,
-    updateGradeDto
+    updateGradeDto,
+    getAuthHeaders()
   );
   return response.data;
 };
@@ -24,7 +35,8 @@ export const getStudentGrades = async (
   studentId: number | null
 ): Promise<Grade[]> => {
   const response: AxiosResponse<Grade[]> = await axios.get(
-    `/api/grades/student/${studentId}`
+    `/api/grades/student/${studentId}`,
+    getAuthHeaders()
   );
   return response.data;
 };
@@ -47,6 +59,9 @@ export const getGradesByTeacher = async (
     queryString ? `?${queryString}` : ''
   }`;
 
-  const response: AxiosResponse<Grade[]> = await axios.get(url);
+  const response: AxiosResponse<Grade[]> = await axios.get(
+    url,
+    getAuthHeaders()
+  );
   return response.data;
 };
