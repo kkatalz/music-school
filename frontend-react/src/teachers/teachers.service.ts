@@ -49,7 +49,7 @@ export const getTeacherSubjects = async(
   teacherId: number, 
   year: number | null, 
   semester: number | null): Promise<SubjectResponse[]> => {
-    
+
   const authConfig = getAuthHeaders();
   const params: { year?: number; semester?: number} = {}
   if (year !== null) {
@@ -67,5 +67,13 @@ export const getTeacherSubjects = async(
     }
   );
 
+  return response.data;
+}
+
+export const calculateExperience = async(
+  teacherId: number | null
+): Promise<Number> => {
+  
+  const response: AxiosResponse<Number> = await axios.get(`/api/teachers/experience/${teacherId}`);
   return response.data;
 }
