@@ -25,6 +25,7 @@ import { UpdateSubjectForm } from './subjects/UpdateSubjectForm';
 import { StudentSubjectsPage } from './students/StudentSubjectsPage';
 import { ManageGradesPage } from './grades/ManageGradesPage';
 import { TeacherSubjectsPage } from './teachers/TeacherSubjectsPage';
+import { StudentTeachers } from './students/StudentTeachers';
 
 const App = () => {
   return (
@@ -87,6 +88,7 @@ const App = () => {
           <Route path="profile" element={<StudentProfile />} />
           <Route path="subjects" element={<StudentSubjectsPage />} />
           <Route path="grades" element={<StudentGrades />} />
+          <Route path="teachers" element={<StudentTeachers />} />
         </Route>
       </Route>
     </Routes>

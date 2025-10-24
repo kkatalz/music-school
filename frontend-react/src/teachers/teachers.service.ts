@@ -77,3 +77,19 @@ export const calculateExperience = async(
   const response: AxiosResponse<Number> = await axios.get(`/api/teachers/experience/${teacherId}`);
   return response.data;
 }
+
+export const getStudentTeachers = async (
+  studentId: number,
+  year?: number,
+  semester?: number
+): Promise<Teacher[]> => {
+  const params = new URLSearchParams();
+  if (year !== undefined) params.append('year', year.toString());
+  if (semester !== undefined) params.append('semester', semester.toString());
+  
+  const queryString = params.toString();
+  const url = `/api/students/${studentId}/teachers${queryString ? `?${queryString}` : ''}`;
+  
+  const response: AxiosResponse<Teacher[]> = await axios.get(url, getAuthHeaders());
+  return response.data;
+};

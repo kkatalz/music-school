@@ -6,6 +6,7 @@ import { getTeachers,
   getTeacherById, 
   updateTeacherPassword,
 getTeacherSubjects,
+getStudentTeachers,
 calculateExperience } from "./teachers.service";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from "react-router";
@@ -136,4 +137,16 @@ export const useCalculateExperience = (teacherId: number | null) => {
     queryFn: () => calculateExperience(teacherId),
     enabled: !!teacherId,
   })
+};
+
+export const useStudentTeachers = (
+  studentId: number | undefined,
+  year?: number,
+  semester?: number
+) => {
+  return useQuery({
+    queryKey: ["studentTeachers", studentId, year, semester],
+    queryFn: () => getStudentTeachers(studentId!, year, semester),
+    enabled: !!studentId,
+  });
 };

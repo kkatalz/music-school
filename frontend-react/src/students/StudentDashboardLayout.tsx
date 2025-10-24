@@ -35,6 +35,14 @@ export const StudentDashboardLayout = () => {
             My subjects
           </NavLink>
           <NavLink
+            to="/student/teachers"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
+            }
+          >
+            My teachers
+          </NavLink>
+          <NavLink
             to="/student/grades"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
