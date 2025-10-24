@@ -12,7 +12,9 @@ import * as dotenv from 'dotenv';
 import { sign } from 'jsonwebtoken';
 import { Role } from '../auth/types/role.enum';
 import * as bcrypt from 'bcrypt';
+import { DataSource } from 'typeorm';
 import { ChangePasswordDto } from 'src/types/changePassword.dto';
+import { GradeEntity } from 'src/grade/grade.entity';
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ export class TeacherService {
     private readonly studentRepository: Repository<StudentEntity>,
     @InjectRepository(SubjectEntity)
     private readonly subjectRepository: Repository<SubjectEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async getAllTeachers(): Promise<TeacherResponseDto[]> {
@@ -93,6 +96,18 @@ export class TeacherService {
   ): Promise<TeacherResponseDto> {
     await this.findTeacherByEmail(createTeacherDto.email);
 
+    const studentWithGivenEmail = await this.studentRepository.find({
+      where: {
+        email: createTeacherDto.email,
+      },
+    });
+    if (studentWithGivenEmail) {
+      throw new HttpException(
+        'Email is already taken',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const newTeacher = new TeacherEntity();
     Object.assign(newTeacher, createTeacherDto);
 
@@ -128,7 +143,36 @@ export class TeacherService {
       );
     }
 
-    await this.teacherRepository.delete(teacherId);
+    await this.dataSource.transaction(async (manager) => {
+      // Remove M:N join rows: subjects <-> teacher
+      const subjectIds = await manager
+        .createQueryBuilder(SubjectEntity, 's')
+        .innerJoin('s.teachers', 'teacher', 'teacher.id = :teacherId', {
+          teacherId,
+        })
+        .select('s.id', 'id')
+        .getRawMany()
+        .then((rows) => rows.map((r) => r.id as number));
+
+      if (subjectIds.length) {
+        await manager
+          .createQueryBuilder()
+          .relation(TeacherEntity, 'subjects')
+          .of(teacherId)
+          .remove(subjectIds);
+      }
+
+      //Delete grades for this teacher
+      await manager
+        .createQueryBuilder()
+        .delete()
+        .from(GradeEntity)
+        .where('teacher_id = :teacherId', { teacherId })
+        .execute();
+
+      await manager.delete(TeacherEntity, teacherId);
+    });
+
     return this.generateTeacherResponse(teacher);
   }
 
