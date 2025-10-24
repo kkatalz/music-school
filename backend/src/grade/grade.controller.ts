@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { GradeService } from './grade.service';
 import { CreateGradeDto } from './dto/createGrade.dto';
 import { GradeEntity } from './grade.entity';
@@ -15,8 +24,13 @@ export class GradeController {
   @Roles(Role.Teacher, Role.HeadTeacher)
   async setGrade(
     @Body() createGradeDto: CreateGradeDto,
+    @Req() req,
   ): Promise<GradeResponseDto> {
-    return await this.gradeService.setGrade(createGradeDto);
+    const authenticatedTeacherId = req.teacher?.id || req.headTeacher?.id;
+    return await this.gradeService.setGrade(
+      createGradeDto,
+      authenticatedTeacherId,
+    );
   }
 
   @Put(':id')
@@ -24,8 +38,14 @@ export class GradeController {
   async updateGrade(
     @Param('id') id: number,
     @Body() updateGradeDto: UpdateGradeDto,
+    @Req() req,
   ): Promise<GradeEntity> {
-    return await this.gradeService.updateGrade(id, updateGradeDto);
+    const authenticatedTeacherId = req.teacher?.id || req.headTeacher?.id;
+    return await this.gradeService.updateGrade(
+      id,
+      updateGradeDto,
+      authenticatedTeacherId,
+    );
   }
 
   @Get('student/:studentId')

@@ -29,7 +29,10 @@ export class GradeService {
     private readonly mailService: MailService,
   ) {}
 
-  async setGrade(createGradeDto: CreateGradeDto): Promise<GradeResponseDto> {
+  async setGrade(
+    createGradeDto: CreateGradeDto,
+    authenticatedTeacherId: number,
+  ): Promise<GradeResponseDto> {
     const { subjectId, studentId, teacherId, value } = createGradeDto;
 
     const subject = await this.subjectRepository.findOne({
@@ -56,6 +59,27 @@ export class GradeService {
 
     if (!teacher) {
       throw new HttpException('Teacher does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    const authenticatedTeacher = await this.teacherRepository.findOne({
+      where: { id: authenticatedTeacherId },
+    });
+
+    if (!authenticatedTeacher) {
+      throw new HttpException(
+        'Authenticated teacher not found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const isAssignedTeacher = teacherId === authenticatedTeacherId;
+    const isHeadTeacher = authenticatedTeacher.isHeadTeacher;
+
+    if (!isAssignedTeacher && !isHeadTeacher) {
+      throw new HttpException(
+        'You are not authorized to set grades for this subject. Only the assigned teacher or a head teacher can set grades.',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const enrolled = await this.subjectRepository
@@ -118,12 +142,33 @@ export class GradeService {
   async updateGrade(
     gradeId: number,
     updateGradeDto: UpdateGradeDto,
+    authenticatedTeacherId: number,
   ): Promise<GradeEntity> {
     const grade = await this.gradeRepository.findOneBy({ id: gradeId });
     if (!grade)
       throw new NotFoundException(`Grade with id ${gradeId} not found`);
 
-    // update the value of the found grade
+    const authenticatedTeacher = await this.teacherRepository.findOne({
+      where: { id: authenticatedTeacherId },
+    });
+
+    if (!authenticatedTeacher) {
+      throw new HttpException(
+        'Authenticated teacher not found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const isGradeOwner = grade.teacher?.id === authenticatedTeacherId;
+    const isHeadTeacher = authenticatedTeacher.isHeadTeacher;
+
+    if (!isGradeOwner && !isHeadTeacher) {
+      throw new HttpException(
+        'You are not authorized to update this grade. Only the teacher who created it or a head teacher can update grades.',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     grade.value = updateGradeDto.value;
     return await this.gradeRepository.save(grade);
   }
