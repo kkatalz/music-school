@@ -101,7 +101,7 @@ export class TeacherService {
         email: createTeacherDto.email,
       },
     });
-    if (studentWithGivenEmail) {
+    if (studentWithGivenEmail.length>0) {
       throw new HttpException(
         'Email is already taken',
         HttpStatus.UNPROCESSABLE_ENTITY,
