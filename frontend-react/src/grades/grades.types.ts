@@ -4,6 +4,11 @@ export interface Grade {
   id: number;
   subject?: SubjectNameResponse;
   value?: number;
+  student?: {
+    id: number;
+    firstName: string;
+    lastName: string;
+  };
 }
 
 export interface CreateGrade {
