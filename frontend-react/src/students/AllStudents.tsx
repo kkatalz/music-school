@@ -1,4 +1,5 @@
 import {
+  useGetStudentInfo,
   useGetAllStudents,
   useDeleteStudent,
   useGetStudentsByPeriod,
@@ -16,6 +17,9 @@ export const AllStudents = () => {
   const [endDate, setEndDate] = useState<string | null>(null);
   const [filterEnabled, setFilterEnabled] = useState(false);
 
+  const [searchId, setSearchId] = useState<string>('');
+  const [searchEnabled, setSearchEnabled] = useState(false);
+
   const {
     data: allStudents,
     isLoading: isLoadingAll,
@@ -30,6 +34,13 @@ export const AllStudents = () => {
     filterEnabled ? startDate : null,
     filterEnabled ? endDate : null
   );
+  const {
+    data: searchedStudent,
+    isLoading: isLoadingSearch,
+    isError: isErrorSearch,
+  } = useGetStudentInfo(
+    searchEnabled && searchId ? Number(searchId) : null
+  );
   const { data: totalCount } = useGetTotalStudentsByPeriod(
     filterEnabled ? startDate : null,
     filterEnabled ? endDate : null
@@ -37,9 +48,23 @@ export const AllStudents = () => {
 
   const { mutate: deleteStudent } = useDeleteStudent();
 
-  const students = filterEnabled ? filteredStudents : allStudents;
-  const isLoading = filterEnabled ? isLoadingFiltered : isLoadingAll;
-  const isError = filterEnabled ? isErrorFiltered : isErrorAll;
+  const students = searchEnabled && searchedStudent 
+    ? [searchedStudent] 
+    : filterEnabled 
+    ? filteredStudents 
+    : allStudents;
+    
+  const isLoading = searchEnabled 
+    ? isLoadingSearch 
+    : filterEnabled 
+    ? isLoadingFiltered 
+    : isLoadingAll;
+    
+  const isError = searchEnabled 
+    ? false
+    : filterEnabled 
+    ? isErrorFiltered 
+    : isErrorAll;
   const error = isErrorAll ? errorAll : null;
 
   const handleDelete = (studentId: number) => {
@@ -64,6 +89,18 @@ export const AllStudents = () => {
     setFilterEnabled(false);
   };
 
+  const handleSearchById = () => {
+    if (searchId && !isNaN(Number(searchId))) {
+      setFilterEnabled(false);
+      setSearchEnabled(true);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchId('');
+    setSearchEnabled(false);
+  };
+
   if (isError) {
     return <h1>{error?.message || 'An error occurred'}</h1>;
   }
@@ -79,6 +116,56 @@ export const AllStudents = () => {
         >
           Add Student
         </Link>
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Search by Student ID
+        </h2>
+        <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex-1 min-w-[200px]">
+            <input
+              type="number"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              placeholder="Enter student ID"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSearchById}
+              disabled={!searchId || isNaN(Number(searchId))}
+              className="px-4 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              Search
+            </button>
+            {searchEnabled && (
+              <button
+                onClick={handleClearSearch}
+                className="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
+        </div>
+
+        {searchEnabled && (
+          <div className={`mt-4 p-3 rounded-md border ${
+            searchedStudent 
+              ? 'bg-green-50 border-green-200' 
+              : 'bg-red-50 border-red-200'
+          }`}>
+            <p className={`font-medium ${
+              searchedStudent ? 'text-green-800' : 'text-red-800'
+            }`}>
+              {searchedStudent 
+                ? `Found student with ID: ${searchId}` 
+                : `Student with ID ${searchId} was not found`}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
