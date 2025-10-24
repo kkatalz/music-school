@@ -1,6 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Teacher, CreateTeacher, UpdateTeacher } from "./teacher.types";
 import type { SubjectResponse } from "../subjects/types/subjects.types";
+import type { StudentResponse } from "../auth/auth.types";
 
 
 const getAuthHeaders = () => {
@@ -93,3 +94,29 @@ export const getStudentTeachers = async (
   const response: AxiosResponse<Teacher[]> = await axios.get(url, getAuthHeaders());
   return response.data;
 };
+
+
+export const getTeacherStudents = async(
+  teacherId: number, 
+  year: number | null, 
+  semester: number | null): Promise<StudentResponse[]> => {
+
+  const authConfig = getAuthHeaders();
+  const params: { year?: number; semester?: number} = {}
+  if (year !== null) {
+    params.year = year;
+  }
+
+  if (semester !== null) {
+    params.semester = semester;
+  }
+
+  const response: AxiosResponse<StudentResponse[]> = await axios.get(`/api/teachers/${teacherId}/students`, 
+    {
+      params: params,
+      ...authConfig
+    }
+  );
+
+  return response.data;
+}

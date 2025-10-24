@@ -26,6 +26,8 @@ import { StudentSubjectsPage } from './students/StudentSubjectsPage';
 import { ManageGradesPage } from './grades/ManageGradesPage';
 import { TeacherSubjectsPage } from './teachers/TeacherSubjectsPage';
 import { StudentTeachers } from './students/StudentTeachers';
+import { TeacherStudents } from './teachers/TeacherStudents';
+import { TeacherSubjects } from './teachers/TeacherSubjects';
 
 const App = () => {
   return (
@@ -80,6 +82,13 @@ const App = () => {
             path="students/edit/:studentId"
             element={<UpdateStudentForm />}
           />
+           <Route
+            path="teachers/:teacherId/students"
+            element={<TeacherStudents />} />
+
+             <Route
+            path="teachers/:teacherId/subjects"
+            element={<TeacherSubjects />} />
         </Route>
       </Route>
 
