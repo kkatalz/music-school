@@ -14,6 +14,8 @@ import { SubjectEntity } from 'src/subject/subject.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { MailService } from 'src/mail/mail.service';
+import { StudentFirstLastNamesResponse } from 'src/student/dto/studentFirstLastNamesResponse.dto';
+import { TeacherFirstLastNamesResponse } from 'src/teacher/dto/teacherFirstLastNamesResponse.dto';
 
 @Injectable()
 export class GradeService {
@@ -182,6 +184,8 @@ export class GradeService {
     const qb = this.gradeRepository
       .createQueryBuilder('grade')
       .innerJoinAndSelect('grade.subject', 'subject')
+      .innerJoinAndSelect('grade.student', 'student')
+      .innerJoinAndSelect('grade.teacher', 'teacher')
       .where('grade.student.id = :studentId', { studentId });
 
     if (subjectName !== undefined) {
@@ -206,6 +210,8 @@ export class GradeService {
     const qb = this.gradeRepository
       .createQueryBuilder('grade')
       .innerJoinAndSelect('grade.subject', 'subject')
+      .innerJoinAndSelect('grade.student', 'student')
+      .innerJoinAndSelect('grade.teacher', 'teacher')
       .where('grade.teacher.id = :teacherId', { teacherId });
 
     if (subjectName !== undefined) {
@@ -225,34 +231,17 @@ export class GradeService {
   gradeResponseDto(grade: GradeEntity): GradeResponseDto {
     return {
       id: grade.id,
-      /**
-            student: {
-                id: grade.student.id,
-                firstName: grade.student.firstName,
-                lastName: grade.student.lastName,
-                phone: grade.student.phone,
-                parentPhone: grade.student.parentPhone,
-                address: grade.student.address,
-                startStudyDate: grade.student.startStudyDate,
-                email: grade.student.email,
-                token: '',
-            },
-                **/
-
-      subject: {
-        id: grade.subject?.id,
-        name: grade.subject?.name,
+      subject: { id: grade.subject!.id, name: grade.subject!.name },
+      student: {
+        id: grade.student!.id,
+        firstName: grade.student!.firstName,
+        lastName: grade.student!.lastName,
       },
-      /**
-            teacher: {
-                id: grade.teacher.id,
-                lastName: grade.teacher.lastName,
-                phone: grade.teacher.phone,
-                email: grade.teacher.email,
-                token: '',
-            },
-                **/
-
+      teacher: {
+        id: grade.teacher!.id,
+        firstName: grade.teacher!.firstName,
+        lastName: grade.teacher!.lastName,
+      },
       value: grade.value,
     };
   }
