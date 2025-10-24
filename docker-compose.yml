@@ -39,23 +39,5 @@ services:
       db:
         condition: service_healthy
 
-  # 3. Streamlit Frontend Service
-  web:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: music_school_web
-    command: streamlit run main.py --server.port 8501 --server.address 0.0.0.0
-
-    volumes:
-      - ./frontend:/app
-    ports:
-      - "${WEB_PORT}:8501"
-    environment:
-      # Optionally pass the API host to Streamlit
-      API_HOST: ${API_HOST}
-    depends_on:
-      - api
-
 volumes:
   postgres_data:
