@@ -24,6 +24,7 @@ import { DeleteSubjectForm } from './subjects/DeleteSubjectForm';
 import { UpdateSubjectForm } from './subjects/UpdateSubjectForm';
 import { StudentSubjectsPage } from './students/StudentSubjectsPage';
 import { ManageGradesPage } from './grades/ManageGradesPage';
+import { TeacherSubjectsPage } from './teachers/TeacherSubjectsPage';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="profile" element={<TeacherProfile />} />
           <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="grades" element={<ManageGradesPage />} />
+          <Route path="mySubjects" element={<TeacherSubjectsPage />} />
         </Route>
       </Route>
 
@@ -43,6 +45,7 @@ const App = () => {
           <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="grades" element={<ManageGradesPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
+          <Route path="mySubjects" element={<TeacherSubjectsPage />} />
           <Route path="subjects/new" element={<CreateSubjectForm />} />
           <Route path="subjects/delete" element={<DeleteSubjectForm />} />
           <Route path="subjects/update" element={<UpdateSubjectForm />} />

@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTeachers, createTeacher, deleteTeacher, updateTeacher, getTeacherById, updateTeacherPassword } from "./teachers.service";
+import { getTeachers, 
+  createTeacher, 
+  deleteTeacher, 
+  updateTeacher, 
+  getTeacherById, 
+  updateTeacherPassword,
+getTeacherSubjects,
+calculateExperience } from "./teachers.service";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from "react-router";
 import type { CreateTeacher, UpdateTeacher } from "./teacher.types";
@@ -103,3 +110,30 @@ export const useUpdateTeacherPassword = () => {
 };
 
 
+export const useGetTeacherSubjects = (
+  teacherId: number | undefined,
+  year: string,
+  semester: string
+) => {
+  return useQuery({
+    queryKey: ['mySubjects', teacherId, year, semester],
+
+    queryFn: () => {
+      const yearNum = year ? parseInt(year, 10) : null;
+      const semesterNum = semester ? parseInt(semester, 10) : null;
+
+      return getTeacherSubjects(teacherId!, yearNum, semesterNum);
+    },
+
+    enabled: !!teacherId
+  })
+}
+
+
+export const useCalculateExperience = (teacherId: number | null) => {
+  return useQuery({
+    queryKey: ["teacherExperience", teacherId],
+    queryFn: () => calculateExperience(teacherId),
+    enabled: !!teacherId,
+  })
+};

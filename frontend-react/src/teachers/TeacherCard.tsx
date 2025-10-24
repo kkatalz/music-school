@@ -1,5 +1,6 @@
 import type { Teacher } from './teacher.types';
 import type { JSX } from 'react';
+import { useCalculateExperience } from './useTeachers';
 
 interface TeacherCardProps {
   teacher: Teacher;
@@ -58,6 +59,9 @@ export const TeacherCard = ({
   onEdit,
   onDelete,
 }: TeacherCardProps) => {
+  // get teacher's experience to display it on the card
+  const { data: experience } = useCalculateExperience(teacher.id);
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
       <div className="border-b border-gray-200 pb-4 mb-4">
@@ -89,9 +93,17 @@ export const TeacherCard = ({
       </div>
 
       <div className="mt- pt-4 border-t border-gray-200 text-xs text-gray-500">
+        <div className="flex flex-col">
         <span>
           Works since: {new Date(teacher.startWorkDate).toLocaleDateString()}
         </span>
+
+        {experience !== undefined && (
+          <span className="mt-1">
+            Experience: {+experience} {experience === 1 ? 'year' : 'years'}
+          </span>
+        )}
+      </div>
 
         <div className="flex space-x-2">
           <button

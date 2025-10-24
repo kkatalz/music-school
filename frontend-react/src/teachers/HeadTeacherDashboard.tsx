@@ -74,6 +74,19 @@ export const HeadTeacherDashboard = () => {
           >
             Subjects
           </NavLink>
+
+
+          <NavLink
+            to="/headTeacher/mySubjects"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive ? 'bg-gray-900' : ''
+              }`
+            }
+          >
+            My Subjects
+          </NavLink>
+
           <NavLink
             to="/headTeacher/grades"
             className={({ isActive }) =>
