@@ -34,6 +34,18 @@ export class StudentService {
   ): Promise<StudentResponseDto> {
     await this.findStudentByEmail(createStudentDto.email);
 
+    const teacherWithGivenEmail = await this.teacherRepository.find({
+      where: {
+        email: createStudentDto.email,
+      },
+    });
+    if (teacherWithGivenEmail) {
+      throw new HttpException(
+        'Email is already taken',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const newStudent = new StudentEntity();
     Object.assign(newStudent, createStudentDto);
 
