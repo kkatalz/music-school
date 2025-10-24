@@ -112,6 +112,34 @@ export const useUpdateTeacherPassword = () => {
   });
 };
 
+export const useGetTeacherSubjects = (
+  teacherId: number | undefined,
+  year: string,
+  semester: string
+) => {
+  return useQuery({
+    queryKey: ['mySubjects', teacherId, year, semester],
+
+    queryFn: () => {
+      const yearNum = year ? parseInt(year, 10) : null;
+      const semesterNum = semester ? parseInt(semester, 10) : null;
+
+      return getTeacherSubjects(teacherId!, yearNum, semesterNum);
+    },
+
+    enabled: !!teacherId
+  })
+}
+
+
+export const useCalculateExperience = (teacherId: number | null) => {
+  return useQuery({
+    queryKey: ["teacherExperience", teacherId],
+    queryFn: () => calculateExperience(teacherId),
+    enabled: !!teacherId,
+  })
+};
+
 export const useStudentTeachers = (
   studentId: number | undefined,
   year?: number,
