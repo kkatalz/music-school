@@ -1,5 +1,7 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+'use client';
+
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 export const TeacherDashboard = () => {
   const { user, logout } = useAuth();
@@ -7,9 +9,9 @@ export const TeacherDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate('/login');
   };
-  //
+
   return (
     <div className="flex h-screen bg-gray-100">
       <aside className="w-64 bg-gray-800 text-white flex flex-col">
@@ -24,7 +26,7 @@ export const TeacherDashboard = () => {
             to="/teacher/profile"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
@@ -35,11 +37,22 @@ export const TeacherDashboard = () => {
             to="/teacher/myStudents"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
             My students
+          </NavLink>
+
+          <NavLink
+            to="/teacher/grades"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive ? 'bg-gray-900' : ''
+              }`
+            }
+          >
+            Manage Grades
           </NavLink>
         </nav>
 

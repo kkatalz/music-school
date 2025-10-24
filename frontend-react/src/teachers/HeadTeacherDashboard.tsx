@@ -1,5 +1,5 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 
 export const HeadTeacherDashboard = () => {
   const { user, logout } = useAuth();
@@ -7,7 +7,7 @@ export const HeadTeacherDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate('/login');
   };
   //
   return (
@@ -24,7 +24,7 @@ export const HeadTeacherDashboard = () => {
             to="/headTeacher/profile"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
@@ -35,7 +35,7 @@ export const HeadTeacherDashboard = () => {
             to="/headTeacher/students"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
@@ -46,7 +46,7 @@ export const HeadTeacherDashboard = () => {
             to="/headTeacher/myStudents"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
@@ -57,7 +57,7 @@ export const HeadTeacherDashboard = () => {
             to="/headTeacher/teachers"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
@@ -68,11 +68,21 @@ export const HeadTeacherDashboard = () => {
             to="/headTeacher/subjects"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
-                isActive ? "bg-gray-900" : ""
+                isActive ? 'bg-gray-900' : ''
               }`
             }
           >
             Subjects
+          </NavLink>
+          <NavLink
+            to="/headTeacher/grades"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${
+                isActive ? 'bg-gray-900' : ''
+              }`
+            }
+          >
+            Manage Grades
           </NavLink>
         </nav>
         <div className="p-4 border-t border-gray-700">
