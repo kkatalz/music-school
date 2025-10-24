@@ -1,32 +1,31 @@
-import { useQuery } from "@tanstack/react-query";
-import { getTeachers, 
-  createTeacher, 
-  deleteTeacher, 
-  updateTeacher, 
-  getTeacherById, 
+import { useQuery } from '@tanstack/react-query';
+import {
+  getTeachers,
+  createTeacher,
+  deleteTeacher,
+  updateTeacher,
+  getTeacherById,
   updateTeacherPassword,
-getTeacherSubjects,
-calculateExperience } from "./teachers.service";
+} from './teachers.service';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from "react-router";
-import type { CreateTeacher, UpdateTeacher } from "./teacher.types";
-
+import { useNavigate } from 'react-router';
+import type { CreateTeacher, UpdateTeacher } from './teacher.types';
+import type { AxiosError } from 'axios';
 
 export const useTeachers = () => {
   return useQuery({
-    queryKey: ["teachers"],
+    queryKey: ['teachers'],
     queryFn: getTeachers,
   });
 };
 
 export const useGetTeacherById = (teacherId: number | null) => {
   return useQuery({
-    queryKey: ["teacherById", teacherId],
+    queryKey: ['teacherById', teacherId],
     queryFn: () => getTeacherById(teacherId),
     enabled: !!teacherId,
-  })
+  });
 };
-
 
 export const useCreateTeacher = () => {
   const queryClient = useQueryClient();
@@ -34,20 +33,19 @@ export const useCreateTeacher = () => {
 
   return useMutation({
     mutationFn: (newTeacher: CreateTeacher) => createTeacher(newTeacher),
-    
+
     onSuccess: () => {
       // query to 'teachers' to update list
       queryClient.invalidateQueries({ queryKey: ['teachers'] });
       alert('Teacher was added!');
-      navigate('/headTeacher/teachers'); 
+      navigate('/headTeacher/teachers');
     },
-    onError: (err: any) => {
-      alert(err);
-      console.error("Error while creating:", err);
-    }
+    onError: (err: AxiosError<{ message: string }>) => {
+      alert(err?.response?.data?.message);
+      console.error('Error while creating:', err);
+    },
   });
 };
-
 
 export const useDeleteTeacher = () => {
   const queryClient = useQueryClient();
@@ -55,85 +53,59 @@ export const useDeleteTeacher = () => {
 
   return useMutation({
     mutationFn: (teacherId: number) => deleteTeacher(teacherId),
-    
+
     onSuccess: () => {
       // query to 'teachers' to update list
       queryClient.invalidateQueries({ queryKey: ['teachers'] });
       alert('Teacher was deleted!');
-      navigate('/headTeacher/teachers'); 
+      navigate('/headTeacher/teachers');
     },
     onError: (err: any) => {
       alert(err);
-      console.error("Error while deleting:", err);
-    }
+      console.error('Error while deleting:', err);
+    },
   });
 };
-
 
 export const useUpdateTeacher = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   return useMutation({
-        mutationFn: ({ teacherId, newTeacherData }: { teacherId: number, newTeacherData: UpdateTeacher }) => 
-          updateTeacher(teacherId, newTeacherData),
-    
+    mutationFn: ({
+      teacherId,
+      newTeacherData,
+    }: {
+      teacherId: number;
+      newTeacherData: UpdateTeacher;
+    }) => updateTeacher(teacherId, newTeacherData),
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['teachers'] });
       alert('Teacher was updated!');
-      navigate('/headTeacher/teachers'); 
+      navigate('/headTeacher/teachers');
     },
     onError: (err: any) => {
       alert(err);
-      console.error("Error while deleting:", err);
-    }
+      console.error('Error while deleting:', err);
+    },
   });
 };
 
-
 export const useUpdateTeacherPassword = () => {
-    const queryClient = useQueryClient();
-    const navigate = useNavigate();
-    return useMutation({
-      mutationFn: (newPassword: string) => updateTeacherPassword(newPassword),
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: (newPassword: string) => updateTeacherPassword(newPassword),
 
-      onSuccess: () => {
-        alert('Password was successfully updated!');
-        // setNewPassword('');
-        // setNewPasswordFinal('');
-        queryClient.invalidateQueries({ queryKey: ['teachers'] });
-      },
-      onError: (err: any) => {
-        console.error("Error while updating password:", err);
-      }
-    })
-};
-
-
-export const useGetTeacherSubjects = (
-  teacherId: number | undefined,
-  year: string,
-  semester: string
-) => {
-  return useQuery({
-    queryKey: ['mySubjects', teacherId, year, semester],
-
-    queryFn: () => {
-      const yearNum = year ? parseInt(year, 10) : null;
-      const semesterNum = semester ? parseInt(semester, 10) : null;
-
-      return getTeacherSubjects(teacherId!, yearNum, semesterNum);
+    onSuccess: () => {
+      alert('Password was successfully updated!');
+      // setNewPassword('');
+      // setNewPasswordFinal('');
+      queryClient.invalidateQueries({ queryKey: ['teachers'] });
     },
-
-    enabled: !!teacherId
-  })
-}
-
-
-export const useCalculateExperience = (teacherId: number | null) => {
-  return useQuery({
-    queryKey: ["teacherExperience", teacherId],
-    queryFn: () => calculateExperience(teacherId),
-    enabled: !!teacherId,
-  })
+    onError: (err: any) => {
+      console.error('Error while updating password:', err);
+    },
+  });
 };

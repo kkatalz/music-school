@@ -1,36 +1,44 @@
-import { useQuery } from "@tanstack/react-query";
-import { getStudentInfo, updateStudentPassword, getStudentStudyYears, getAllStudents, createStudent, 
-  updateStudent, deleteStudent, getMyStudents, getStudentsByPeriod, getTotalStudentsByPeriod
-} from "./students.service";
-import type { StudentResponse } from "../auth/auth.types";
-import type { Student } from "./student.types";
+import { useQuery } from '@tanstack/react-query';
+import {
+  getStudentInfo,
+  updateStudentPassword,
+  getStudentStudyYears,
+  getAllStudents,
+  createStudent,
+  updateStudent,
+  deleteStudent,
+  getMyStudents,
+  getStudentsByPeriod,
+  getTotalStudentsByPeriod,
+} from './students.service';
+import type { StudentResponse } from '../auth/auth.types';
+import type { Student } from './student.types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from "react-router";
-
-
+import { useNavigate } from 'react-router';
+import type { AxiosError } from 'axios';
 
 export const useGetStudentInfo = (studentId: number | null) => {
-     return useQuery({
-        queryKey: ["studentInfo", studentId],
-        queryFn: () =>  getStudentInfo(studentId),
-        enabled: !!studentId,
-      });
-}
+  return useQuery({
+    queryKey: ['studentInfo', studentId],
+    queryFn: () => getStudentInfo(studentId),
+    enabled: !!studentId,
+  });
+};
 
 export const useGetStudentStudyYears = (studendId: number | null) => {
   return useQuery({
-    queryKey: ["studentStudyYears", studendId],
-    queryFn: () =>  getStudentStudyYears(studendId),
+    queryKey: ['studentStudyYears', studendId],
+    queryFn: () => getStudentStudyYears(studendId),
     enabled: !!studendId,
-      });
-}
+  });
+};
 
 export const useGetAllStudents = () => {
-    return useQuery({
-      queryKey: ["students"],
-      queryFn: getAllStudents,
-    });
-}
+  return useQuery({
+    queryKey: ['students'],
+    queryFn: getAllStudents,
+  });
+};
 
 export const useCreateStudent = () => {
   const queryClient = useQueryClient();
@@ -38,41 +46,44 @@ export const useCreateStudent = () => {
 
   return useMutation({
     mutationFn: (newStudent: Student) => createStudent(newStudent),
-    
+
     onSuccess: () => {
       // query to 'students' to update list
       queryClient.invalidateQueries({ queryKey: ['students'] });
       alert('Student was added!');
-      navigate('/headTeacher/students'); 
+      navigate('/headTeacher/students');
     },
-    onError: (err: any) => {
-      alert(err);
-      console.error("Error while creating:", err);
-    }
+    onError: (err: AxiosError<{ message: string }>) => {
+      alert(err?.response?.data?.message);
+      console.error('Error while creating:', err);
+    },
   });
 };
-
 
 export const useUpdateStudent = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   return useMutation({
-        mutationFn: ({ studentId, newStudentData }: { studentId: number, newStudentData: any }) => 
-          updateStudent(studentId, newStudentData),
-    
+    mutationFn: ({
+      studentId,
+      newStudentData,
+    }: {
+      studentId: number;
+      newStudentData: any;
+    }) => updateStudent(studentId, newStudentData),
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
       alert('Student was updated!');
-      navigate('/headTeacher/students'); 
+      navigate('/headTeacher/students');
     },
     onError: (err: any) => {
       alert(err);
-      console.error("Error while updating:", err);
-    }
+      console.error('Error while updating:', err);
+    },
   });
 };
-
 
 export const useDeleteStudent = () => {
   const queryClient = useQueryClient();
@@ -80,57 +91,56 @@ export const useDeleteStudent = () => {
 
   return useMutation({
     mutationFn: (studentId: number) => deleteStudent(studentId),
-    
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
       alert('Student was deleted!');
-      navigate('/headTeacher/students'); 
+      navigate('/headTeacher/students');
     },
     onError: (err: any) => {
       alert(err);
-      console.error("Error while deleting:", err);
-    }
+      console.error('Error while deleting:', err);
+    },
   });
 };
 
-
 export const useGetMyStudents = (
-  teacherId: number | undefined, 
-  year: string, 
+  teacherId: number | undefined,
+  year: string,
   semester: string
 ) => {
   return useQuery({
     queryKey: ['myStudents', teacherId, year, semester],
-    
+
     queryFn: () => {
       const yearNum = year ? parseInt(year, 10) : null;
       const semesterNum = semester ? parseInt(semester, 10) : null;
-      
+
       return getMyStudents(teacherId!, yearNum, semesterNum);
     },
-    
-    enabled: !!teacherId 
+
+    enabled: !!teacherId,
   });
 };
 
 export const useGetStudentsByPeriod = (
-  startDate: string | null, 
+  startDate: string | null,
   endDate: string | null
 ) => {
   return useQuery({
-    queryKey: ["studentsByPeriod", startDate, endDate],
+    queryKey: ['studentsByPeriod', startDate, endDate],
     queryFn: () => getStudentsByPeriod(startDate!, endDate!),
     enabled: !!startDate && !!endDate,
   });
-}
+};
 
 export const useGetTotalStudentsByPeriod = (
-  startDate: string | null, 
+  startDate: string | null,
   endDate: string | null
 ) => {
   return useQuery({
-    queryKey: ["totalStudentsByPeriod", startDate, endDate],
+    queryKey: ['totalStudentsByPeriod', startDate, endDate],
     queryFn: () => getTotalStudentsByPeriod(startDate!, endDate!),
     enabled: !!startDate && !!endDate,
   });
-}
+};
