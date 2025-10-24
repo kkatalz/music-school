@@ -1,5 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
 import type { Teacher, CreateTeacher, UpdateTeacher } from "./teacher.types";
+import type { SubjectResponse } from "../subjects/types/subjects.types";
 
 
 const getAuthHeaders = () => {
@@ -41,4 +42,30 @@ export const updateTeacherPassword = async(newPassword: string): Promise<Teacher
     const payload = { password: newPassword};
     const response: AxiosResponse<Teacher> = await axios.patch(`/api/teachers/password`, payload, getAuthHeaders());
     return response.data;
+}
+
+
+export const getTeacherSubjects = async(
+  teacherId: number, 
+  year: number | null, 
+  semester: number | null): Promise<SubjectResponse[]> => {
+    
+  const authConfig = getAuthHeaders();
+  const params: { year?: number; semester?: number} = {}
+  if (year !== null) {
+    params.year = year;
+  }
+
+  if (semester !== null) {
+    params.semester = semester;
+  }
+
+  const response: AxiosResponse<SubjectResponse[]> = await axios.get(`/api/teachers/${teacherId}/subjects`, 
+    {
+      params: params,
+      ...authConfig
+    }
+  );
+
+  return response.data;
 }
