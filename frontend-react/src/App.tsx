@@ -23,6 +23,7 @@ import { RemoveStudentFromSubject } from './subjects/RemoveStudentFromSubject';
 import { DeleteSubjectForm } from './subjects/DeleteSubjectForm';
 import { UpdateSubjectForm } from './subjects/UpdateSubjectForm';
 import { StudentSubjectsPage } from './students/StudentSubjectsPage';
+import { ManageGradesPage } from './grades/ManageGradesPage';
 
 const App = () => {
   return (
@@ -33,12 +34,14 @@ const App = () => {
         <Route path="/teacher" element={<TeacherDashboard />}>
           <Route path="profile" element={<TeacherProfile />} />
           <Route path="myStudents" element={<MyStudentsPage />} />
+          <Route path="grades" element={<ManageGradesPage />} />
         </Route>
       </Route>
 
       <Route element={<ProtectedRoute />}>
         <Route path="/headTeacher" element={<HeadTeacherDashboard />}>
           <Route path="myStudents" element={<MyStudentsPage />} />
+          <Route path="grades" element={<ManageGradesPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
           <Route path="subjects/new" element={<CreateSubjectForm />} />
           <Route path="subjects/delete" element={<DeleteSubjectForm />} />
