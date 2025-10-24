@@ -42,7 +42,8 @@ export class TeacherService {
       .innerJoin('student.subjects', 'subject')
       .innerJoin('subject.teachers', 'teacher', 'teacher.id = :teacherId', {
         teacherId,
-      });
+      })
+      .leftJoinAndSelect('student.subjects', 'allSubjects');
 
     if (year !== undefined) {
       qb.andWhere('subject.studyYear = :year', { year });

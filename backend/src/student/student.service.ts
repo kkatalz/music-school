@@ -13,7 +13,8 @@ import { Role } from 'src/auth/types/role.enum';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDto } from 'src/types/changePassword.dto';
-
+import { GradeEntity } from 'src/grade/grade.entity';
+import { DataSource } from 'typeorm';
 dotenv.config();
 
 @Injectable()
@@ -25,6 +26,7 @@ export class StudentService {
     private readonly subjectRepository: Repository<SubjectEntity>,
     @InjectRepository(TeacherEntity)
     private readonly teacherRepository: Repository<TeacherEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async createStudent(
@@ -55,7 +57,35 @@ export class StudentService {
 
   async deleteStudent(studentId: number): Promise<StudentResponseDto> {
     const student = await this.findStudentById(studentId);
-    await this.studentRepository.delete(studentId);
+
+    await this.dataSource.transaction(async (manager) => {
+      // Remove M:N join rows: subjects <-> students
+      const subjectIds = await manager
+        .createQueryBuilder(SubjectEntity, 's')
+        .innerJoin('s.students', 'st', 'st.id = :studentId', { studentId })
+        .select('s.id', 'id')
+        .getRawMany()
+        .then((rows) => rows.map((r) => r.id as number));
+
+      if (subjectIds.length) {
+        await manager
+          .createQueryBuilder()
+          .relation(StudentEntity, 'subjects')
+          .of(studentId)
+          .remove(subjectIds);
+      }
+
+      //Delete grades for this student=
+      await manager
+        .createQueryBuilder()
+        .delete()
+        .from(GradeEntity)
+        .where('student_id = :studentId', { studentId })
+        .execute();
+
+      await manager.delete(StudentEntity, studentId);
+    });
+
     return this.generateStudentResponse(student);
   }
 
@@ -69,7 +99,7 @@ export class StudentService {
   }
 
   async getAllStudents(): Promise<StudentEntity[]> {
-    return await this.studentRepository.find();
+    return await this.studentRepository.find({ relations: ['subjects'] });
   }
 
   async getStudentsByPeriod(
