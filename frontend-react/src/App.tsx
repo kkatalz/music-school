@@ -45,6 +45,7 @@ const App = () => {
           <Route path="myStudents" element={<MyStudentsPage />} />
           <Route path="grades" element={<ManageGradesPage />} />
           <Route path="subjects" element={<SubjectsPage />} />
+          <Route path="mySubjects" element={<TeacherSubjectsPage />} />
           <Route path="subjects/new" element={<CreateSubjectForm />} />
           <Route path="subjects/delete" element={<DeleteSubjectForm />} />
           <Route path="subjects/update" element={<UpdateSubjectForm />} />
