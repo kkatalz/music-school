@@ -146,8 +146,10 @@ export class GradeService {
     updateGradeDto: UpdateGradeDto,
     authenticatedTeacherId: number,
   ): Promise<GradeEntity> {
-    const grade = await this.gradeRepository.findOneBy({ id: gradeId });
-    if (!grade)
+      const grade = await this.gradeRepository.findOne({
+        where: { id: gradeId },
+        relations: ['teacher'], 
+});    if (!grade)
       throw new NotFoundException(`Grade with id ${gradeId} not found`);
 
     const authenticatedTeacher = await this.teacherRepository.findOne({
