@@ -148,7 +148,7 @@ export class GradeService {
   ): Promise<GradeEntity> {
       const grade = await this.gradeRepository.findOne({
         where: { id: gradeId },
-        relations: ['teacher'], 
+        relations: ['teacher', 'student', 'subject'], 
 });    if (!grade)
       throw new NotFoundException(`Grade with id ${gradeId} not found`);
 
@@ -174,7 +174,18 @@ export class GradeService {
     }
 
     grade.value = updateGradeDto.value;
-    return await this.gradeRepository.save(grade);
+    const updatedGrade = await this.gradeRepository.save(grade);
+
+    // Надсилання сповіщення учню про оновлення оцінки
+    if (updatedGrade.student?.email) {
+      await this.mailService.sendGradeUpdateNotification(
+        updatedGrade.student.email,
+        updatedGrade.subject?.name ?? 'Unknown subject',
+        updatedGrade.value!,
+      );
+    }
+    
+    return updatedGrade;
   }
 
   async getStudentsGrades(

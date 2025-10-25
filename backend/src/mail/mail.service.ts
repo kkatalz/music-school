@@ -33,4 +33,21 @@ export class MailService {
       this.logger.error(`Failed to send email to ${to}`, error);
     }
   }
+
+  async sendGradeUpdateNotification(to: string, subjectName: string, gradeValue: number) {
+    try {
+      await this.transporter.sendMail({
+        from: '"Music School" <musicschool.ukma@gmail.com>',
+        to,
+        subject: `Updated grade in ${subjectName}`,
+        text: `Your grade in ${subjectName} has been updated to: ${gradeValue}`,
+        html: `<p>Your grade in <b>${subjectName}</b> has been updated to: <b>${gradeValue}</b>.</p>`,
+      });
+
+      this.logger.log(`Email sent to ${to} about updated grade in ${subjectName}`);
+    } catch (error) {
+      this.logger.error(`Failed to send email to ${to}`, error);
+    }
+  }
+
 }
