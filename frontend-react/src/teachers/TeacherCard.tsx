@@ -5,6 +5,7 @@ import { useCalculateExperience,
   useGetTeacherSubjects,
   useGetTeacherStudents
  } from './useTeachers';
+ import { useAuth } from '../auth/AuthContext';
 
 interface TeacherCardProps {
   teacher: Teacher;
@@ -63,6 +64,11 @@ export const TeacherCard = ({
   onEdit,
   onDelete,
 }: TeacherCardProps) => {
+    const { user } = useAuth();
+    const teacherId = user ? Number(user.id) : null;
+    const canDelete = teacherId !== teacher.id;
+  
+
   // get teacher's experience to display it on the card
   const { data: experience } = useCalculateExperience(teacher.id); 
 
@@ -116,12 +122,12 @@ export const TeacherCard = ({
           >
             Edit
           </button>
-          <button
+          {   canDelete &&   (<button
             onClick={onDelete}
             className="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
           >
             Delete
-          </button>
+          </button>)}
 
            {/* go to teacher's students */}
           <Link
