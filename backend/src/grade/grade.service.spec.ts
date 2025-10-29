@@ -7,6 +7,7 @@ import { SubjectEntity } from 'src/subject/subject.entity';
 import { StudentEntity } from 'src/student/student.entity';
 import { TeacherEntity } from 'src/teacher/teacher.entity';
 import { HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { MailService } from '../mail/mail.service';
 
 describe('GradeService', () => {
   let gradeService: GradeService;
@@ -14,6 +15,11 @@ describe('GradeService', () => {
   let subjectRepository: Repository<SubjectEntity>;
   let studentRepository: Repository<StudentEntity>;
   let teacherRepository: Repository<TeacherEntity>;
+
+  const mockMailService = {
+    sendGradeNotification: jest.fn(),
+    sendGradeUpdateNotification: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,6 +29,7 @@ describe('GradeService', () => {
           provide: getRepositoryToken(GradeEntity),
           useValue: {
             save: jest.fn(),
+            findOne: jest.fn(),
             findOneOrFail: jest.fn(),
             findOneBy: jest.fn(),
             createQueryBuilder: jest.fn(),
@@ -43,6 +50,10 @@ describe('GradeService', () => {
           provide: getRepositoryToken(TeacherEntity),
           useValue: { findOne: jest.fn() },
         },
+        {
+          provide: MailService,
+          useValue: mockMailService,
+        },
       ],
     }).compile();
 
@@ -62,7 +73,7 @@ describe('GradeService', () => {
   it('should throw if subject not found', async () => {
     jest.spyOn(subjectRepository, 'findOne').mockResolvedValueOnce(null);
 
-    await expect(gradeService.setGrade(dto)).rejects.toThrow(
+    await expect(gradeService.setGrade(dto, 3)).rejects.toThrow(
     new HttpException('Subject does not exist', HttpStatus.NOT_FOUND),
     );
   });
@@ -71,7 +82,7 @@ describe('GradeService', () => {
     jest.spyOn(subjectRepository, 'findOne').mockResolvedValueOnce({ id: 1 } as SubjectEntity);
     jest.spyOn(studentRepository, 'findOne').mockResolvedValueOnce(null);
 
-    await expect(gradeService.setGrade(dto)).rejects.toThrow(
+    await expect(gradeService.setGrade(dto, 3)).rejects.toThrow(
     new HttpException('Student does not exist', HttpStatus.NOT_FOUND),
     );
   });
@@ -81,7 +92,7 @@ describe('GradeService', () => {
     jest.spyOn(studentRepository, 'findOne').mockResolvedValueOnce({ id: 2 } as StudentEntity);
     jest.spyOn(teacherRepository, 'findOne').mockResolvedValueOnce(null);
 
-    await expect(gradeService.setGrade(dto)).rejects.toThrow(
+    await expect(gradeService.setGrade(dto, 3)).rejects.toThrow(
       new HttpException('Teacher does not exist', HttpStatus.NOT_FOUND),
     );
   });
@@ -98,29 +109,38 @@ describe('GradeService', () => {
     };
 
     jest.spyOn(subjectRepository, 'createQueryBuilder').mockReturnValue(qbMock as any);
-    await expect(gradeService.setGrade(dto)).rejects.toThrow(HttpException);
+    await expect(gradeService.setGrade(dto, 3)).rejects.toThrow(HttpException);
   });
 
   it('should save grade successfully', async () => {
-    const subject = { id: 1, name: 'Math' } as SubjectEntity;
+    const subject = { id: 1, name: 'Piano' } as SubjectEntity;
     const student = { id: 2 } as StudentEntity;
-    const teacher = { id: 3 } as TeacherEntity;
+    const teacher = { id: 3, isHeadTeacher: true } as TeacherEntity;
 
     jest.spyOn(subjectRepository, 'findOne').mockResolvedValue(subject);
     jest.spyOn(studentRepository, 'findOne').mockResolvedValue(student);
     jest.spyOn(teacherRepository, 'findOne').mockResolvedValue(teacher);
 
-    const qbMock = {
+    const qbMockStudentEnrollment = {
       innerJoin: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
-      getOne: jest.fn().mockResolvedValue({}),
+      getOne: jest.fn().mockResolvedValue(subject),
     };
-    jest.spyOn(subjectRepository, 'createQueryBuilder').mockReturnValue(qbMock as any);
+
+    const qbMockTeacherAssignment = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      getOne: jest.fn().mockResolvedValue(subject),
+    };
+
+    jest.spyOn(subjectRepository, 'createQueryBuilder')
+      .mockReturnValueOnce(qbMockStudentEnrollment as any)
+      .mockReturnValueOnce(qbMockTeacherAssignment as any);
 
     const savedGrade = { id: 10 } as GradeEntity;
     const finalGrade = {
       id: 10,
-      value: 95,
+      value: 12,
       subject,
       student,
       teacher,
@@ -129,29 +149,35 @@ describe('GradeService', () => {
     jest.spyOn(gradeRepository, 'save').mockResolvedValue(savedGrade);
     jest.spyOn(gradeRepository, 'findOneOrFail').mockResolvedValue(finalGrade);
 
-    const result = await gradeService.setGrade(dto);
-    expect(result).toEqual({
-      id: 10,
-      subject: { id: 1, name: 'Math' },
-      value: 95,
-    });
+    const result = await gradeService.setGrade(dto, 3);
+    expect(result).toHaveProperty('id', 10);
+    expect(result).toHaveProperty('value', 12);
   });
 
   describe('updateGrade', () => {
     it('should throw if grade not found', async () => {
-      jest.spyOn(gradeRepository, 'findOneBy').mockResolvedValueOnce(null);
+      jest.spyOn(gradeRepository, 'findOne').mockResolvedValueOnce(null);
 
       await expect(
-        gradeService.updateGrade(1, { value: 80 }),
+        gradeService.updateGrade(1, { value: 10 }, 3),
       ).rejects.toThrow(new NotFoundException('Grade with id 1 not found'));
     });
 
     it('should update grade successfully', async () => {
-      const grade = { id: 1, value: 50 } as GradeEntity;
-      jest.spyOn(gradeRepository, 'findOneBy').mockResolvedValueOnce(grade);
+      const teacher = { id: 3, isHeadTeacher: false } as TeacherEntity;
+      const grade = { 
+        id: 1, 
+        value: 11,
+        teacher: teacher,
+        student: { id: 2 } as StudentEntity,
+        subject: { id: 1 } as SubjectEntity,
+      } as GradeEntity;
+      
+      jest.spyOn(gradeRepository, 'findOne').mockResolvedValueOnce(grade);
+      jest.spyOn(teacherRepository, 'findOne').mockResolvedValue(teacher);
       jest.spyOn(gradeRepository, 'save').mockResolvedValueOnce({ ...grade, value: 80 });
 
-      const result = await gradeService.updateGrade(1, { value: 80 });
+      const result = await gradeService.updateGrade(1, { value: 11 }, 3);
       expect(result.value).toBe(80);
     });
   });
@@ -160,15 +186,19 @@ describe('GradeService', () => {
     it('should format grade properly', () => {
       const grade = {
         id: 1,
-        value: 100,
+        value: 9,
         subject: { id: 5, name: 'Bandura' },
+        student: { id: 2, firstName: 'John', lastName: 'Doe' },
+        teacher: { id: 3, firstName: 'Teacher', lastName: 'Name' },
       } as GradeEntity;
 
       const result = gradeService.gradeResponseDto(grade);
       expect(result).toEqual({
         id: 1,
         subject: { id: 5, name: 'Bandura' },
-        value: 100,
+        student: { id: 2, firstName: 'John', lastName: 'Doe' },
+        teacher: { id: 3, firstName: 'Teacher', lastName: 'Name' },
+        value: 9,
       });
     });
   });
