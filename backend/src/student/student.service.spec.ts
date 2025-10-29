@@ -7,6 +7,7 @@ import { SubjectEntity } from '../subject/subject.entity';
 import { TeacherEntity } from '../teacher/teacher.entity';
 import { Repository } from 'typeorm';
 import { Role } from '../auth/types/role.enum';
+import { DataSource } from 'typeorm';
 
 describe('StudentService', () => {
   let service: StudentService;
@@ -43,7 +44,24 @@ describe('StudentService', () => {
 
   const mockTeacherRepository = { 
     createQueryBuilder: jest.fn(),
-   };
+    find: jest.fn(),
+  };
+
+  const mockDataSource = {
+    createQueryRunner: jest.fn().mockReturnValue({
+      connect: jest.fn(),
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      rollbackTransaction: jest.fn(),
+      release: jest.fn(),
+      manager: {
+        save: jest.fn(),
+        findOne: jest.fn(),
+        delete: jest.fn(),
+      },
+    }),
+    transaction: jest.fn(),
+  };
 
   beforeEach(async () => {
     process.env.JWT_SECRET = 'test-secret-key';
@@ -54,6 +72,7 @@ describe('StudentService', () => {
         { provide: getRepositoryToken(StudentEntity), useValue: mockStudentRepository },
         { provide: getRepositoryToken(SubjectEntity), useValue: mockSubjectRepository },
         { provide: getRepositoryToken(TeacherEntity), useValue: mockTeacherRepository },
+        { provide: DataSource, useValue: mockDataSource },
       ],
     }).compile();
 
@@ -79,6 +98,7 @@ describe('StudentService', () => {
       };
 
       mockStudentRepository.findOne.mockResolvedValue(null);
+      mockTeacherRepository.find.mockResolvedValue([]);
       mockStudentRepository.save.mockResolvedValue({
         id: 2,
         ...createDto,
@@ -146,12 +166,27 @@ describe('StudentService', () => {
   describe('deleteStudent', () => {
     it('should delete a student', async () => {
       mockStudentRepository.findOne.mockResolvedValue(mockStudent);
-      mockStudentRepository.delete.mockResolvedValue({ affected: 1 });
+  
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          createQueryBuilder: jest.fn().mockReturnValue({
+            innerJoin: jest.fn().mockReturnThis(),
+            where: jest.fn().mockReturnThis(),
+            select: jest.fn().mockReturnThis(),
+            getRawMany: jest.fn().mockResolvedValue([]),
+            delete: jest.fn().mockReturnThis(),
+            from: jest.fn().mockReturnThis(),
+            execute: jest.fn().mockResolvedValue({ affected: 1 }),
+          }),
+          delete: jest.fn().mockResolvedValue({ affected: 1 }),
+        };
+        return await callback(mockManager);
+      });
 
       const result = await service.deleteStudent(1);
 
       expect(result).toHaveProperty('id', 1);
-      expect(mockStudentRepository.delete).toHaveBeenCalledWith(1);
+      expect(mockDataSource.transaction).toHaveBeenCalled();
     });
   });
 
