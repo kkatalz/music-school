@@ -6,7 +6,7 @@ import { StudentEntity } from '../student/student.entity';
 import { SubjectEntity } from '../subject/subject.entity';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { DataSource } from 'typeorm';
 
 describe('TeacherService', () => {
   let service: TeacherService;
@@ -40,14 +40,52 @@ describe('TeacherService', () => {
     distinct: jest.fn().mockReturnThis(),
     addSelect: jest.fn().mockReturnThis(),
     getMany: jest.fn(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
   };
 
   const mockStudentRepo = {
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
+    find: jest.fn().mockResolvedValue([]),
   };
 
   const mockSubjectRepo = {
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
+  };
+
+  const mockDataSource = {
+    createQueryRunner: jest.fn().mockReturnValue({
+    connect: jest.fn(),
+    startTransaction: jest.fn(),
+    commitTransaction: jest.fn(),
+    rollbackTransaction: jest.fn(),
+    release: jest.fn(),
+    manager: {
+      save: jest.fn(),
+      findOne: jest.fn(),
+      delete: jest.fn(),
+      createQueryBuilder: jest.fn().mockReturnValue({
+        delete: jest.fn().mockReturnThis(),
+        from: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValue({ affected: 1 }),
+      }),
+    },
+    }),
+    transaction: jest.fn().mockImplementation(async (callback) => {
+      const mockManager = {
+        createQueryBuilder: jest.fn().mockReturnValue({
+          innerJoin: jest.fn().mockReturnThis(),
+          select: jest.fn().mockReturnThis(),
+          getRawMany: jest.fn().mockResolvedValue([]),
+          delete: jest.fn().mockReturnThis(),
+          from: jest.fn().mockReturnThis(),
+          where: jest.fn().mockReturnThis(),
+          execute: jest.fn().mockResolvedValue({ affected: 1 }),
+        }),
+        delete: jest.fn().mockResolvedValue({ affected: 1 }),
+      };
+      return await callback(mockManager);
+    }),
   };
 
   beforeEach(async () => {
@@ -57,6 +95,7 @@ describe('TeacherService', () => {
         { provide: getRepositoryToken(TeacherEntity), useValue: mockTeacherRepo },
         { provide: getRepositoryToken(StudentEntity), useValue: mockStudentRepo },
         { provide: getRepositoryToken(SubjectEntity), useValue: mockSubjectRepo },
+        { provide: DataSource, useValue: mockDataSource },
       ],
     }).compile();
 
@@ -80,6 +119,7 @@ describe('TeacherService', () => {
 
   it('creates a new teacher when email is unique', async () => {
     jest.spyOn(service, 'findTeacherByEmail').mockResolvedValue(undefined);
+  mockStudentRepo.find.mockResolvedValue([]);
     const dto = { ...mockTeacher, email: 'new@example.com' };
     const result = await service.createTeacher(dto);
     expect(result.email).toBe(mockTeacher.email);
@@ -96,9 +136,11 @@ describe('TeacherService', () => {
 
   it('deletes a teacher (not self)', async () => {
     jest.spyOn(service, 'findTeacherById').mockResolvedValue(mockTeacher);
+  
     const result = await service.deleteTeacher(1, 2);
+    
     expect(result.email).toBe(mockTeacher.email);
-    expect(teacherRepo.delete).toHaveBeenCalledWith(1);
+    expect(mockDataSource.transaction).toHaveBeenCalled();
   });
 
   it('throws an error when trying to delete self', async () => {
