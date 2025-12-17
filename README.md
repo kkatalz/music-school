@@ -1,4 +1,4 @@
-# This project is aimed to operate Music school website. The school that has teachers and students. The project itself is implemented in Nest.js using TypeORM, Postgres on backend and Streamlit (Python's library) on frontend.#
+# This project is aimed to operate Music school website. The school that has teachers and students. The project itself is implemented in Nest.js using TypeORM, Postgres on backend and React on frontend.#
 
 # _Steps to start a project_
 
