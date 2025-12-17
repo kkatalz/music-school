@@ -11,13 +11,7 @@ I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already 
    - npm install -g @nestjs/cli
    - npm install
 
-3. Navigate to your frontend directory: _cd frontend_
-
-   - python -m venv venv
-   - .\venv\Scripts\activate
-   - pip install streamlit
-
-4. terminate venv and navigate back to music-school. Run:
+3. navigate back to music-school. Run:
    docker-compose up --build  
    The command above will build a project. You shouldn't see any errors in terminal. To check if everything is okay, go
    to http://localhost:8501/ (frontend page) and http://localhost:3000/api (backend page)
