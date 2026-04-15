@@ -2,7 +2,7 @@
 
 # _Steps to start a project_
 
-I'll assume you have Node.js, npm (or yarn), and Python (for Streamlit) already installed. If you do, proceed to the next steps:
+I'll assume you have Node.js and npm (or yarn) already installed. If you do, proceed to the next steps:
 
 1. You'll need to install Docker desktop and sign up there (official website: https://www.docker.com/)
 
