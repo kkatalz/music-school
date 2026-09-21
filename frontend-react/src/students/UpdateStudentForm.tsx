@@ -39,7 +39,7 @@ export const UpdateStudentForm = () => {
     const { mutate, isPending, isError: isUpdateError, error: updateError } = useUpdateStudent();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
+        const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 

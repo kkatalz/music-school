@@ -37,7 +37,6 @@ export const AllStudents = () => {
   const {
     data: searchedStudent,
     isLoading: isLoadingSearch,
-    isError: isErrorSearch,
   } = useGetStudentInfo(
     searchEnabled && searchId ? Number(searchId) : null
   );

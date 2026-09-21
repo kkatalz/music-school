@@ -1,10 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  useCreateSubject,
-  useAddTeacherToSubject,
-  useSubjects,
-} from './hooks/useSubjects';
+import { useAddTeacherToSubject, useSubjects } from './hooks/useSubjects';
 import { useTeachers } from '../teachers/useTeachers';
 
 export const AddTeacherToSubject = () => {
