@@ -27,6 +27,10 @@ import { MailModule } from './mail/mail.module';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get<string>('DATABASE_URL'),
+        ssl:
+          configService.get<string>('DATABASE_SSL') === 'true'
+            ? { rejectUnauthorized: false }
+            : false,
         autoLoadEntities: true,
         synchronize: false,
       }),

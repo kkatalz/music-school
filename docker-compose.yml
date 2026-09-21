@@ -5,7 +5,7 @@ services:
     container_name: music_school_db
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -14,7 +14,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT}:5432"
+      # Postgres always listens on 5432 inside the container; only the host side is configurable.
+      - '${POSTGRES_PORT}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -23,21 +24,43 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
     container_name: music_school_api
-    command: npm run start:dev
+    restart: unless-stopped
+    command: sh -c "npm run migration:run && npm run start:dev"
     volumes:
       - ./backend:/app
       - /app/node_modules # Important to prevent overwriting
     ports:
-      - "${API_PORT}:3000"
+      - '${PORT}:3000'
     environment:
-      # Pass the full DATABASE_URL to NestJS
-      DATABASE_URL: ${DATABASE_URL}
+      # Built from the POSTGRES_* vars so it can never drift out of sync with the db
+      # service. `db` is the compose service name; 5432 is the in-container port.
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       PORT: 3000
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
       db:
         condition: service_healthy
+
+  # 3. React Frontend Service (Vite dev server)
+  frontend:
+    build:
+      context: ./frontend-react
+      dockerfile: Dockerfile
+    container_name: music_school_frontend
+    restart: unless-stopped
+    volumes:
+      - ./frontend-react:/app
+      - /app/node_modules
+    ports:
+      - '${FRONTEND_PORT}:5173'
+    environment:
+      # Vite proxies /api here instead of localhost:3000, which inside a container
+      # would point at the frontend container itself.
+      VITE_PROXY_TARGET: http://api:3000
+    depends_on:
+      - api
 
 volumes:
   postgres_data:

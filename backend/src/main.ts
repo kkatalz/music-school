@@ -13,7 +13,19 @@ async function bootstrap() {
     }),
   );
 
+  // Comma-separated list of allowed origins, e.g. "https://music-school.vercel.app".
+  // Unset means same-origin only, which is what the Vite dev proxy and the Vercel
+  // rewrite both rely on.
+  const allowedOrigins = process.env.CORS_ORIGINS?.split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (allowedOrigins?.length) {
+    app.enableCors({ origin: allowedOrigins, credentials: true });
+  }
+
   app.setGlobalPrefix('api');
-  await app.listen(process.env.PORT ?? 3000);
+  // 0.0.0.0 so the process is reachable from outside its container.
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();
