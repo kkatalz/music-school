@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router';
 import { Teachers } from './teachers/Teachers';
 import { Login } from './auth/Login';
 import { StudentDashboardLayout } from './students/StudentDashboardLayout';
@@ -32,6 +32,7 @@ import { TeacherSubjects } from './teachers/TeacherSubjects';
 const App = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>
@@ -100,6 +101,8 @@ const App = () => {
           <Route path="teachers" element={<StudentTeachers />} />
         </Route>
       </Route>
+
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 };
