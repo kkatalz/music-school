@@ -60,8 +60,8 @@ export const RemoveStudentFromSubject = () => {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
           Remove Student from Subject
         </h1>
 

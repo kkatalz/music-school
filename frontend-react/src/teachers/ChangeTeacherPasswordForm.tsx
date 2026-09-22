@@ -21,7 +21,7 @@ export const ChangeTeacherPasswordForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mt-8 p-8 bg-white rounded-lg shadow-lg max-w-2xl"
+      className="mt-8 p-5 sm:p-8 bg-white rounded-lg shadow-lg max-w-2xl"
     >
       <h3 className="text-xl font-semibold mb-6 text-gray-800">
         Change password

@@ -8,8 +8,8 @@ interface SubjectCardProps {
 
 export const SubjectCard = ({ subject }: SubjectCardProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex justify-between items-start mb-4">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
         <h2 className="text-2xl font-bold text-gray-800">{subject.name}</h2>
         <div className="flex gap-2"></div>
         <span className="text-sm text-gray-500">ID: {subject.id}</span>

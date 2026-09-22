@@ -45,8 +45,8 @@ export const TeacherStudents = () => {
 
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+    <div className="container mx-auto p-4 sm:p-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
         Students of Teacher {teacher?.firstName} {teacher?.lastName}
       </h1>
 

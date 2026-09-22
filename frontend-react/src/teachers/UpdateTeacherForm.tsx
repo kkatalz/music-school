@@ -66,8 +66,8 @@ export const UpdateTeacherForm = () => {
 
     return (
         <div className="p-4 sm:p-8">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Edit teacher data</h1>
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Edit teacher data</h1>
                 <Link 
                     to="/headTeacher/teachers" // back to the teachers list
                     className="text-blue-600 hover:underline"
@@ -76,7 +76,7 @@ export const UpdateTeacherForm = () => {
                 </Link>
             </div>
       
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+            <form onSubmit={handleSubmit} className="bg-white p-5 sm:p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-gray-700 mb-1 font-semibold">Name</label>

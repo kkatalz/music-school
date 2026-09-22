@@ -70,9 +70,9 @@ export const TeacherCard = ({
   const { data: experience } = useCalculateExperience(teacher.id); 
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
       <div className="border-b border-gray-200 pb-4 mb-4">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-xl font-bold text-gray-900">
             {teacher.firstName} {teacher.lastName}
           </h2>
@@ -112,16 +112,16 @@ export const TeacherCard = ({
         )}
       </div>
 
-        <div className="flex space-x-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           <button
             onClick={onEdit}
-            className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors"
           >
             Edit
           </button>
           {   canDelete &&   (<button
             onClick={onDelete}
-            className="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
           >
             Delete
           </button>)}
@@ -129,7 +129,7 @@ export const TeacherCard = ({
            {/* go to teacher's students */}
           <Link
             to={`/headTeacher/teachers/${teacher.id}/students`}
-            className="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition-colors"
           >
             Students
           </Link>
@@ -137,7 +137,7 @@ export const TeacherCard = ({
            {/* go to teacher's subjects */}
           <Link
             to={`/headTeacher/teachers/${teacher.id}/subjects`}
-            className="px-3 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-md hover:bg-indigo-200 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-md hover:bg-indigo-200 transition-colors"
           >
             Subjects
           </Link>
