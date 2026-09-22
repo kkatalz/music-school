@@ -34,12 +34,12 @@ export const StudentGrades = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+    <div className="max-w-md mx-auto p-4 sm:p-8">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 text-center">
         My Grades
       </h2>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <div className="flex justify-between items-center border-b pb-2 mb-3">
           <span className="text-sm font-bold text-gray-600 uppercase">
             Class

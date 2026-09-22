@@ -11,8 +11,8 @@ interface SubjectCardProps {
 
 const SubjectCard  =({ subject }: SubjectCardProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex justify-between items-start mb-4">
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
         <h2 className="text-2xl font-bold text-gray-800">{subject.name}</h2>
         <div className="flex gap-2"></div>
         <span className="text-sm text-gray-500">ID: {subject.id}</span>
@@ -52,14 +52,14 @@ export const TeacherSubjects = () => {
   } = useGetTeacherSubjects(numTeacherId, year, semester);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+    <div className="container mx-auto p-4 sm:p-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
         Subjects of Teacher {teacher?.firstName} {teacher?.lastName}
       </h1>
 
       {/* filters */}
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6 flex gap-4">
-        <div>
+      <div className="mb-6 flex flex-col gap-4 rounded-lg bg-white p-4 shadow-md sm:flex-row">
+        <div className="flex-1">
           <label htmlFor="year" className="block text-sm font-medium text-gray-700">
             Year
           </label>
@@ -72,7 +72,7 @@ export const TeacherSubjects = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
         </div>
-        <div>
+        <div className="flex-1">
           <label htmlFor="semester" className="block text-sm font-medium text-gray-700">
             Semester
           </label>

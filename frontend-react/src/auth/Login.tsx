@@ -41,7 +41,7 @@ export const Login = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 w-screen h-screen -z-10">
+      <div className="fixed inset-0 -z-10">
         <img
           src="/background-main.jpg"
           alt="Background"
@@ -49,9 +49,9 @@ export const Login = () => {
         ></img>
       </div>
 
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex min-h-dvh items-center justify-center px-4 py-8">
         <form
-          className="p-8 border border-gray-200 rounded-lg shadow-lg max-w-md w-full bg-white"
+          className="p-6 sm:p-8 border border-gray-200 rounded-lg shadow-lg max-w-md w-full bg-white"
           onSubmit={handleSubmit}
         >
           <h2 className="text-2xl font-bold text-center mb-6">

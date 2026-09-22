@@ -29,12 +29,12 @@ export const StudentProfile = () => {
   }
 
   return (
-    <div className="mx-auto max-w-124">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+    <div className="mx-auto max-w-124 p-4 sm:p-8">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 text-center">
         My info
       </h2>
 
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl">
+      <div className="bg-white p-5 sm:p-8 rounded-lg shadow-lg max-w-2xl">
         <div className="border-b pb-4 mb-4">
           <h1 className="text-2xl font-bold text-gray-900">
             {student.firstName} {student.lastName}

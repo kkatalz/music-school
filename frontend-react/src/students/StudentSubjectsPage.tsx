@@ -33,9 +33,9 @@ export const StudentSubjectsPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-8">
       <div>
-        <h2 className="text-3xl font-bold mb-6">My Subjects</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6">My Subjects</h2>
       </div>
 
       {subjects && subjects.length > 0 ? (
@@ -43,7 +43,7 @@ export const StudentSubjectsPage = () => {
           {subjects.map((subject) => (
             <div
               key={subject.id}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+              className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow"
             >
               <h3 className="text-lg font-semibold text-gray-900 mb-3">
                 {subject.name}

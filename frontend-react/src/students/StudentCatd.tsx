@@ -10,7 +10,7 @@ export const StudentCard = ({ student, onEdit, onDelete }: StudentCardProps) => 
   const { data: studyYears, isLoading: isLoadingYears } = useGetStudentStudyYears(student.id);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 flex flex-col hover:shadow-xl transition-shadow duration-300">
       <div className="border-b border-gray-200 pb-4 mb-4">
         <h2 className="text-xl font-bold text-gray-900">{student.firstName} {student.lastName}</h2>
       </div>
@@ -49,16 +49,16 @@ export const StudentCard = ({ student, onEdit, onDelete }: StudentCardProps) => 
         )}
       </div>
 
-       <div className="flex space-x-2">
+       <div className="mt-3 flex flex-wrap gap-2">
           <button 
             onClick={onEdit}
-            className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors"
           >
             Edit
           </button>
           <button 
              onClick={onDelete}
-            className="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 transition-colors"
           >
             Delete
           </button>

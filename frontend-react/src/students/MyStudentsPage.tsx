@@ -83,12 +83,12 @@ export const MyStudentsPage = () => {
   }
 
   return (
-    <div className="p-4 bg-gray-50 min-h-full space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">
+    <div className="p-4 sm:p-8 bg-gray-50 min-h-full space-y-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
         Students for {user.firstName} {user.lastName}
       </h1>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Search by Student ID
         </h2>

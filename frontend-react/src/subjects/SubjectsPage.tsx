@@ -50,7 +50,7 @@ export const SubjectsPage = () => {
   return (
     <div className="p-4 sm:p-8">
       <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Subject List</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Subject List</h1>
 
         <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
           <button
@@ -132,13 +132,13 @@ export const SubjectsPage = () => {
       {viewMode === 'names' ? (
         // Names View - Simple list
         !subjectNames || subjectNames.length === 0 ? (
-          <div className="text-center mt-10 text-gray-600 bg-white p-8 rounded-lg shadow-md">
+          <div className="text-center mt-10 text-gray-600 bg-white p-5 sm:p-8 rounded-lg shadow-md">
             <h3 className="text-xl">No subjects at the moment.</h3>
             <p>As soon as they are added, you will see them here.</p>
           </div>
         ) : (
           <div className="mx-auto w-full max-w-md">
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
               <h2 className="text-xl font-semibold mb-4 text-gray-800">
                 Subject Names
               </h2>
@@ -162,7 +162,7 @@ export const SubjectsPage = () => {
         )
       ) : // Info View - Detailed cards
       !subjectsInfo || subjectsInfo.length === 0 ? (
-        <div className="text-center mt-10 text-gray-600 bg-white p-8 rounded-lg shadow-md">
+        <div className="text-center mt-10 text-gray-600 bg-white p-5 sm:p-8 rounded-lg shadow-md">
           <h3 className="text-xl">No subjects at the moment.</h3>
           <p>As soon as they are added, you will see them here.</p>
         </div>

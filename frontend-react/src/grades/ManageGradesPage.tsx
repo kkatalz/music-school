@@ -150,8 +150,8 @@ export const ManageGradesPage = () => {
   }
 
   return (
-    <div className="p-4 bg-gray-50 min-h-full space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">Manage Grades</h1>
+    <div className="p-4 sm:p-8 bg-gray-50 min-h-full space-y-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Manage Grades</h1>
 
       {isHeadTeacher && (
         <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -217,7 +217,7 @@ export const ManageGradesPage = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
           {editingGradeId ? 'Update Grade' : 'Create New Grade'}
         </h2>
@@ -329,7 +329,7 @@ export const ManageGradesPage = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
           Existing Grades
         </h2>
@@ -338,20 +338,20 @@ export const ManageGradesPage = () => {
         ) : !existingGrades || existingGrades.length === 0 ? (
           <p className="text-center text-gray-500">No grades found.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <table className="w-full min-w-[560px] border-collapse">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="text-left p-3 font-semibold text-gray-700">
+                  <th className="whitespace-nowrap p-3 text-left font-semibold text-gray-700">
                     Student
                   </th>
-                  <th className="text-left p-3 font-semibold text-gray-700">
+                  <th className="whitespace-nowrap p-3 text-left font-semibold text-gray-700">
                     Subject
                   </th>
-                  <th className="text-center p-3 font-semibold text-gray-700">
+                  <th className="whitespace-nowrap p-3 text-center font-semibold text-gray-700">
                     Grade
                   </th>
-                  <th className="text-center p-3 font-semibold text-gray-700">
+                  <th className="whitespace-nowrap p-3 text-center font-semibold text-gray-700">
                     Actions
                   </th>
                 </tr>
@@ -359,16 +359,16 @@ export const ManageGradesPage = () => {
               <tbody>
                 {existingGrades.map((grade) => (
                   <tr key={grade.id} className="border-b hover:bg-gray-50">
-                    <td className="p-3">
+                    <td className="p-3 whitespace-nowrap">
                       {grade.student?.firstName} {grade.student?.lastName}
                     </td>
-                    <td className="p-3">{grade.subject?.name}</td>
-                    <td className="p-3 text-center">
+                    <td className="p-3 whitespace-nowrap">{grade.subject?.name}</td>
+                    <td className="whitespace-nowrap p-3 text-center">
                       <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 font-bold rounded">
                         {grade.value}
                       </span>
                     </td>
-                    <td className="p-3 text-center">
+                    <td className="whitespace-nowrap p-3 text-center">
                       <button
                         onClick={() =>
                           handleEditGrade(
