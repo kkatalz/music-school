@@ -1,70 +1,12 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
+import { DashboardShell, type NavItem } from '../components/DashboardShell';
 
-export const StudentDashboardLayout = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+const navItems: NavItem[] = [
+  { to: '/student/profile', label: 'My profile' },
+  { to: '/student/subjects', label: 'My subjects' },
+  { to: '/student/teachers', label: 'My teachers' },
+  { to: '/student/grades', label: 'My grades' },
+];
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login'); 
-  };
-
-  return (
-    <div className="flex h-screen bg-gray-100">
-      <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="p-4 text-xl font-bold border-b border-gray-700">
-          <span className="block text-sm font-normal text-gray-400">Student</span>
-          {user?.firstName} {user?.lastName}
-        </div>
-        <nav className="flex-1 p-2 space-y-2">
-          <NavLink
-            to="/student/profile"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
-            }
-          >
-            My profile
-          </NavLink>
-          <NavLink
-            to="/student/subjects"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
-            }
-          >
-            My subjects
-          </NavLink>
-          <NavLink
-            to="/student/teachers"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
-            }
-          >
-            My teachers
-          </NavLink>
-          <NavLink
-            to="/student/grades"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors ${isActive ? 'bg-gray-900' : ''}`
-            }
-          >
-            My grades
-          </NavLink>
-        </nav>
-        <div className="p-4 border-t border-gray-700">
-          <button
-            onClick={handleLogout}
-            className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors"
-          >
-            Log out
-          </button>
-        </div>
-      </aside>
-
-      <main className="flex-1 p-8 overflow-y-auto">
-        <Outlet /> 
-      </main>
-    </div>
-  );
-};
-
+export const StudentDashboardLayout = () => (
+  <DashboardShell roleLabel='Student' navItems={navItems} />
+);
