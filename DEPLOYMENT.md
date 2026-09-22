@@ -110,7 +110,6 @@ Set on Render; none of them are committed.
 | `DATABASE_URL` | Supabase session-pooler connection string                      |
 | `DATABASE_SSL` | `true` for managed Postgres; unset/`false` for local docker     |
 | `JWT_SECRET`   | Signing key for auth tokens                                    |
-| `CORS_ORIGINS` | Optional, comma-separated. Only needed to call the API host directly rather than through the Vercel rewrite. |
 | `NODE_VERSION` | `20`                                                           |
 
 Local values live in the root `.env`, which is gitignored; `.env.example`
