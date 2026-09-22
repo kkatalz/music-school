@@ -26,12 +26,9 @@ docker compose up --build
 - App: http://localhost:5173
 - Postgres: `localhost:5400` (5432 inside the container)
 
-`docker compose` reads `.env` from the directory containing `docker-compose.yml`,
-which is why it lives at the repo root and not in `backend/`. The api service
-builds `DATABASE_URL` from the `POSTGRES_*` values against the `db` service
-hostname, so the two cannot drift apart.
-
-Migrations run automatically when the api container starts. To seed demo data:
+Migrations run automatically when the api container starts, via the `command:`
+in `docker-compose.yml` (not the Dockerfile). Because it is `&&`-chained, a
+failed migration means the API does not start at all. To seed demo data:
 
 ```bash
 cd backend && npm run db:seed
@@ -46,14 +43,9 @@ the password `password123`:
 | Teacher      | `andriy.melnyk@music-school.test`|
 | Student      | `sofia.tkachenko@music-school.test` |
 
-The seed truncates the four tables first, so it is safe to re-run.
+! The seed truncates the four tables first, so it is safe to re-run.
 
 ## Supabase
-
-The schema was created from the existing TypeORM migrations and their rows were
-written into the `migrations` table, so `migration:run` against this database is
-a no-op rather than an attempt to re-create everything.
-
 Two things differ from a plain local Postgres:
 
 - **RLS is enabled on every table with no policies.** Supabase exposes the
@@ -80,38 +72,21 @@ Settings for the `music-school-api` web service:
 | Start Command  | `npm run migration:run:prod && npm run start:prod`     |
 | Health Check   | `/api`                                                |
 
-`migration:run:prod` uses the compiled `dist/ormconfig.js` and the `typeorm`
-binary, so the production image needs no `ts-node` or devDependencies at runtime.
 
-Render injects `PORT` itself; the app binds `0.0.0.0` so it is reachable from
-outside the container. `render.yaml` in the repo root describes the same service
-as a Blueprint.
-
-On the free plan the service sleeps after ~15 minutes of inactivity, so the first
+* On the free plan the service sleeps after ~15 minutes of inactivity, so the first
 request after an idle period takes 30–60 seconds.
 
-## Vercel
 
-Import the repo and set **Root Directory** to `frontend-react`. The rest comes
-from `frontend-react/vercel.json`: the Vite preset, `dist` as the output, the
-`/api` rewrite to the Render host, and the SPA fallback to `index.html` for
-client-side routes. Rewrites are evaluated after the filesystem check, so hashed
-assets under `/assets` still serve normally.
 
-If the Render URL ever changes, update the rewrite destination in
-`frontend-react/vercel.json`.
+### `VITE_PROXY_TARGET` (frontend, dev only)
 
-## Environment variables
+`frontend-react/vite.config.ts` reads this to decide where the dev server
+proxies `/api`. It is not read from `.env` and never reaches the browser.
 
-Set on Render; none of them are committed.
+| Context                   | Value                   | Set by               |
+| ------------------------- | ----------------------- | -------------------- |
+| `docker compose up`       | `http://api:3000`       | `docker-compose.yml` |
+| `npm run dev` on the host | `http://localhost:3000` | default in `vite.config.ts` |
 
-| Variable       | Purpose                                                       |
-| -------------- | ------------------------------------------------------------- |
-| `DATABASE_URL` | Supabase session-pooler connection string                      |
-| `DATABASE_SSL` | `true` for managed Postgres; unset/`false` for local docker     |
-| `JWT_SECRET`   | Signing key for auth tokens                                    |
-| `CORS_ORIGINS` | Optional, comma-separated. Only needed to call the API host directly rather than through the Vercel rewrite. |
-| `NODE_VERSION` | `20`                                                           |
-
-Local values live in the root `.env`, which is gitignored; `.env.example`
-documents the shape.
+Both are covered already, so there is normally nothing to set by hand. It plays
+no part in the production build, where `vercel.json` does the proxying.

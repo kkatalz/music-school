@@ -1,5 +1,5 @@
 services:
-  # 1. PostgreSQL Database Service
+  # PostgreSQL Database Service
   db:
     image: postgres:14-alpine
     container_name: music_school_db
@@ -14,12 +14,11 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      # Postgres always listens on 5432 inside the container; only the host side is configurable.
       - '${POSTGRES_PORT}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # 2. NestJS Backend Service
+  # NestJS Backend Service
   api:
     build:
       context: ./backend
@@ -34,8 +33,6 @@ services:
     ports:
       - '${PORT}:3000'
     environment:
-      # Built from the POSTGRES_* vars so it can never drift out of sync with the db
-      # service. `db` is the compose service name; 5432 is the in-container port.
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       PORT: 3000
       JWT_SECRET: ${JWT_SECRET}
@@ -43,7 +40,7 @@ services:
       db:
         condition: service_healthy
 
-  # 3. React Frontend Service (Vite dev server)
+  # React Frontend Service (Vite dev server)
   frontend:
     build:
       context: ./frontend-react
