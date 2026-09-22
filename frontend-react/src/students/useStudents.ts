@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   getStudentInfo,
-  updateStudentPassword,
   getStudentStudyYears,
   getAllStudents,
   createStudent,
@@ -11,7 +10,6 @@ import {
   getStudentsByPeriod,
   getTotalStudentsByPeriod,
 } from './students.service';
-import type { StudentResponse } from '../auth/auth.types';
 import type { Student } from './student.types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';

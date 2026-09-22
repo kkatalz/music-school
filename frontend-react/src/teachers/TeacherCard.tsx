@@ -1,10 +1,7 @@
 import type { Teacher } from './teacher.types';
 import type { JSX } from 'react';
 import { Link } from 'react-router';
-import { useCalculateExperience,
-  useGetTeacherSubjects,
-  useGetTeacherStudents
- } from './useTeachers';
+import { useCalculateExperience } from './useTeachers';
  import { useAuth } from '../auth/AuthContext';
 
 interface TeacherCardProps {

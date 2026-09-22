@@ -97,7 +97,6 @@ export const useUpdateTeacher = () => {
 
 export const useUpdateTeacherPassword = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: (newPassword: string) => updateTeacherPassword(newPassword),
 

@@ -20,7 +20,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:drop": "typeorm-ts-node-commonjs schema:drop -d src/ormconfig.ts",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/ormconfig.ts",
-    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/ormconfig.ts"
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/ormconfig.ts",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/ormconfig.ts",
+    "db:seed": "ts-node --transpileOnly -r tsconfig-paths/register src/seeds/seed.ts",
+    "db:seed:prod": "node dist/seeds/seed",
+    "migration:run:prod": "typeorm migration:run -d dist/ormconfig.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
